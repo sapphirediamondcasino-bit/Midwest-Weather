@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Midwest Weather - Nationwide Weather Intelligence</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,15 +14,13 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e27;
+            color: #e4e4e7;
             overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
         }
 
-        /* Weather Effects Canvas */
+        /* Weather Canvas */
         #weather-canvas {
             position: fixed;
             top: 0;
@@ -29,6 +29,7 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
+            opacity: 0.6;
         }
 
         .content {
@@ -36,7 +37,62 @@
             z-index: 2;
         }
 
-        /* Hide all pages by default */
+        /* Navigation */
+        nav {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            color: #e4e4e7;
+            background: rgba(148, 163, 184, 0.1);
+        }
+
+        /* Hide pages */
         .page {
             display: none;
         }
@@ -45,155 +101,232 @@
             display: block;
         }
 
-        /* Navigation */
-        nav {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        nav .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        nav a:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
         /* Container */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 3rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 2.5rem;
         }
 
         /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .btn {
             padding: 1rem 2rem;
-            font-size: 1.1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
             border: none;
-            border-radius: 50px;
             cursor: pointer;
-            text-decoration: none;
             transition: all 0.3s;
-            font-weight: bold;
+            text-decoration: none;
             display: inline-block;
-            margin: 0.5rem;
         }
 
         .btn-primary {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
+            background: rgba(148, 163, 184, 0.1);
+            color: #e4e4e7;
+            border: 1px solid rgba(148, 163, 184, 0.2);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(148, 163, 184, 0.2);
+            transform: translateY(-2px);
         }
 
         /* Cards */
         .card {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
             padding: 2rem;
-            border-radius: 15px;
-            margin: 1rem 0;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin: 2rem 0;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         }
 
         /* Status Indicators */
-        .status-indicator {
-            width: 12px;
-            height: 12px;
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-badge.online {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .status-badge.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
         }
 
-        .status-online {
-            background: #2ecc71;
-            box-shadow: 0 0 10px #2ecc71;
+        .status-dot.online {
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
         }
 
-        .status-offline {
-            background: #e74c3c;
-            box-shadow: 0 0 10px #e74c3c;
+        .status-dot.offline {
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
         }
 
-        /* Select Dropdown */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Select Inputs */
         select {
             width: 100%;
             padding: 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            color: #e4e4e7;
             font-size: 1rem;
-            border-radius: 10px;
-            border: none;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            margin: 1rem 0;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            margin: 0.5rem 0;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        select option {
+            background: #0f172a;
+            color: #e4e4e7;
         }
 
         /* Weather Display */
-        .weather-display {
+        .weather-hero {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 20px;
+            margin: 2rem 0;
         }
 
-        .weather-display h2 {
-            font-size: 3rem;
+        .weather-icon {
+            font-size: 6rem;
             margin: 1rem 0;
         }
 
-        .weather-info {
+        .temperature {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .weather-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1rem;
@@ -201,48 +334,178 @@
         }
 
         .weather-stat {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .weather-stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .weather-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e4e4e7;
+        }
+
+        .weather-stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        /* Command Card */
+        .command-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .command-card code {
+            background: rgba(102, 126, 234, 0.1);
+            color: #818cf8;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        /* Status Page Styling */
+        .status-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .status-overall {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .service-status {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .service-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .service-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .service-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-detail-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.25rem;
+        }
+
+        .service-detail-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e4e4e7;
         }
 
         /* Announcements */
         .announcement {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin: 1rem 0;
+            background: rgba(15, 23, 42, 0.6);
             border-left: 4px solid;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
         }
 
-        .announcement.general { border-color: #3498db; }
-        .announcement.alert { border-color: #e74c3c; }
-        .announcement.maintenance { border-color: #f39c12; }
-        .announcement.update { border-color: #2ecc71; }
+        .announcement.general { border-color: #3b82f6; }
+        .announcement.alert { border-color: #ef4444; }
+        .announcement.maintenance { border-color: #f59e0b; }
+        .announcement.update { border-color: #22c55e; }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .announcement-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .announcement-date {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .announcement-body {
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
 
         /* Footer */
         footer {
-            background: rgba(0, 0, 0, 0.5);
-            text-align: center;
-            padding: 2rem;
+            background: rgba(15, 23, 42, 0.8);
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            padding: 3rem 2rem;
             margin-top: 4rem;
+            text-align: center;
         }
 
         footer a {
-            color: white;
+            color: #94a3b8;
             text-decoration: none;
             margin: 0 1rem;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: #e4e4e7;
         }
 
         /* Loading Spinner */
         .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
+            border: 3px solid rgba(148, 163, 184, 0.2);
+            border-top: 3px solid #667eea;
             border-radius: 50%;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
-            margin: 2rem auto;
+            margin: 3rem auto;
         }
 
         @keyframes spin {
@@ -252,14 +515,16 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                gap: 0.5rem;
-                width: 100%;
+            .hero h1 {
+                font-size: 2.5rem;
             }
             
-            .hero h1 {
-                font-size: 2rem !important;
+            nav ul {
+                display: none;
+            }
+            
+            .temperature {
+                font-size: 3rem;
             }
         }
     </style>
@@ -271,68 +536,81 @@
         <!-- Navigation -->
         <nav>
             <div class="nav-container">
-                <div class="logo" onclick="navigate('home')">🌪️ Midwest Weather</div>
+                <div class="logo" onclick="navigate('home')">
+                    🌪️ Midwest Weather
+                </div>
                 <ul>
                     <li><a onclick="navigate('home')">Home</a></li>
                     <li><a onclick="navigate('weather')">Weather</a></li>
-                    <li><a onclick="navigate('regions')">Regions</a></li>
+                    <li><a onclick="navigate('commands')">Commands</a></li>
                     <li><a onclick="navigate('status')">Status</a></li>
-                    <li><a onclick="navigate('announcements')">Announcements</a></li>
-                    <li><a onclick="navigate('dashboard')">Dashboard</a></li>
-                    <li><a onclick="navigate('invite')">Invite Bot</a></li>
-                    <li><a onclick="navigate('about')">About</a></li>
+                    <li><a onclick="navigate('docs')">Documentation</a></li>
+                    <li><a onclick="navigate('announcements')">Updates</a></li>
                 </ul>
             </div>
         </nav>
 
         <!-- HOME PAGE -->
         <div id="home" class="page active">
-            <div class="container" style="text-align: center; padding: 4rem 2rem;">
-                <h1 style="font-size: 4rem; margin-bottom: 1rem;">🌎 Midwest Weather</h1>
-                <p style="font-size: 1.5rem; margin-bottom: 2rem;">Nationwide Weather Intelligence • 3,241+ Cities • All 50 States</p>
-                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 3rem;">Built from scratch over 3 months • 100% Free Forever</p>
+            <div class="hero">
+                <h1>Midwest Weather</h1>
+                <p class="hero-subtitle">Nationwide Weather Intelligence</p>
+                <p class="hero-description">3,241+ Cities • All 50 States • 100% Free • Built from Scratch</p>
                 
-                <div>
+                <div class="btn-group">
                     <button class="btn btn-primary" onclick="navigate('weather')">📍 Check Weather</button>
-                    <a href="https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=8&integration_type=0&scope=bot" class="btn btn-secondary" target="_blank">🤖 Invite Bot to Discord</a>
+                    <a href="https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=8&integration_type=0&scope=bot" class="btn btn-secondary" target="_blank">🤖 Invite Bot</a>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-cities-count">--</div>
+                        <div class="stat-label">Cities Supported</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">50</div>
+                        <div class="stat-label">U.S. States</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-servers-count">--</div>
+                        <div class="stat-label">Discord Servers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-users-count">--</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
                 </div>
 
-                <div class="card" style="max-width: 600px; margin: 4rem auto;">
-                    <h2 style="margin-bottom: 1.5rem;">🔴 Live Status</h2>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span><span class="status-indicator" id="home-bot-indicator"></span>Discord Bot v2.5</span>
-                        <span id="home-bot-status">Checking...</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span><span class="status-indicator" id="home-api-indicator"></span>API Server</span>
-                        <span id="home-api-status">Checking...</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span>Connected Servers</span>
-                        <span id="home-server-count">--</span>
+                <div class="card" style="text-align: center; margin: 3rem 0;">
+                    <h2 style="margin-bottom: 1.5rem;">🔴 System Status</h2>
+                    <div id="home-status-badge" class="status-badge online">
+                        <div class="status-dot online"></div>
+                        <span>Checking...</span>
                     </div>
                 </div>
 
-                <div class="grid">
+                <div class="grid grid-4" style="margin-top: 3rem;">
                     <div class="card" style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🌤️</div>
-                        <h3>Real-Time Weather</h3>
-                        <p>Current conditions for 3,241+ cities across all 50 states</p>
+                        <div style="font-size: 3rem;">🌤️</div>
+                        <h3 style="margin: 1rem 0;">Real-Time Data</h3>
+                        <p style="color: #94a3b8;">Live weather for 3,241+ cities</p>
                     </div>
                     <div class="card" style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                        <h3>7-Day Forecast</h3>
-                        <p>Detailed weekly predictions for planning ahead</p>
+                        <div style="font-size: 3rem;">📊</div>
+                        <h3 style="margin: 1rem 0;">7-Day Forecast</h3>
+                        <p style="color: #94a3b8;">Plan ahead with predictions</p>
                     </div>
                     <div class="card" style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
-                        <h3>Discord Bot</h3>
-                        <p>Use commands directly in your Discord server</p>
+                        <div style="font-size: 3rem;">🤖</div>
+                        <h3 style="margin: 1rem 0;">Discord Bot</h3>
+                        <p style="color: #94a3b8;">Commands in your server</p>
                     </div>
                     <div class="card" style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🆓</div>
-                        <h3>100% Free</h3>
-                        <p>No subscriptions, no paywalls, free forever</p>
+                        <div style="font-size: 3rem;">🆓</div>
+                        <h3 style="margin: 1rem 0;">100% Free</h3>
+                        <p style="color: #94a3b8;">No subscriptions, ever</p>
                     </div>
                 </div>
             </div>
@@ -341,98 +619,88 @@
         <!-- WEATHER PAGE -->
         <div id="weather" class="page">
             <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">🌤️ Weather Lookup</h1>
+                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 3rem;">🌤️ Weather Lookup</h1>
                 
                 <div class="card">
-                    <h2>Select Location</h2>
-                    
-                    <label for="region-select"><strong>Step 1: Choose Region</strong></label>
-                    <select id="region-select" onchange="loadStates()">
-                        <option value="">-- Select Region --</option>
-                        <option value="Midwest">Midwest</option>
-                        <option value="Southeast">Southeast</option>
-                        <option value="Northeast">Northeast</option>
-                        <option value="Southwest">Southwest</option>
-                        <option value="West">West</option>
-                    </select>
-
-                    <label for="state-select"><strong>Step 2: Choose State</strong></label>
-                    <select id="state-select" onchange="loadCities()" disabled>
-                        <option value="">-- Select State --</option>
-                    </select>
-
-                    <label for="city-select"><strong>Step 3: Choose City</strong></label>
-                    <select id="city-select" onchange="loadWeather()" disabled>
-                        <option value="">-- Select City --</option>
-                    </select>
-                </div>
-
-                <div id="weather-result" style="display: none;">
-                    <div class="card weather-display">
-                        <h2 id="city-name">--</h2>
-                        <div style="font-size: 5rem; margin: 1rem 0;" id="weather-icon">☁️</div>
-                        <h2 id="temperature">--°F</h2>
-                        <p id="condition" style="font-size: 1.5rem; margin: 1rem 0;">--</p>
-                        
-                        <div class="weather-info">
-                            <div class="weather-stat">
-                                <div style="font-size: 2rem;">💧</div>
-                                <strong>Humidity</strong>
-                                <p id="humidity">--%</p>
-                            </div>
-                            <div class="weather-stat">
-                                <div style="font-size: 2rem;">💨</div>
-                                <strong>Wind</strong>
-                                <p id="wind">--</p>
-                            </div>
-                            <div class="weather-stat">
-                                <div style="font-size: 2rem;">🌡️</div>
-                                <strong>Feels Like</strong>
-                                <p id="feels-like">--°F</p>
-                            </div>
+                    <div class="grid grid-3">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
+                            <select id="region-select" onchange="loadStates()">
+                                <option value="">Select Region</option>
+                                <option value="Midwest">Midwest</option>
+                                <option value="Southeast">Southeast</option>
+                                <option value="Northeast">Northeast</option>
+                                <option value="Southwest">Southwest</option>
+                                <option value="West">West</option>
+                            </select>
                         </div>
-
-                        <button class="btn btn-primary" onclick="loadWeather()">🔄 Refresh</button>
-                    </div>
-
-                    <div class="card">
-                        <h2>7-Day Forecast</h2>
-                        <div id="forecast-container" class="grid"></div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">State</label>
+                            <select id="state-select" onchange="loadCities()" disabled>
+                                <option value="">Select State</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</label>
+                            <select id="city-select" onchange="loadWeather()" disabled>
+                                <option value="">Select City</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+
+                <div id="weather-result"></div>
             </div>
         </div>
 
-        <!-- REGIONS PAGE -->
-        <div id="regions" class="page">
+        <!-- COMMANDS PAGE -->
+        <div id="commands" class="page">
             <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">🗺️ Coverage Map</h1>
-                
-                <div class="grid">
-                    <div class="card">
-                        <h2>🌾 Midwest</h2>
-                        <p><strong>States:</strong> IL, IN, IA, KS, MI, MN, MO, NE, ND, OH, SD, WI</p>
-                        <p id="midwest-count">Loading...</p>
+                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📋 Bot Commands</h1>
+                <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Complete command reference for Midwest Weather Bot v2.5</p>
+
+                <div class="grid grid-2">
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/weather</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported city. Choose from multiple display styles.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any city (autocomplete)</li>
+                                <li>template - Compact, Card, Full, or Radar view</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="card">
-                        <h2>🌴 Southeast</h2>
-                        <p><strong>States:</strong> AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV</p>
-                        <p id="southeast-count">Loading...</p>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/forecast</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for planning ahead.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any city (autocomplete)</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="card">
-                        <h2>🏙️ Northeast</h2>
-                        <p><strong>States:</strong> CT, DE, ME, MD, MA, NH, NJ, NY, PA, RI, VT</p>
-                        <p id="northeast-count">Loading...</p>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/dashboard</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard with refresh, radar, and alerts buttons.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any city (autocomplete)</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="card">
-                        <h2>🌵 Southwest</h2>
-                        <p><strong>States:</strong> AZ, NM, OK, TX</p>
-                        <p id="southwest-count">Loading...</p>
-                    </div>
-                    <div class="card">
-                        <h2>🏔️ West</h2>
-                        <p><strong>States:</strong> AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY</p>
-                        <p id="west-count">Loading...</p>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/announce</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Send official announcements to Discord servers and website.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #ef4444;">Owner Only</strong>
+                            <p style="color: #94a3b8; margin-top: 0.5rem;">This command is restricted to the bot owner.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -441,55 +709,160 @@
         <!-- STATUS PAGE -->
         <div id="status" class="page">
             <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">📊 System Status</h1>
-                
-                <div class="card">
-                    <h2>Bot Status</h2>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span><span class="status-indicator" id="status-bot-indicator"></span>Discord Bot v2.5</span>
-                        <span id="status-bot-status">Checking...</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span>Uptime</span>
-                        <span id="status-uptime">--</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span>Connected Servers</span>
-                        <span id="status-servers">--</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span>Total Users</span>
-                        <span id="status-users">--</span>
+                <div class="status-header">
+                    <h1 style="font-size: 3rem; margin-bottom: 1rem;">System Status</h1>
+                    <div id="status-overall" class="status-overall">
+                        <div class="status-dot online"></div>
+                        <span>Checking System Status...</span>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2>API Status</h2>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span><span class="status-indicator" id="status-api-indicator"></span>API Server</span>
-                        <span id="status-api-status">Checking...</span>
+                <div class="service-status">
+                    <div class="service-header">
+                        <div class="service-name">🤖 Discord Bot v2.5</div>
+                        <div id="bot-status-badge" class="status-badge offline">
+                            <div class="status-dot offline"></div>
+                            <span>Checking...</span>
+                        </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span>Database Status</span>
-                        <span id="status-db">--</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 0.5rem 0;">
-                        <span>Last Updated</span>
-                        <span id="status-last-update">--</span>
+                    <div class="service-details">
+                        <div class="service-detail">
+                            <span class="service-detail-label">Uptime</span>
+                            <span class="service-detail-value" id="bot-uptime">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Connected Servers</span>
+                            <span class="service-detail-value" id="bot-servers">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Total Users</span>
+                            <span class="service-detail-value" id="bot-users">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Version</span>
+                            <span class="service-detail-value">v2.5</span>
+                        </div>
                     </div>
                 </div>
 
-                <p style="text-align: center; margin-top: 2rem; opacity: 0.8;">Auto-refreshes every 30 seconds</p>
+                <div class="service-status">
+                    <div class="service-header">
+                        <div class="service-name">🌐 API Server</div>
+                        <div id="api-status-badge" class="status-badge offline">
+                            <div class="status-dot offline"></div>
+                            <span>Checking...</span>
+                        </div>
+                    </div>
+                    <div class="service-details">
+                        <div class="service-detail">
+                            <span class="service-detail-label">Response Time</span>
+                            <span class="service-detail-value" id="api-response">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Database</span>
+                            <span class="service-detail-value" id="api-database">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Last Updated</span>
+                            <span class="service-detail-value" id="api-last-update">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="text-align: center; margin-top: 2rem; color: #94a3b8;">Auto-refreshes every 30 seconds</p>
+            </div>
+        </div>
+
+        <!-- DOCUMENTATION PAGE -->
+        <div id="docs" class="page">
+            <div class="container">
+                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📖 Documentation</h1>
+                <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Everything you need to know about Midwest Weather</p>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Getting Started</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        Midwest Weather provides comprehensive weather data for all 50 U.S. states through both a Discord bot and this website. 
+                        No account required for website access - just select your location and get instant weather updates.
+                    </p>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Adding the Bot to Discord</h2>
+                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                        <li>Click the "Invite Bot" button in the navigation</li>
+                        <li>Select your Discord server from the dropdown</li>
+                        <li>Authorize the requested permissions</li>
+                        <li>Start using commands like <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather</code></li>
+                    </ol>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Using the Website</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 1rem;">
+                        The website provides anonymous weather lookup without needing a Discord account:
+                    </p>
+                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                        <li>Navigate to the Weather page</li>
+                        <li>Select your Region (Midwest, Southeast, Northeast, Southwest, or West)</li>
+                        <li>Choose your State</li>
+                        <li>Pick your City</li>
+                        <li>View current conditions and 7-day forecast</li>
+                    </ol>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Coverage</h2>
+                    <div class="grid grid-2">
+                        <div>
+                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">3,241+ Cities</h3>
+                            <p style="color: #cbd5e1;">Constantly expanding database covering major cities and towns across America.</p>
+                        </div>
+                        <div>
+                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">All 50 States</h3>
+                            <p style="color: #cbd5e1;">Complete coverage from Alaska to Florida, California to Maine.</p>
+                        </div>
+                        <div>
+                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">5 Regions</h3>
+                            <p style="color: #cbd5e1;">Organized into Midwest, Southeast, Northeast, Southwest, and West regions.</p>
+                        </div>
+                        <div>
+                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">Real-Time Data</h3>
+                            <p style="color: #cbd5e1;">Weather information updated regularly from National Weather Service.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">API Integration</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        The website and Discord bot are tightly integrated through a custom API. This ensures:
+                    </p>
+                    <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
+                        <li>Real-time synchronization of weather data</li>
+                        <li>Live bot status monitoring</li>
+                        <li>Instant announcement broadcasting</li>
+                        <li>Consistent experience across platforms</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Support</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        For questions, issues, or feedback, visit our Discord server or check the Status page for system health information.
+                    </p>
+                </div>
             </div>
         </div>
 
         <!-- ANNOUNCEMENTS PAGE -->
         <div id="announcements" class="page">
             <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">💬 Announcements</h1>
-                
+                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💬 Announcements</h1>
+                <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Latest updates and system notifications</p>
+
                 <div class="card">
-                    <label for="announcement-filter"><strong>Filter by type:</strong></label>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Filter by Type</label>
                     <select id="announcement-filter" onchange="filterAnnouncements()">
                         <option value="all">All Announcements</option>
                         <option value="general">📢 General</option>
@@ -505,378 +878,22 @@
             </div>
         </div>
 
-        <!-- DASHBOARD PAGE -->
-        <div id="dashboard" class="page">
-            <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">🧑‍💻 Public Dashboard</h1>
-                
-                <div class="card">
-                    <h2>Server Management</h2>
-                    <p>Connect your Discord account to manage weather settings for your server.</p>
-                    <button class="btn btn-primary" onclick="loginDiscord()">🔗 Login with Discord</button>
-                    <p style="margin-top: 1rem; opacity: 0.8;">Discord OAuth integration coming soon</p>
-                </div>
-
-                <div class="card">
-                    <h2>Quick Access</h2>
-                    <div class="grid">
-                        <div style="text-align: center;">
-                            <div style="font-size: 3rem;">🌤️</div>
-                            <h3>Weather Data</h3>
-                            <button class="btn btn-secondary" onclick="navigate('weather')">View Weather</button>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 3rem;">📊</div>
-                            <h3>Bot Status</h3>
-                            <button class="btn btn-secondary" onclick="navigate('status')">View Status</button>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 3rem;">💬</div>
-                            <h3>Announcements</h3>
-                            <button class="btn btn-secondary" onclick="navigate('announcements')">View Updates</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2>🛠️ Nexus Staff Panel</h2>
-                    <p>Restricted access for Nexus server staff and owner.</p>
-                    <button class="btn btn-primary" onclick="navigate('nexus')">Access Staff Panel</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- NEXUS STAFF PANEL -->
-        <div id="nexus" class="page">
-            <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">🛠️ Nexus Staff Panel</h1>
-                
-                <div class="card" style="text-align: center;">
-                    <h2>🔒 Access Restricted</h2>
-                    <p style="margin: 2rem 0;">This panel is only accessible to Nexus server staff and the bot owner.</p>
-                    <p style="opacity: 0.8; margin-bottom: 2rem;">Click below to verify your access via Discord.</p>
-                    <button class="btn btn-primary" onclick="verifyNexusAccess()">🔗 Verify with Discord</button>
-                    <p style="margin-top: 2rem; opacity: 0.7;">Discord OAuth role verification coming soon</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- INVITE PAGE -->
-        <div id="invite" class="page">
-            <div class="container" style="text-align: center;">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem;">🤝 Invite Midwest Weather Bot</h1>
-                
-                <div class="card">
-                    <h2>Add to Your Discord Server</h2>
-                    <p style="margin: 2rem 0; font-size: 1.2rem;">Get instant weather updates for all 50 U.S. states right in your Discord!</p>
-                    
-                    <a href="https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=8&integration_type=0&scope=bot" class="btn btn-primary" target="_blank" style="font-size: 1.3rem;">
-                        🤖 Add Bot to Discord
-                    </a>
-                </div>
-
-                <div class="card" style="text-align: left;">
-                    <h2>📋 Bot Features</h2>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
-                            🗺️ Dynamic map view with live weather overlay
-                        </li>
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
-                            🚨 Automated weather alert system
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- TERMS OF SERVICE -->
-        <div id="terms" class="page">
-            <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">⚖️ Terms of Service</h1>
-                
-                <div class="card">
-                    <h2>Agreement to Terms</h2>
-                    <p style="line-height: 1.8;">
-                        By accessing Midwest Weather (the "Service"), including the Discord bot and website, you agree to be bound by these Terms of Service. 
-                        These terms are governed by the laws of the State of Minnesota, United States.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Use of Service</h2>
-                    <p style="line-height: 1.8;">
-                        <strong>Permitted Use:</strong> You may use the Service to access weather information for personal, non-commercial purposes. 
-                        You may add the Discord bot to your servers and access the public website freely.
-                    </p>
-                    <p style="line-height: 1.8; margin-top: 1rem;">
-                        <strong>Prohibited Use:</strong> You may NOT:
-                    </p>
-                    <ul style="line-height: 1.8; margin-left: 2rem;">
-                        <li>Attempt to reverse engineer, decompile, or extract source code</li>
-                        <li>Scrape, copy, or redistribute weather data in bulk</li>
-                        <li>Use automated tools to abuse the API or bot</li>
-                        <li>Impersonate staff or attempt unauthorized access</li>
-                        <li>Use the Service for any illegal purposes</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <h2>Intellectual Property</h2>
-                    <p style="line-height: 1.8;">
-                        All code, design, structure, weather data compilation, and branding of Midwest Weather are the exclusive property of 
-                        <strong>Kurrasch Gaming Merch Store LLC</strong>. Unauthorized reproduction, distribution, or use of any component 
-                        constitutes intellectual property theft under United States copyright law (17 U.S.C. § 101 et seq.) and Minnesota state law.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Service Availability</h2>
-                    <p style="line-height: 1.8;">
-                        The Service is provided "as is" without warranty of any kind. We do not guarantee uninterrupted access or 100% uptime. 
-                        The Service may be modified, suspended, or discontinued at any time without notice.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Limitation of Liability</h2>
-                    <p style="line-height: 1.8;">
-                        IN NO EVENT SHALL KURRASCH GAMING MERCH STORE LLC OR ITS OWNER BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, 
-                        CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF THE SERVICE.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Governing Law</h2>
-                    <p style="line-height: 1.8;">
-                        These Terms shall be governed by and construed in accordance with the laws of the State of Minnesota, without regard 
-                        to its conflict of law provisions. Any disputes shall be resolved in the courts of Minnesota.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Changes to Terms</h2>
-                    <p style="line-height: 1.8;">
-                        We reserve the right to modify these terms at any time. Continued use of the Service after changes constitutes 
-                        acceptance of the modified terms.
-                    </p>
-                </div>
-
-                <p style="text-align: center; margin-top: 2rem; opacity: 0.8;">
-                    Last Updated: November 2024
-                </p>
-            </div>
-        </div>
-
-        <!-- PRIVACY POLICY -->
-        <div id="privacy" class="page">
-            <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">🔒 Privacy Policy</h1>
-                
-                <div class="card">
-                    <h2>Our Commitment</h2>
-                    <p style="line-height: 1.8;">
-                        Midwest Weather is committed to protecting your privacy. This policy explains what data we collect, how we use it, 
-                        and your rights regarding your information.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Data We Collect</h2>
-                    <p style="line-height: 1.8;"><strong>Weather Data Only:</strong></p>
-                    <ul style="line-height: 1.8; margin-left: 2rem;">
-                        <li>City selections and weather queries</li>
-                        <li>Command usage statistics (non-personally identifiable)</li>
-                        <li>Server IDs where the bot is installed (for functionality only)</li>
-                    </ul>
-                    <p style="line-height: 1.8; margin-top: 1rem;"><strong>We DO NOT Collect:</strong></p>
-                    <ul style="line-height: 1.8; margin-left: 2rem;">
-                        <li>Personal information (names, emails, addresses)</li>
-                        <li>Discord messages or conversation content</li>
-                        <li>User location data or IP addresses</li>
-                        <li>Discord tokens or authentication credentials</li>
-                        <li>Any personally identifiable information</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <h2>How We Use Data</h2>
-                    <p style="line-height: 1.8;">
-                        Data is used solely to:
-                    </p>
-                    <ul style="line-height: 1.8; margin-left: 2rem;">
-                        <li>Provide weather information you request</li>
-                        <li>Improve bot performance and reliability</li>
-                        <li>Track system usage for maintenance purposes</li>
-                        <li>Cache weather data to reduce API calls</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <h2>Data Storage</h2>
-                    <p style="line-height: 1.8;">
-                        All data is stored locally in JSON files on our secure server. Weather data is cached temporarily (default: 10 minutes) 
-                        to improve performance. Command logs may be retained for system maintenance but contain no personal information.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Third-Party Services</h2>
-                    <p style="line-height: 1.8;">
-                        Weather data is fetched from the National Weather Service (weather.gov). We do not share any data with third parties 
-                        for marketing, advertising, or any other purposes.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Discord Integration</h2>
-                    <p style="line-height: 1.8;">
-                        When you add the bot to your Discord server, we only access the minimum permissions required for functionality. 
-                        We do not read messages, store user data, or access any information beyond what's necessary to respond to commands.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Anonymous Access</h2>
-                    <p style="line-height: 1.8;">
-                        The website allows completely anonymous weather lookup. No account creation or login is required. Discord OAuth 
-                        (when implemented) will be optional and only for server dashboard management.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Your Rights</h2>
-                    <p style="line-height: 1.8;">
-                        Since we don't collect personal data, there is no personal information to request, delete, or modify. If you have 
-                        concerns about data handling, you may remove the bot from your server at any time.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Children's Privacy</h2>
-                    <p style="line-height: 1.8;">
-                        Our Service does not knowingly collect any information from anyone, including children under 13. The Service is 
-                        designed to provide weather information only.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Changes to Policy</h2>
-                    <p style="line-height: 1.8;">
-                        We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date.
-                    </p>
-                </div>
-
-                <p style="text-align: center; margin-top: 2rem; opacity: 0.8;">
-                    Last Updated: November 2024
-                </p>
-            </div>
-        </div>
-
-        <!-- COPYRIGHT NOTICE -->
-        <div id="copyright" class="page">
-            <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">🧰 Copyright & Ownership</h1>
-                
-                <div class="card">
-                    <h2>Copyright Notice</h2>
-                    <p style="line-height: 1.8; font-size: 1.2rem;">
-                        <strong>© 2024 Kurrasch Gaming Merch Store LLC. All Rights Reserved.</strong>
-                    </p>
-                    <p style="line-height: 1.8; margin-top: 1rem;">
-                        Midwest Weather, including all associated branding, logos, code, design, database structure, weather data compilation, 
-                        API architecture, and documentation, is the exclusive intellectual property of Kurrasch Gaming Merch Store LLC.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>⚠️ No Unauthorized Use</h2>
-                    <p style="line-height: 1.8;">
-                        <strong>IMPORTANT:</strong> The source code, bot architecture, website design, and all components of Midwest Weather 
-                        are protected under United States intellectual property laws, including:
-                    </p>
-                    <ul style="line-height: 1.8; margin-left: 2rem; margin-top: 1rem;">
-                        <li><strong>Copyright Law</strong> (17 U.S.C. § 101 et seq.)</li>
-                        <li><strong>Trade Secret Law</strong></li>
-                        <li><strong>Minnesota State IP Laws</strong></li>
-                    </ul>
-                </div>
-
-                <div class="card" style="background: rgba(231, 76, 60, 0.2); border: 2px solid #e74c3c;">
-                    <h2>🚨 Strictly Prohibited</h2>
-                    <p style="line-height: 1.8;">
-                        You are <strong>NOT</strong> permitted to:
-                    </p>
-                    <ul style="line-height: 1.8; margin-left: 2rem; margin-top: 1rem;">
-                        <li>Copy, reproduce, or steal any bot code</li>
-                        <li>Reverse engineer or decompile the Discord bot</li>
-                        <li>Clone, fork, or create derivative versions</li>
-                        <li>Resell, redistribute, or sublicense any component</li>
-                        <li>Use the code structure in your own projects</li>
-                        <li>Extract or redistribute the city database</li>
-                        <li>Replicate the API design or architecture</li>
-                    </ul>
-                    <p style="line-height: 1.8; margin-top: 1rem; font-weight: bold;">
-                        Violation of these terms constitutes intellectual property theft and will result in legal action.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>What IS Allowed</h2>
-                    <p style="line-height: 1.8;">
-                        You may:
-                    </p>
-                    <ul style="line-height: 1.8; margin-left: 2rem;">
-                        <li>Use the Discord bot as an end user in your servers</li>
-                        <li>Access the public website to check weather</li>
-                        <li>Share links to the official Midwest Weather service</li>
-                        <li>Recommend the bot to others</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <h2>Legal Protection</h2>
-                    <p style="line-height: 1.8;">
-                        This project is governed under <strong>Minnesota law</strong>. Any disputes, violations, or legal matters will be 
-                        handled in Minnesota courts. Unauthorized use, reproduction, or distribution will be prosecuted to the fullest extent 
-                        of the law.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Licensing Inquiries</h2>
-                    <p style="line-height: 1.8;">
-                        If you are interested in licensing any component of Midwest Weather for commercial or non-commercial purposes, 
-                        you must contact <strong>Kurrasch Gaming Merch Store LLC</strong> for explicit written permission.
-                    </p>
-                </div>
-
-                <div class="card" style="text-align: center; background: rgba(0, 0, 0, 0.5);">
-                    <p style="font-size: 1.3rem; font-weight: bold;">
-                        Built with ❤️ by Jake Kade
-                    </p>
-                    <p style="margin-top: 1rem; opacity: 0.9;">
-                        3 months of development • 100% original code • Zero stolen components
-                    </p>
-                </div>
-            </div>
-        </div>
-
         <!-- Footer -->
         <footer>
-            <p><strong>© 2024 Midwest Weather | Kurrasch Gaming Merch Store LLC</strong></p>
-            <p style="margin: 0.5rem 0;">Built from scratch • Governed under Minnesota Law • All Rights Reserved</p>
-            <div style="margin-top: 1rem;">
+            <p style="font-weight: 600; margin-bottom: 1rem;">© 2025 Midwest Weather | Kurrasch Gaming Merch Store LLC</p>
+            <p style="color: #94a3b8; margin-bottom: 1.5rem;">Built from scratch • Governed under Minnesota Law • All Rights Reserved</p>
+            <div>
                 <a onclick="navigate('terms')">Terms of Service</a>
                 <a onclick="navigate('privacy')">Privacy Policy</a>
                 <a onclick="navigate('copyright')">Copyright Notice</a>
-                <a onclick="navigate('about')">About</a>
             </div>
-            <p style="margin-top: 1rem; opacity: 0.7;">Bot v2.5 • 3,241+ Cities • All 50 States</p>
+            <p style="margin-top: 1.5rem; color: #64748b;">Bot v2.5 • 3,241+ Cities • All 50 States</p>
         </footer>
     </div>
 
     <script>
         const API_URL = 'http://localhost:3001';
+        const NEXUS_SERVER_ID = '1430022675765395509';
         let allCities = [];
         let allAnnouncements = [];
         let currentWeatherCondition = null;
@@ -887,10 +904,8 @@
             document.getElementById(pageId).classList.add('active');
             window.scrollTo(0, 0);
 
-            // Load data for specific pages
             if (pageId === 'status') loadStatus();
             if (pageId === 'announcements') loadAnnouncements();
-            if (pageId === 'regions') loadRegionStats();
         }
 
         // Weather Canvas Effects
@@ -902,13 +917,12 @@
         let particles = [];
         let weatherEffect = getSeason();
 
-        // Get current season for home page
         function getSeason() {
             const month = new Date().getMonth();
-            if (month >= 2 && month <= 4) return 'spring'; // Mar-May
-            if (month >= 5 && month <= 7) return 'summer'; // Jun-Aug
-            if (month >= 8 && month <= 10) return 'fall'; // Sep-Nov
-            return 'winter'; // Dec-Feb
+            if (month >= 2 && month <= 4) return 'spring';
+            if (month >= 5 && month <= 7) return 'summer';
+            if (month >= 8 && month <= 10) return 'fall';
+            return 'winter';
         }
 
         class Particle {
@@ -942,15 +956,8 @@
 
             update() {
                 this.y += this.speed;
-                
-                if (this.type === 'snow' || this.type === 'leaf' || this.type === 'petal') {
-                    this.x += this.drift;
-                }
-                
-                if (this.type === 'leaf' || this.type === 'petal') {
-                    this.rotation += this.rotationSpeed;
-                }
-
+                if (this.type !== 'rain') this.x += this.drift;
+                if (this.type === 'leaf' || this.type === 'petal') this.rotation += this.rotationSpeed;
                 if (this.y > canvas.height) {
                     this.y = -20;
                     this.x = Math.random() * canvas.width;
@@ -1020,17 +1027,10 @@
                 } else if (cond.includes('rain') || cond.includes('shower') || cond.includes('drizzle')) {
                     effect = 'rain';
                     count = 150;
-                } else if (weatherEffect === 'fall') {
-                    effect = 'leaf';
-                    count = 50;
-                } else if (weatherEffect === 'spring') {
-                    effect = 'petal';
-                    count = 60;
                 } else {
-                    count = 0; // Clear weather, no particles
+                    count = 0;
                 }
             } else {
-                // Home page - seasonal effects
                 if (weatherEffect === 'winter') {
                     effect = 'snow';
                     count = 80;
@@ -1041,79 +1041,112 @@
                     effect = 'petal';
                     count = 60;
                 } else {
-                    count = 0; // Summer, no particles
+                    count = 0;
                 }
             }
 
-            if (count > 0) {
-                initParticles(effect, count);
-            } else {
-                particles = [];
-            }
+            particles = [];
+            if (count > 0) initParticles(effect, count);
         }
 
         // Fetch bot status
         async function fetchStatus() {
+            const startTime = Date.now();
             try {
                 const response = await fetch(`${API_URL}/api/status`);
                 if (!response.ok) throw new Error('API offline');
                 
                 const data = await response.json();
+                const responseTime = Date.now() - startTime;
                 
-                // Update home page status
-                updateStatusIndicators('home', data.status === 'online', true);
-                document.getElementById('home-bot-status').textContent = data.status === 'online' ? '✅ Online' : '❌ Offline';
-                document.getElementById('home-api-status').textContent = '✅ Connected';
-                document.getElementById('home-server-count').textContent = data.servers || '0';
+                // Update home page
+                document.getElementById('home-servers-count').textContent = data.servers || '0';
+                document.getElementById('home-users-count').textContent = data.users || '0';
                 
-                return data;
+                const statusBadge = document.getElementById('home-status-badge');
+                if (data.status === 'online') {
+                    statusBadge.className = 'status-badge online';
+                    statusBadge.innerHTML = '<div class="status-dot online"></div><span>All Systems Operational</span>';
+                } else {
+                    statusBadge.className = 'status-badge offline';
+                    statusBadge.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+                }
+                
+                return { data, responseTime };
             } catch (error) {
-                updateStatusIndicators('home', false, false);
-                document.getElementById('home-bot-status').textContent = '❌ Offline';
-                document.getElementById('home-api-status').textContent = '❌ Offline';
-                document.getElementById('home-server-count').textContent = '--';
+                const statusBadge = document.getElementById('home-status-badge');
+                statusBadge.className = 'status-badge offline';
+                statusBadge.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+                
+                document.getElementById('home-servers-count').textContent = '0';
+                document.getElementById('home-users-count').textContent = '0';
+                
                 return null;
-            }
-        }
-
-        function updateStatusIndicators(prefix, botOnline, apiOnline) {
-            const botIndicator = document.getElementById(`${prefix}-bot-indicator`);
-            const apiIndicator = document.getElementById(`${prefix}-api-indicator`);
-            
-            if (botIndicator) {
-                botIndicator.className = `status-indicator ${botOnline ? 'status-online' : 'status-offline'}`;
-            }
-            if (apiIndicator) {
-                apiIndicator.className = `status-indicator ${apiOnline ? 'status-online' : 'status-offline'}`;
             }
         }
 
         // Load status page
         async function loadStatus() {
+            const startTime = Date.now();
             try {
                 const response = await fetch(`${API_URL}/api/status`);
                 if (!response.ok) throw new Error('API offline');
                 
                 const data = await response.json();
+                const responseTime = Date.now() - startTime;
                 
-                updateStatusIndicators('status', data.status === 'online', true);
-                document.getElementById('status-bot-status').textContent = data.status === 'online' ? '✅ Online' : '❌ Offline';
-                document.getElementById('status-api-status').textContent = '✅ Connected';
+                // Overall status
+                const overall = document.getElementById('status-overall');
+                if (data.status === 'online') {
+                    overall.innerHTML = '<div class="status-dot online"></div><span>All Systems Operational</span>';
+                } else {
+                    overall.innerHTML = '<div class="status-dot offline"></div><span>System Experiencing Issues</span>';
+                }
+                
+                // Bot status
+                const botBadge = document.getElementById('bot-status-badge');
+                if (data.status === 'online') {
+                    botBadge.className = 'status-badge online';
+                    botBadge.innerHTML = '<div class="status-dot online"></div><span>Operational</span>';
+                } else {
+                    botBadge.className = 'status-badge offline';
+                    botBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+                }
                 
                 const uptimeMinutes = Math.floor(data.uptime / 1000 / 60);
                 const hours = Math.floor(uptimeMinutes / 60);
                 const minutes = uptimeMinutes % 60;
-                document.getElementById('status-uptime').textContent = `${hours}h ${minutes}m`;
+                document.getElementById('bot-uptime').textContent = `${hours}h ${minutes}m`;
+                document.getElementById('bot-servers').textContent = data.servers || '0';
+                document.getElementById('bot-users').textContent = data.users || '0';
                 
-                document.getElementById('status-servers').textContent = data.servers || '0';
-                document.getElementById('status-users').textContent = data.users || '0';
-                document.getElementById('status-db').textContent = '✅ Active';
-                document.getElementById('status-last-update').textContent = 'Just now';
+                // API status
+                const apiBadge = document.getElementById('api-status-badge');
+                apiBadge.className = 'status-badge online';
+                apiBadge.innerHTML = '<div class="status-dot online"></div><span>Operational</span>';
+                
+                document.getElementById('api-response').textContent = `${responseTime}ms`;
+                document.getElementById('api-database').textContent = 'Connected';
+                document.getElementById('api-last-update').textContent = 'Just now';
             } catch (error) {
-                updateStatusIndicators('status', false, false);
-                document.getElementById('status-bot-status').textContent = '❌ Offline';
-                document.getElementById('status-api-status').textContent = '❌ Offline';
-                document.getElementById('status-db').textContent = '❌ Error';
+                // Overall offline
+                document.getElementById('status-overall').innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+                
+                // Bot offline
+                const botBadge = document.getElementById('bot-status-badge');
+                botBadge.className = 'status-badge offline';
+                botBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+                document.getElementById('bot-uptime').textContent = '--';
+                document.getElementById('bot-servers').textContent = '0';
+                document.getElementById('bot-users').textContent = '0';
+                
+                // API offline
+                const apiBadge = document.getElementById('api-status-badge');
+                apiBadge.className = 'status-badge offline';
+                apiBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+                document.getElementById('api-response').textContent = '--';
+                document.getElementById('api-database').textContent = 'Disconnected';
+                document.getElementById('api-last-update').textContent = '--';
             }
         }
 
@@ -1124,7 +1157,9 @@
                 if (!response.ok) throw new Error('API offline');
                 const data = await response.json();
                 allCities = data.cities;
+                document.getElementById('home-cities-count').textContent = allCities.length.toLocaleString();
             } catch (error) {
+                document.getElementById('home-cities-count').textContent = '0';
                 console.error('Failed to load cities:', error);
             }
         }
@@ -1135,10 +1170,10 @@
             const stateSelect = document.getElementById('state-select');
             const citySelect = document.getElementById('city-select');
             
-            stateSelect.innerHTML = '<option value="">-- Select State --</option>';
-            citySelect.innerHTML = '<option value="">-- Select City --</option>';
+            stateSelect.innerHTML = '<option value="">Select State</option>';
+            citySelect.innerHTML = '<option value="">Select City</option>';
             citySelect.disabled = true;
-            document.getElementById('weather-result').style.display = 'none';
+            document.getElementById('weather-result').innerHTML = '';
             
             if (!region || allCities.length === 0) {
                 stateSelect.disabled = true;
@@ -1161,8 +1196,8 @@
             const state = document.getElementById('state-select').value;
             const citySelect = document.getElementById('city-select');
             
-            citySelect.innerHTML = '<option value="">-- Select City --</option>';
-            document.getElementById('weather-result').style.display = 'none';
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            document.getElementById('weather-result').innerHTML = '';
             
             if (!state) {
                 citySelect.disabled = true;
@@ -1185,7 +1220,6 @@
             if (!cityId) return;
             
             const resultDiv = document.getElementById('weather-result');
-            resultDiv.style.display = 'block';
             resultDiv.innerHTML = '<div class="spinner"></div>';
             
             try {
@@ -1196,50 +1230,73 @@
                 const city = data.city;
                 const weather = data.weather;
                 
-                // Update weather display
-                document.getElementById('city-name').textContent = `${city.name}, ${city.state}`;
-                document.getElementById('temperature').textContent = `${weather.temp}°F`;
-                document.getElementById('condition').textContent = weather.condition;
-                document.getElementById('humidity').textContent = `${weather.humidity}%`;
-                document.getElementById('wind').textContent = weather.wind;
-                document.getElementById('feels-like').textContent = `${weather.feels}°F`;
-                
-                // Set weather icon
+                // Get weather icon
                 const condition = weather.condition.toLowerCase();
                 let icon = '☁️';
                 if (condition.includes('rain')) icon = '🌧️';
                 else if (condition.includes('snow')) icon = '❄️';
                 else if (condition.includes('clear') || condition.includes('sunny')) icon = '☀️';
                 else if (condition.includes('cloud')) icon = '☁️';
-                else if (condition.includes('storm')) icon = '⛈️';
-                document.getElementById('weather-icon').textContent = icon;
+                else if (condition.includes('storm') || condition.includes('thunder')) icon = '⛈️';
                 
-                // Load forecast
-                const forecastContainer = document.getElementById('forecast-container');
-                forecastContainer.innerHTML = '';
+                // Build weather display
+                let html = `
+                    <div class="weather-hero">
+                        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${city.name}, ${city.state}</h2>
+                        <div class="weather-icon">${icon}</div>
+                        <div class="temperature">${weather.temp}°F</div>
+                        <p style="font-size: 1.5rem; color: #cbd5e1; margin-top: 1rem;">${weather.condition}</p>
+                    </div>
+                    
+                    <div class="weather-stats">
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">💧</div>
+                            <div class="weather-stat-value">${weather.humidity}%</div>
+                            <div class="weather-stat-label">Humidity</div>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">💨</div>
+                            <div class="weather-stat-value">${weather.wind}</div>
+                            <div class="weather-stat-label">Wind</div>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">🌡️</div>
+                            <div class="weather-stat-value">${weather.feels}°F</div>
+                            <div class="weather-stat-label">Feels Like</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <button class="btn btn-primary" onclick="loadWeather()">🔄 Refresh Weather</button>
+                    </div>
+                `;
+                
+                // Add forecast
                 if (weather.forecast && weather.forecast.length > 0) {
+                    html += '<div class="card" style="margin-top: 2rem;"><h2 style="margin-bottom: 1.5rem;">7-Day Forecast</h2><div class="grid grid-4">';
                     weather.forecast.forEach(day => {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        card.style.textAlign = 'center';
-                        card.innerHTML = `
-                            <h3>${day.period}</h3>
-                            <p style="font-size: 2rem; margin: 1rem 0;">${day.temp}°</p>
-                            <p>${day.desc}</p>
+                        html += `
+                            <div class="card" style="text-align: center;">
+                                <h3 style="margin-bottom: 0.5rem;">${day.period}</h3>
+                                <p style="font-size: 2rem; font-weight: 700; margin: 1rem 0;">${day.temp}°</p>
+                                <p style="color: #94a3b8;">${day.desc}</p>
+                            </div>
                         `;
-                        forecastContainer.appendChild(card);
                     });
-                } else {
-                    forecastContainer.innerHTML = '<p style="text-align: center;">Forecast unavailable</p>';
+                    html += '</div></div>';
                 }
                 
-                // Update weather effect on canvas
-                setWeatherEffect(weather.condition);
+                resultDiv.innerHTML = html;
                 
-                resultDiv.style.display = 'block';
-                resultDiv.innerHTML = document.getElementById('weather-result').innerHTML;
+                // Update weather effect
+                setWeatherEffect(weather.condition);
             } catch (error) {
-                resultDiv.innerHTML = '<div class="card"><p style="text-align: center; color: #e74c3c;">❌ Failed to load weather data. Please try again.</p></div>';
+                resultDiv.innerHTML = `
+                    <div class="card" style="text-align: center; margin-top: 2rem;">
+                        <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
+                        <p style="color: #94a3b8; margin-top: 1rem;">Please try again or check the status page</p>
+                    </div>
+                `;
             }
         }
 
@@ -1256,13 +1313,13 @@
                 allAnnouncements = data.announcements;
                 
                 if (allAnnouncements.length === 0) {
-                    container.innerHTML = '<div class="card"><p style="text-align: center;">No announcements yet.</p></div>';
+                    container.innerHTML = '<div class="card"><p style="text-align: center; color: #94a3b8;">No announcements yet.</p></div>';
                     return;
                 }
                 
                 displayAnnouncements(allAnnouncements);
             } catch (error) {
-                container.innerHTML = '<div class="card"><p style="text-align: center; color: #e74c3c;">❌ Failed to load announcements.</p></div>';
+                container.innerHTML = '<div class="card"><p style="text-align: center; color: #ef4444;">❌ Failed to load announcements</p></div>';
             }
         }
 
@@ -1278,16 +1335,25 @@
             };
             
             announcements.forEach(ann => {
+                const date = new Date(ann.timestamp).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
                 const div = document.createElement('div');
                 div.className = `announcement ${ann.type}`;
-                const date = new Date(ann.timestamp).toLocaleString();
                 div.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <h3>${icons[ann.type]} ${ann.title}</h3>
-                        <small style="opacity: 0.7;">${date}</small>
+                    <div class="announcement-header">
+                        <div class="announcement-title">${icons[ann.type]} ${ann.title}</div>
+                        <div class="announcement-date">${date}</div>
                     </div>
-                    <p style="line-height: 1.6;">${ann.message}</p>
-                    <small style="opacity: 0.7; margin-top: 0.5rem; display: block;">Posted by ${ann.author}</small>
+                    <div class="announcement-body">${ann.message}</div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                        <small style="color: #94a3b8;">Posted by ${ann.author}</small>
+                    </div>
                 `;
                 container.appendChild(div);
             });
@@ -1300,142 +1366,30 @@
                 displayAnnouncements(allAnnouncements);
             } else {
                 const filtered = allAnnouncements.filter(a => a.type === filter);
-                displayAnnouncements(filtered);
+                if (filtered.length === 0) {
+                    document.getElementById('announcements-container').innerHTML = '<div class="card"><p style="text-align: center; color: #94a3b8;">No announcements of this type.</p></div>';
+                } else {
+                    displayAnnouncements(filtered);
+                }
             }
         }
 
-        // Load region stats
-        async function loadRegionStats() {
-            try {
-                const response = await fetch(`${API_URL}/api/stats`);
-                if (!response.ok) throw new Error('API offline');
-                
-                const data = await response.json();
-                
-                document.getElementById('midwest-count').textContent = `${data.regions.Midwest} cities`;
-                document.getElementById('southeast-count').textContent = `${data.regions.Southeast} cities`;
-                document.getElementById('northeast-count').textContent = `${data.regions.Northeast} cities`;
-                document.getElementById('southwest-count').textContent = `${data.regions.Southwest} cities`;
-                document.getElementById('west-count').textContent = `${data.regions.West} cities`;
-            } catch (error) {
-                console.error('Failed to load region stats:', error);
-            }
-        }
-
-        // Discord login functions (placeholders)
-        function loginDiscord() {
-            alert('Discord OAuth integration coming soon! This will allow you to manage your server\'s weather settings.');
-        }
-
-        function verifyNexusAccess() {
-            alert('Discord OAuth role verification coming soon! This will check if you\'re a Nexus staff member or the bot owner.');
-        }
-
-        // Resize canvas on window resize
+        // Resize canvas
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
 
-        // Initialize on page load
+        // Initialize
         async function init() {
-            // Set seasonal effect for home page
             setWeatherEffect(null);
             animate();
-            
-            // Load initial data
             await loadCitiesData();
             await fetchStatus();
-            
-            // Update status every 30 seconds
             setInterval(fetchStatus, 30000);
         }
 
-        // Start everything
         init();
     </script>
 </body>
 </html>
-                            <strong>/weather</strong> - Get current weather for any city
-                        </li>
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
-                            <strong>/forecast</strong> - View 7-day forecast
-                        </li>
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
-                            <strong>/dashboard</strong> - Interactive weather dashboard with buttons
-                        </li>
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
-                            <strong>/announce</strong> - (Owner only) Send announcements
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <h2>📖 Quick Start Guide</h2>
-                    <ol style="text-align: left; line-height: 2;">
-                        <li>Click the "Add Bot to Discord" button above</li>
-                        <li>Select your server from the dropdown</li>
-                        <li>Authorize the bot with the requested permissions</li>
-                        <li>Use <code>/weather</code> to start checking the weather!</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABOUT PAGE -->
-        <div id="about" class="page">
-            <div class="container">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem; text-align: center;">🧭 About Midwest Weather</h1>
-                
-                <div class="card">
-                    <h2>The Project</h2>
-                    <p style="line-height: 1.8; font-size: 1.1rem;">
-                        Midwest Weather is a nationwide, Discord-linked weather intelligence system built entirely from the ground up over 3 months. 
-                        It covers all 50 U.S. states with 3,241+ cities and integrates directly with a custom website dashboard that mirrors 
-                        what the Discord bot provides.
-                    </p>
-                    <p style="line-height: 1.8; font-size: 1.1rem; margin-top: 1rem;">
-                        Unlike bloated or paywalled weather services, Midwest Weather is 100% free and transparent. The system runs on 
-                        real weather data and provides clear, accurate information for every supported city.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h2>Owner & Developer</h2>
-                    <p style="font-size: 1.2rem;"><strong>Jake Kade</strong></p>
-                    <p style="font-size: 1.1rem;">Kurrasch Gaming Merch Store LLC</p>
-                    <p style="margin-top: 1rem; opacity: 0.9;">Independent weather division under Midwest Weather Project</p>
-                </div>
-
-                <div class="grid">
-                    <div class="card">
-                        <h3>✅ Built 100% from scratch</h3>
-                        <p>Every line of code written specifically for this project</p>
-                    </div>
-                    <div class="card">
-                        <h3>🗺️ All 50 States</h3>
-                        <p>Organized by 5 major regions</p>
-                    </div>
-                    <div class="card">
-                        <h3>🏙️ 3,241+ Cities</h3>
-                        <p>Constantly expanding coverage</p>
-                    </div>
-                    <div class="card">
-                        <h3>🆓 100% Free</h3>
-                        <p>No subscriptions, ever</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2>Future Goals</h2>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
-                            ✨ Auto data validation system
-                        </li>
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
-                            📡 Public API expansion for developers
-                        </li>
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
-                            📱 Mobile-optimized UI improvements
-                        </li>
-                        <li style="padding: 1rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">
