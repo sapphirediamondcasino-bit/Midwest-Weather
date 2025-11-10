@@ -555,7 +555,7 @@
             <div class="hero">
                 <h1>Midwest Weather</h1>
                 <p class="hero-subtitle">Nationwide Weather Intelligence</p>
-                <p class="hero-description">3,241+ Cities • All 50 States • 100% Free • Built from Scratch</p>
+                <p class="hero-description">🇺🇸 3,241+ U.S. Cities • All 50 States • 🇨🇦 Canadian Coverage • 100% Free • Built from Scratch</p>
                 
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="navigate('weather')">📍 Check Weather</button>
@@ -567,11 +567,15 @@
                 <div class="stats-row">
                     <div class="stat-card">
                         <div class="stat-value" id="home-cities-count">--</div>
-                        <div class="stat-label">Cities Supported</div>
+                        <div class="stat-label">U.S. Cities Supported</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value">50</div>
                         <div class="stat-label">U.S. States</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-canada-cities-count">--</div>
+                        <div class="stat-label">Canadian Cities</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="home-servers-count">--</div>
@@ -595,7 +599,7 @@
                     <div class="card" style="text-align: center;">
                         <div style="font-size: 3rem;">🌤️</div>
                         <h3 style="margin: 1rem 0;">Real-Time Data</h3>
-                        <p style="color: #94a3b8;">Live weather for 3,241+ cities</p>
+                        <p style="color: #94a3b8;">Live weather for U.S. & Canada</p>
                     </div>
                     <div class="card" style="text-align: center;">
                         <div style="font-size: 3rem;">📊</div>
@@ -619,37 +623,77 @@
         <!-- WEATHER PAGE -->
         <div id="weather" class="page">
             <div class="container">
-                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 3rem;">🌤️ Weather Lookup</h1>
+                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 2rem;">🌤️ Weather Lookup</h1>
                 
-                <div class="card">
-                    <div class="grid grid-3">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
-                            <select id="region-select" onchange="loadStates()">
-                                <option value="">Select Region</option>
-                                <option value="Midwest">Midwest</option>
-                                <option value="Southeast">Southeast</option>
-                                <option value="Northeast">Northeast</option>
-                                <option value="Southwest">Southwest</option>
-                                <option value="West">West</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">State</label>
-                            <select id="state-select" onchange="loadCities()" disabled>
-                                <option value="">Select State</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</label>
-                            <select id="city-select" onchange="loadWeather()" disabled>
-                                <option value="">Select City</option>
-                            </select>
-                        </div>
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div class="btn-group">
+                        <button id="usa-tab" class="btn btn-primary" onclick="switchCountry('usa')">🇺🇸 United States</button>
+                        <button id="canada-tab" class="btn btn-secondary" onclick="switchCountry('canada')">🇨🇦 Canada</button>
                     </div>
                 </div>
 
-                <div id="weather-result"></div>
+                <!-- USA Weather Section -->
+                <div id="usa-weather" class="country-weather-section">
+                    <div class="card">
+                        <div class="grid grid-3">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
+                                <select id="region-select" onchange="loadStates()">
+                                    <option value="">Select Region</option>
+                                    <option value="Midwest">Midwest</option>
+                                    <option value="Southeast">Southeast</option>
+                                    <option value="Northeast">Northeast</option>
+                                    <option value="Southwest">Southwest</option>
+                                    <option value="West">West</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">State</label>
+                                <select id="state-select" onchange="loadCities()" disabled>
+                                    <option value="">Select State</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</label>
+                                <select id="city-select" onchange="loadWeather()" disabled>
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="weather-result"></div>
+                </div>
+
+                <!-- Canada Weather Section -->
+                <div id="canada-weather" class="country-weather-section" style="display: none;">
+                    <div class="card">
+                        <div class="grid grid-3">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
+                                <select id="canada-region-select" onchange="loadCanadaProvinces()">
+                                    <option value="">Select Region</option>
+                                    <option value="Western">Western Canada</option>
+                                    <option value="Central">Central Canada</option>
+                                    <option value="Atlantic">Atlantic Canada</option>
+                                    <option value="Northern">Northern Canada</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Province/Territory</label>
+                                <select id="canada-province-select" onchange="loadCanadaCities()" disabled>
+                                    <option value="">Select Province/Territory</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</label>
+                                <select id="canada-city-select" onchange="loadCanadaWeather()" disabled>
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="canada-weather-result"></div>
+                </div>
             </div>
         </div>
 
@@ -659,47 +703,28 @@
                 <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📋 Bot Commands</h1>
                 <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Complete command reference for Midwest Weather Bot v2.5</p>
 
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇺🇸 United States Commands</h2>
+
                 <div class="grid grid-2">
                     <div class="command-card">
                         <h3 style="margin-bottom: 1rem;"><code>/weather</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported city. Choose from multiple display styles.</p>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported U.S. city. Choose from multiple display styles.</p>
                         <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
                             <strong style="color: #94a3b8;">Options:</strong>
                             <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>city - Select any city (autocomplete)</li>
-                                <li>template - Compact, Card, Full, or Radar view</li>
+                                <li>city - Select any Canadian city (autocomplete)</li>
                             </ul>
                         </div>
                     </div>
 
                     <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/forecast</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for planning ahead.</p>
+                        <h3 style="margin-bottom: 1rem;"><code>/dashboard-ca</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for Canadian cities with refresh, radar, and alerts buttons.</p>
                         <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
                             <strong style="color: #94a3b8;">Options:</strong>
                             <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>city - Select any city (autocomplete)</li>
+                                <li>city - Select any Canadian city (autocomplete)</li>
                             </ul>
-                        </div>
-                    </div>
-
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/dashboard</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard with refresh, radar, and alerts buttons.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #94a3b8;">Options:</strong>
-                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>city - Select any city (autocomplete)</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/announce</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Send official announcements to Discord servers and website.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #ef4444;">Owner Only</strong>
-                            <p style="color: #94a3b8; margin-top: 0.5rem;">This command is restricted to the bot owner.</p>
                         </div>
                     </div>
                 </div>
@@ -745,6 +770,11 @@
                     </div>
                 </div>
 
+                <h2 style="font-size: 1.5rem; margin: 2rem 0 1rem 0;">Server List</h2>
+                <div id="server-list-container">
+                    <div class="spinner"></div>
+                </div>
+
                 <div class="service-status">
                     <div class="service-header">
                         <div class="service-name">🌐 API Server</div>
@@ -782,7 +812,7 @@
                 <div class="card" style="margin: 2rem 0;">
                     <h2 style="margin-bottom: 1rem;">Getting Started</h2>
                     <p style="color: #cbd5e1; line-height: 1.8;">
-                        Midwest Weather provides comprehensive weather data for all 50 U.S. states through both a Discord bot and this website. 
+                        Midwest Weather provides comprehensive weather data for all 50 U.S. states and Canadian provinces/territories through both a Discord bot and this website. 
                         No account required for website access - just select your location and get instant weather updates.
                     </p>
                 </div>
@@ -793,7 +823,7 @@
                         <li>Click the "Invite Bot" button in the navigation</li>
                         <li>Select your Discord server from the dropdown</li>
                         <li>Authorize the requested permissions</li>
-                        <li>Start using commands like <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather</code></li>
+                        <li>Start using commands like <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather</code> or <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather-ca</code></li>
                     </ol>
                 </div>
 
@@ -802,10 +832,21 @@
                     <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 1rem;">
                         The website provides anonymous weather lookup without needing a Discord account:
                     </p>
+                    <h3 style="margin: 1rem 0; color: #667eea;">🇺🇸 United States</h3>
                     <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
                         <li>Navigate to the Weather page</li>
+                        <li>Select the "United States" tab</li>
                         <li>Select your Region (Midwest, Southeast, Northeast, Southwest, or West)</li>
                         <li>Choose your State</li>
+                        <li>Pick your City</li>
+                        <li>View current conditions and 7-day forecast</li>
+                    </ol>
+                    <h3 style="margin: 1rem 0; color: #667eea;">🇨🇦 Canada</h3>
+                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                        <li>Navigate to the Weather page</li>
+                        <li>Select the "Canada" tab</li>
+                        <li>Select your Region (Western, Central, Atlantic, or Northern)</li>
+                        <li>Choose your Province/Territory</li>
                         <li>Pick your City</li>
                         <li>View current conditions and 7-day forecast</li>
                     </ol>
@@ -815,20 +856,22 @@
                     <h2 style="margin-bottom: 1rem;">Coverage</h2>
                     <div class="grid grid-2">
                         <div>
-                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">3,241+ Cities</h3>
-                            <p style="color: #cbd5e1;">Constantly expanding database covering major cities and towns across America.</p>
+                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">🇺🇸 United States</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>3,241+ cities covered</li>
+                                <li>All 50 states</li>
+                                <li>5 regional divisions</li>
+                                <li>Real-time NWS data</li>
+                            </ul>
                         </div>
                         <div>
-                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">All 50 States</h3>
-                            <p style="color: #cbd5e1;">Complete coverage from Alaska to Florida, California to Maine.</p>
-                        </div>
-                        <div>
-                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">5 Regions</h3>
-                            <p style="color: #cbd5e1;">Organized into Midwest, Southeast, Northeast, Southwest, and West regions.</p>
-                        </div>
-                        <div>
-                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">Real-Time Data</h3>
-                            <p style="color: #cbd5e1;">Weather information updated regularly from National Weather Service.</p>
+                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">🇨🇦 Canada</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>Major cities covered</li>
+                                <li>All provinces & territories</li>
+                                <li>4 regional divisions</li>
+                                <li>Real-time Environment Canada data</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -840,9 +883,9 @@
                     </p>
                     <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
                         <li>Real-time synchronization of weather data</li>
-                        <li>Live bot status monitoring</li>
+                        <li>Live bot status monitoring for both U.S. and Canadian servers</li>
                         <li>Instant announcement broadcasting</li>
-                        <li>Consistent experience across platforms</li>
+                        <li>Consistent experience across platforms and countries</li>
                     </ul>
                 </div>
 
@@ -887,7 +930,7 @@
                 <a onclick="navigate('privacy')">Privacy Policy</a>
                 <a onclick="navigate('copyright')">Copyright Notice</a>
             </div>
-            <p style="margin-top: 1.5rem; color: #64748b;">Bot v2.5 • 3,241+ Cities • All 50 States</p>
+            <p style="margin-top: 1.5rem; color: #64748b;">Bot v2.5 • 3,241+ U.S. Cities • Canadian Coverage • All 50 States</p>
         </footer>
     </div>
 
@@ -895,8 +938,10 @@
         const API_URL = 'http://localhost:3000';
         const NEXUS_SERVER_ID = '1430022675765395509';
         let allCities = [];
+        let allCanadaCities = [];
         let allAnnouncements = [];
         let currentWeatherCondition = null;
+        let currentCountry = 'usa';
 
         // Navigation
         function navigate(pageId) {
@@ -906,6 +951,23 @@
 
             if (pageId === 'status') loadStatus();
             if (pageId === 'announcements') loadAnnouncements();
+        }
+
+        // Country switcher
+        function switchCountry(country) {
+            currentCountry = country;
+            
+            if (country === 'usa') {
+                document.getElementById('usa-weather').style.display = 'block';
+                document.getElementById('canada-weather').style.display = 'none';
+                document.getElementById('usa-tab').className = 'btn btn-primary';
+                document.getElementById('canada-tab').className = 'btn btn-secondary';
+            } else {
+                document.getElementById('usa-weather').style.display = 'none';
+                document.getElementById('canada-weather').style.display = 'block';
+                document.getElementById('usa-tab').className = 'btn btn-secondary';
+                document.getElementById('canada-tab').className = 'btn btn-primary';
+            }
         }
 
         // Weather Canvas Effects
@@ -1103,7 +1165,7 @@
                     overall.innerHTML = '<div class="status-dot offline"></div><span>System Experiencing Issues</span>';
                 }
                 
-                // Bot status
+                // Bot status (U.S.)
                 const botBadge = document.getElementById('bot-status-badge');
                 if (data.status === 'online') {
                     botBadge.className = 'status-badge online';
@@ -1162,9 +1224,20 @@
                 document.getElementById('home-cities-count').textContent = '0';
                 console.error('Failed to load cities:', error);
             }
+
+            try {
+                const canadaResponse = await fetch(`${API_URL}/api/cities-canada`);
+                if (!canadaResponse.ok) throw new Error('API offline');
+                const canadaData = await canadaResponse.json();
+                allCanadaCities = canadaData.cities;
+                document.getElementById('home-canada-cities-count').textContent = allCanadaCities.length.toLocaleString();
+            } catch (error) {
+                document.getElementById('home-canada-cities-count').textContent = '0';
+                console.error('Failed to load Canada cities:', error);
+            }
         }
 
-        // Weather page functions
+        // USA Weather page functions
         function loadStates() {
             const region = document.getElementById('region-select').value;
             const stateSelect = document.getElementById('state-select');
@@ -1300,6 +1373,142 @@
             }
         }
 
+        // Canada Weather page functions
+        function loadCanadaProvinces() {
+            const region = document.getElementById('canada-region-select').value;
+            const provinceSelect = document.getElementById('canada-province-select');
+            const citySelect = document.getElementById('canada-city-select');
+            
+            provinceSelect.innerHTML = '<option value="">Select Province/Territory</option>';
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            citySelect.disabled = true;
+            document.getElementById('canada-weather-result').innerHTML = '';
+            
+            if (!region || allCanadaCities.length === 0) {
+                provinceSelect.disabled = true;
+                return;
+            }
+            
+            const provinces = [...new Set(allCanadaCities.filter(c => c.region === region).map(c => c.province))].sort();
+            provinces.forEach(province => {
+                const option = document.createElement('option');
+                option.value = province;
+                option.textContent = province;
+                provinceSelect.appendChild(option);
+            });
+            
+            provinceSelect.disabled = false;
+        }
+
+        function loadCanadaCities() {
+            const region = document.getElementById('canada-region-select').value;
+            const province = document.getElementById('canada-province-select').value;
+            const citySelect = document.getElementById('canada-city-select');
+            
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            document.getElementById('canada-weather-result').innerHTML = '';
+            
+            if (!province) {
+                citySelect.disabled = true;
+                return;
+            }
+            
+            const cities = allCanadaCities.filter(c => c.region === region && c.province === province).sort((a, b) => a.name.localeCompare(b.name));
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city.id;
+                option.textContent = `${city.name}${city.postal ? ' (' + city.postal + ')' : ''}`;
+                citySelect.appendChild(option);
+            });
+            
+            citySelect.disabled = false;
+        }
+
+        async function loadCanadaWeather() {
+            const cityId = document.getElementById('canada-city-select').value;
+            if (!cityId) return;
+            
+            const resultDiv = document.getElementById('canada-weather-result');
+            resultDiv.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/weather-canada/${cityId}`);
+                if (!response.ok) throw new Error('Failed to fetch weather');
+                
+                const data = await response.json();
+                const city = data.city;
+                const weather = data.weather;
+                
+                // Get weather icon
+                const condition = weather.condition.toLowerCase();
+                let icon = '☁️';
+                if (condition.includes('rain')) icon = '🌧️';
+                else if (condition.includes('snow')) icon = '❄️';
+                else if (condition.includes('clear') || condition.includes('sunny')) icon = '☀️';
+                else if (condition.includes('cloud')) icon = '☁️';
+                else if (condition.includes('storm') || condition.includes('thunder')) icon = '⛈️';
+                
+                // Build weather display
+                let html = `
+                    <div class="weather-hero">
+                        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${city.name}, ${city.province}</h2>
+                        <div class="weather-icon">${icon}</div>
+                        <div class="temperature">${weather.temp}°C</div>
+                        <p style="font-size: 1.5rem; color: #cbd5e1; margin-top: 1rem;">${weather.condition}</p>
+                    </div>
+                    
+                    <div class="weather-stats">
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">💧</div>
+                            <div class="weather-stat-value">${weather.humidity}%</div>
+                            <div class="weather-stat-label">Humidity</div>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">💨</div>
+                            <div class="weather-stat-value">${weather.wind}</div>
+                            <div class="weather-stat-label">Wind</div>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">🌡️</div>
+                            <div class="weather-stat-value">${weather.feels}°C</div>
+                            <div class="weather-stat-label">Feels Like</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <button class="btn btn-primary" onclick="loadCanadaWeather()">🔄 Refresh Weather</button>
+                    </div>
+                `;
+                
+                // Add forecast
+                if (weather.forecast && weather.forecast.length > 0) {
+                    html += '<div class="card" style="margin-top: 2rem;"><h2 style="margin-bottom: 1.5rem;">7-Day Forecast</h2><div class="grid grid-4">';
+                    weather.forecast.forEach(day => {
+                        html += `
+                            <div class="card" style="text-align: center;">
+                                <h3 style="margin-bottom: 0.5rem;">${day.period}</h3>
+                                <p style="font-size: 2rem; font-weight: 700; margin: 1rem 0;">${day.temp}°</p>
+                                <p style="color: #94a3b8;">${day.desc}</p>
+                            </div>
+                        `;
+                    });
+                    html += '</div></div>';
+                }
+                
+                resultDiv.innerHTML = html;
+                
+                // Update weather effect
+                setWeatherEffect(weather.condition);
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="card" style="text-align: center; margin-top: 2rem;">
+                        <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
+                        <p style="color: #94a3b8; margin-top: 1rem;">Please try again or check the status page</p>
+                    </div>
+                `;
+            }
+        }
+
         // Load announcements
         async function loadAnnouncements() {
             const container = document.getElementById('announcements-container');
@@ -1392,4 +1601,63 @@
         init();
     </script>
 </body>
-</html>
+</html>rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any U.S. city (autocomplete)</li>
+                                <li>template - Compact, Card, Full, or Radar view</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/forecast</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for U.S. cities for planning ahead.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any U.S. city (autocomplete)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/dashboard</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for U.S. cities with refresh, radar, and alerts buttons.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any U.S. city (autocomplete)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/announce</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Send official announcements to Discord servers and website.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #ef4444;">Owner Only</strong>
+                            <p style="color: #94a3b8; margin-top: 0.5rem;">This command is restricted to the bot owner.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇨🇦 Canadian Commands</h2>
+
+                <div class="grid grid-2">
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/weather-ca</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported Canadian city. Choose from multiple display styles.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any Canadian city (autocomplete)</li>
+                                <li>template - Compact, Card, Full, or Radar view</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/forecast-ca</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for Canadian cities for planning ahead.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5
