@@ -6,72 +6,539 @@
     <title>Midwest Weather - Nationwide Weather Intelligence</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0a0e27; color: #e4e4e7; overflow-x: hidden; }
-        #weather-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0.6; }
-        .content { position: relative; z-index: 2; }
-        nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(148, 163, 184, 0.1); padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
-        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        nav ul { list-style: none; display: flex; gap: 0.5rem; }
-        nav a { color: #94a3b8; text-decoration: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 500; font-size: 0.95rem; transition: all 0.2s; cursor: pointer; }
-        nav a:hover { color: #e4e4e7; background: rgba(148, 163, 184, 0.1); }
-        .page { display: none; }
-        .page.active { display: block; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 3rem 2rem; }
-        .hero { text-align: center; padding: 5rem 2rem 3rem; }
-        .hero h1 { font-size: 4rem; font-weight: 800; margin-bottom: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero-subtitle { font-size: 1.3rem; color: #94a3b8; margin-bottom: 0.5rem; }
-        .hero-description { font-size: 1rem; color: #64748b; margin-bottom: 2.5rem; }
-        .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-        .btn { padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block; }
-        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4); }
-        .btn-secondary { background: rgba(148, 163, 184, 0.1); color: #e4e4e7; border: 1px solid rgba(148, 163, 184, 0.2); }
-        .btn-secondary:hover { background: rgba(148, 163, 184, 0.2); transform: translateY(-2px); }
-        .card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 16px; padding: 2rem; backdrop-filter: blur(20px); }
-        .grid { display: grid; gap: 1.5rem; }
-        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-        .status-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; }
-        .status-badge.online { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
-        .status-badge.offline { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; }
-        .status-dot.online { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
-        .status-dot.offline { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
-        .stat-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 12px; padding: 1.5rem; text-align: center; }
-        .stat-value { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .stat-label { color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem; }
-        select { width: 100%; padding: 1rem; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 12px; color: #e4e4e7; font-size: 1rem; font-family: 'Inter', sans-serif; cursor: pointer; margin: 0.5rem 0; }
-        select:focus { outline: none; border-color: #667eea; }
-        select option { background: #0f172a; color: #e4e4e7; }
-        .weather-hero { text-align: center; padding: 3rem 2rem; background: rgba(15, 23, 42, 0.4); border-radius: 20px; margin: 2rem 0; }
-        .weather-icon { font-size: 6rem; margin: 1rem 0; }
-        .temperature { font-size: 5rem; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .weather-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 2rem 0; }
-        .weather-stat { background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.1); }
-        .weather-stat-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-        .weather-stat-value { font-size: 1.5rem; font-weight: 700; color: #e4e4e7; }
-        .weather-stat-label { font-size: 0.9rem; color: #94a3b8; margin-top: 0.25rem; }
-        .command-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
-        .command-card code { background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px; font-family: 'Courier New', monospace; font-weight: 600; }
-        .spinner { border: 3px solid rgba(148, 163, 184, 0.2); border-top: 3px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 3rem auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        footer { background: rgba(15, 23, 42, 0.8); border-top: 1px solid rgba(148, 163, 184, 0.1); padding: 3rem 2rem; margin-top: 4rem; text-align: center; }
-        footer a { color: #94a3b8; text-decoration: none; margin: 0 1rem; transition: color 0.2s; }
-        footer a:hover { color: #e4e4e7; }
-        @media (max-width: 768px) { .hero h1 { font-size: 2.5rem; } nav ul { display: none; } .temperature { font-size: 3rem; } }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e27;
+            color: #e4e4e7;
+            overflow-x: hidden;
+        }
+
+        /* Weather Canvas */
+        #weather-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            color: #e4e4e7;
+            background: rgba(148, 163, 184, 0.1);
+        }
+
+        /* Hide pages */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(148, 163, 184, 0.1);
+            color: #e4e4e7;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(148, 163, 184, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        /* Status Indicators */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-badge.online {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .status-badge.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+
+        .status-dot.offline {
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Select Inputs */
+        select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            color: #e4e4e7;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            margin: 0.5rem 0;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        select option {
+            background: #0f172a;
+            color: #e4e4e7;
+        }
+
+        /* Weather Display */
+        .weather-hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 20px;
+            margin: 2rem 0;
+        }
+
+        .weather-icon {
+            font-size: 6rem;
+            margin: 1rem 0;
+        }
+
+        .temperature {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .weather-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .weather-stat {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .weather-stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .weather-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e4e4e7;
+        }
+
+        .weather-stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        /* Command Card */
+        .command-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .command-card code {
+            background: rgba(102, 126, 234, 0.1);
+            color: #818cf8;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        /* Status Page Styling */
+        .status-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .status-overall {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .service-status {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .service-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .service-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .service-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-detail-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.25rem;
+        }
+
+        .service-detail-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e4e4e7;
+        }
+
+        /* Announcements */
+        .announcement {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 4px solid;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .announcement.general { border-color: #3b82f6; }
+        .announcement.alert { border-color: #ef4444; }
+        .announcement.maintenance { border-color: #f59e0b; }
+        .announcement.update { border-color: #22c55e; }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .announcement-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .announcement-date {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .announcement-body {
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.8);
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        footer a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: #e4e4e7;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(148, 163, 184, 0.2);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 3rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .temperature {
+                font-size: 3rem;
+            }
+        }
     </style>
 </head>
 <body>
     <canvas id="weather-canvas"></canvas>
+    
     <div class="content">
+        <!-- Navigation -->
         <nav>
             <div class="nav-container">
-                <div class="logo" onclick="navigate('home')">🌪️ Midwest Weather</div>
+                <div class="logo" onclick="navigate('home')">
+                    🌪️ Midwest Weather
+                </div>
                 <ul>
                     <li><a onclick="navigate('home')">Home</a></li>
                     <li><a onclick="navigate('weather')">Weather</a></li>
@@ -84,129 +551,1168 @@
             </div>
         </nav>
 
+        <!-- HOME PAGE -->
         <div id="home" class="page active">
             <div class="hero">
                 <h1>Midwest Weather</h1>
                 <p class="hero-subtitle">Nationwide Weather Intelligence</p>
                 <p class="hero-description">🇺🇸 3,241+ U.S. Cities • All 50 States • 🇨🇦 Canadian Coverage • 100% Free • Built from Scratch</p>
+                
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="navigate('weather')">📍 Check Weather</button>
                     <a href="https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=8&integration_type=0&scope=bot" class="btn btn-secondary" target="_blank">🤖 Invite Bot</a>
                 </div>
             </div>
+
             <div class="container">
                 <div class="stats-row">
-                    <div class="stat-card"><div class="stat-value" id="home-cities-count">--</div><div class="stat-label">U.S. Cities Supported</div></div>
-                    <div class="stat-card"><div class="stat-value">50</div><div class="stat-label">U.S. States</div></div>
-                    <div class="stat-card"><div class="stat-value" id="home-canada-cities-count">--</div><div class="stat-label">Canadian Municipalities</div></div>
-                    <div class="stat-card"><div class="stat-value" id="home-servers-count">--</div><div class="stat-label">Discord Servers</div></div>
-                    <div class="stat-card"><div class="stat-value" id="home-users-count">--</div><div class="stat-label">Total Users</div></div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-cities-count">--</div>
+                        <div class="stat-label">U.S. Cities Supported</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">50</div>
+                        <div class="stat-label">U.S. States</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-canada-cities-count">--</div>
+                        <div class="stat-label">Canadian Municipalities</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-servers-count">--</div>
+                        <div class="stat-label">Discord Servers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-users-count">--</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
                 </div>
+
                 <div class="card" style="text-align: center; margin: 3rem 0;">
                     <h2 style="margin-bottom: 1.5rem;">🔴 System Status</h2>
-                    <div id="home-status-badge" class="status-badge online"><div class="status-dot online"></div><span>Checking...</span></div>
+                    <div id="home-status-badge" class="status-badge online">
+                        <div class="status-dot online"></div>
+                        <span>Checking...</span>
+                    </div>
                 </div>
+
                 <div class="grid grid-4" style="margin-top: 3rem;">
-                    <div class="card" style="text-align: center;"><div style="font-size: 3rem;">🌤️</div><h3 style="margin: 1rem 0;">Real-Time Data</h3><p style="color: #94a3b8;">Live weather for U.S. & Canada</p></div>
-                    <div class="card" style="text-align: center;"><div style="font-size: 3rem;">📊</div><h3 style="margin: 1rem 0;">7-Day Forecast</h3><p style="color: #94a3b8;">Plan ahead with predictions</p></div>
-                    <div class="card" style="text-align: center;"><div style="font-size: 3rem;">🤖</div><h3 style="margin: 1rem 0;">Discord Bot</h3><p style="color: #94a3b8;">Commands in your server</p></div>
-                    <div class="card" style="text-align: center;"><div style="font-size: 3rem;">🆓</div><h3 style="margin: 1rem 0;">100% Free</h3><p style="color: #94a3b8;">No subscriptions, ever</p></div>
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 3rem;">🌤️</div>
+                        <h3 style="margin: 1rem 0;">Real-Time Data</h3>
+                        <p style="color: #94a3b8;">Live weather for U.S. & Canada</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 3rem;">📊</div>
+                        <h3 style="margin: 1rem 0;">7-Day Forecast</h3>
+                        <p style="color: #94a3b8;">Plan ahead with predictions</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 3rem;">🤖</div>
+                        <h3 style="margin: 1rem 0;">Discord Bot</h3>
+                        <p style="color: #94a3b8;">Commands in your server</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 3rem;">🆓</div>
+                        <h3 style="margin: 1rem 0;">100% Free</h3>
+                        <p style="color: #94a3b8;">No subscriptions, ever</p>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- WEATHER PAGE -->
         <div id="weather" class="page">
             <div class="container">
                 <h1 style="font-size: 3rem; text-align: center; margin-bottom: 2rem;">🌤️ Weather Lookup</h1>
+                
                 <div style="text-align: center; margin-bottom: 2rem;">
                     <div class="btn-group">
                         <button id="usa-tab" class="btn btn-primary" onclick="switchCountry('usa')">🇺🇸 United States</button>
                         <button id="canada-tab" class="btn btn-secondary" onclick="switchCountry('canada')">🇨🇦 Canada</button>
                     </div>
                 </div>
-                <div id="usa-weather">
+
+                <!-- USA Weather Section -->
+                <div id="usa-weather" class="country-weather-section">
                     <div class="card">
                         <div class="grid grid-3">
-                            <div><label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label><select id="region-select" onchange="loadStates()"><option value="">Select Region</option><option value="Midwest">Midwest</option><option value="Southeast">Southeast</option><option value="Northeast">Northeast</option><option value="Southwest">Southwest</option><option value="West">West</option></select></div>
-                            <div><label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">State</label><select id="state-select" onchange="loadCities()" disabled><option value="">Select State</option></select></div>
-                            <div><label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</label><select id="city-select" onchange="loadWeather()" disabled><option value="">Select City</option></select></div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
+                                <select id="region-select" onchange="loadStates()">
+                                    <option value="">Select Region</option>
+                                    <option value="Midwest">Midwest</option>
+                                    <option value="Southeast">Southeast</option>
+                                    <option value="Northeast">Northeast</option>
+                                    <option value="Southwest">Southwest</option>
+                                    <option value="West">West</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">State</label>
+                                <select id="state-select" onchange="loadCities()" disabled>
+                                    <option value="">Select State</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</label>
+                                <select id="city-select" onchange="loadWeather()" disabled>
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div id="weather-result"></div>
                 </div>
-                <div id="canada-weather" style="display: none;">
+
+                <!-- Canada Weather Section -->
+                <div id="canada-weather" class="country-weather-section" style="display: none;">
                     <div class="card">
                         <div class="grid grid-3">
-                            <div><label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label><select id="canada-region-select" onchange="loadCanadaProvinces()"><option value="">Select Region</option><option value="Western">Western Canada</option><option value="Central">Central Canada</option><option value="Atlantic">Atlantic Canada</option><option value="Northern">Northern Canada</option></select></div>
-                            <div><label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Province/Territory</label><select id="canada-province-select" onchange="loadCanadaCities()" disabled><option value="">Select Province/Territory</option></select></div>
-                            <div><label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Municipality</label><select id="canada-city-select" onchange="loadCanadaWeather()" disabled><option value="">Select Municipality</option></select></div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
+                                <select id="canada-region-select" onchange="loadCanadaProvinces()">
+                                    <option value="">Select Region</option>
+                                    <option value="Western">Western Canada</option>
+                                    <option value="Central">Central Canada</option>
+                                    <option value="Atlantic">Atlantic Canada</option>
+                                    <option value="Northern">Northern Canada</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Province/Territory</label>
+                                <select id="canada-province-select" onchange="loadCanadaCities()" disabled>
+                                    <option value="">Select Province/Territory</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Municipality</label>
+                                <select id="canada-city-select" onchange="loadCanadaWeather()" disabled>
+                                    <option value="">Select Municipality</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div id="canada-weather-result"></div>
                 </div>
             </div>
         </div>
-
+        <!-- COMMANDS PAGE -->
         <div id="commands" class="page">
             <div class="container">
                 <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📋 Bot Commands</h1>
                 <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Complete command reference for Midwest Weather Bot v2.5</p>
+
                 <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇺🇸 United States Commands</h2>
+
                 <div class="grid grid-2">
-                    <div class="command-card"><h3 style="margin-bottom: 1rem;"><code>/weather</code></h3><p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported U.S. city.</p></div>
-                    <div class="command-card"><h3 style="margin-bottom: 1rem;"><code>/forecast</code></h3><p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for U.S. cities.</p></div>
-                    <div class="command-card"><h3 style="margin-bottom: 1rem;"><code>/dashboard</code></h3><p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for U.S. cities.</p></div>
-                    <div class="command-card"><h3 style="margin-bottom: 1rem;"><code>/announce</code></h3><p style="color: #cbd5e1; line-height: 1.6;">Send official announcements to Discord servers and website.</p><div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);"><strong style="color: #ef4444;">Owner Only</strong></div></div>
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/weather</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported U.S. city. Choose from multiple display styles.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any U.S. city (autocomplete)</li>
+                                <li>template - Compact, Card, Full, or Radar view</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/forecast</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for U.S. cities for planning ahead.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any U.S. city (autocomplete)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/dashboard</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for U.S. cities with refresh, radar, and alerts buttons.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any U.S. city (autocomplete)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/announce</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Send official announcements to Discord servers and website.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #ef4444;">Owner Only</strong>
+                            <p style="color: #94a3b8; margin-top: 0.5rem;">This command is restricted to the bot owner.</p>
+                        </div>
+                    </div>
                 </div>
+
                 <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇨🇦 Canadian Commands</h2>
+
                 <div class="grid grid-2">
-                    <div class="command-card"><h3 style="margin-bottom: 1rem;"><code>/weather-ca</code></h3><p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported Canadian municipality.</p></div>
-                    <div class="command-card"><h3 style="margin-bottom: 1rem;"><code>/forecast-ca</code></h3><p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for Canadian municipalities.</p></div>
-                    <div class="command-card"><h3 style="margin-bottom: 1rem;"><code>/dashboard-ca</code></h3><p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for Canadian municipalities.</p></div>
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/weather-ca</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported Canadian municipality. Choose from multiple display styles.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>municipality - Select any Canadian municipality (autocomplete)</li>
+                                <li>template - Compact, Card, Full, or Radar view</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/forecast-ca</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for Canadian municipalities for planning ahead.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>municipality - Select any Canadian municipality (autocomplete)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/dashboard-ca</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for Canadian municipalities with refresh, radar, and alerts buttons.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>municipality - Select any Canadian municipality (autocomplete)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="status" class="page"><div class="container"><h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">System Status</h1><div id="status-overall" class="status-badge online" style="margin: 2rem auto; display: inline-flex;"><div class="status-dot online"></div><span>Checking...</span></div><div id="server-list-container"><div class="spinner"></div></div></div></div>
+        <!-- STATUS PAGE -->
+        <div id="status" class="page">
+            <div class="container">
+                <div class="status-header">
+                    <h1 style="font-size: 3rem; margin-bottom: 1rem;">System Status</h1>
+                    <div id="status-overall" class="status-overall">
+                        <div class="status-dot online"></div>
+                        <span>Checking System Status...</span>
+                    </div>
+                </div>
 
-        <div id="docs" class="page"><div class="container"><h1 style="font-size: 3rem; text-align: center; margin-bottom: 3rem;">📖 Documentation</h1><div class="card"><h2>Getting Started</h2><p style="color: #cbd5e1; margin-top: 1rem;">Midwest Weather provides comprehensive weather data for all 50 U.S. states and Canadian provinces/territories.</p></div></div></div>
+                <div class="service-status">
+                    <div class="service-header">
+                        <div class="service-name">🤖 Discord Bot v2.5</div>
+                        <div id="bot-status-badge" class="status-badge offline">
+                            <div class="status-dot offline"></div>
+                            <span>Checking...</span>
+                        </div>
+                    </div>
+                    <div class="service-details">
+                        <div class="service-detail">
+                            <span class="service-detail-label">Uptime</span>
+                            <span class="service-detail-value" id="bot-uptime">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Connected Servers</span>
+                            <span class="service-detail-value" id="bot-servers">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Total Users</span>
+                            <span class="service-detail-value" id="bot-users">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Version</span>
+                            <span class="service-detail-value">v2.5</span>
+                        </div>
+                    </div>
+                </div>
 
-        <div id="announcements" class="page"><div class="container"><h1 style="font-size: 3rem; text-align: center; margin-bottom: 3rem;">💬 Announcements</h1><div id="announcements-container"><div class="spinner"></div></div></div></div>
+                <h2 style="font-size: 1.5rem; margin: 2rem 0 1rem 0;">Server List</h2>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Auto-refreshes every 30 seconds</p>
+                <div id="server-list-container">
+                    <div class="spinner"></div>
+                </div>
 
+                <div class="service-status">
+                    <div class="service-header">
+                        <div class="service-name">🌐 API Server</div>
+                        <div id="api-status-badge" class="status-badge offline">
+                            <div class="status-dot offline"></div>
+                            <span>Checking...</span>
+                        </div>
+                    </div>
+                    <div class="service-details">
+                        <div class="service-detail">
+                            <span class="service-detail-label">Response Time</span>
+                            <span class="service-detail-value" id="api-response">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Database</span>
+                            <span class="service-detail-value" id="api-database">--</span>
+                        </div>
+                        <div class="service-detail">
+                            <span class="service-detail-label">Last Updated</span>
+                            <span class="service-detail-value" id="api-last-update">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOCUMENTATION PAGE -->
+        <div id="docs" class="page">
+            <div class="container">
+                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📖 Documentation</h1>
+                <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Everything you need to know about Midwest Weather</p>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Getting Started</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        Midwest Weather provides comprehensive weather data for all 50 U.S. states and Canadian provinces/territories through both a Discord bot and this website. 
+                        No account required for website access - just select your location and get instant weather updates.
+                    </p>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Adding the Bot to Discord</h2>
+                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                        <li>Click the "Invite Bot" button in the navigation</li>
+                        <li>Select your Discord server from the dropdown</li>
+                        <li>Authorize the requested permissions</li>
+                        <li>Start using commands like <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather</code> or <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather-ca</code></li>
+                    </ol>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Using the Website</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 1rem;">
+                        The website provides anonymous weather lookup without needing a Discord account:
+                    </p>
+                    <h3 style="margin: 1rem 0; color: #667eea;">🇺🇸 United States</h3>
+                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                        <li>Navigate to the Weather page</li>
+                        <li>Select the "United States" tab</li>
+                        <li>Select your Region (Midwest, Southeast, Northeast, Southwest, or West)</li>
+                        <li>Choose your State</li>
+                        <li>Pick your City</li>
+                        <li>View current conditions and 7-day forecast</li>
+                    </ol>
+                    <h3 style="margin: 1rem 0; color: #667eea;">🇨🇦 Canada</h3>
+                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                        <li>Navigate to the Weather page</li>
+                        <li>Select the "Canada" tab</li>
+                        <li>Select your Region (Western, Central, Atlantic, or Northern)</li>
+                        <li>Choose your Province/Territory</li>
+                        <li>Pick your Municipality</li>
+                        <li>View current conditions and 7-day forecast</li>
+                    </ol>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">Coverage</h2>
+                    <div class="grid grid-2">
+                        <div>
+                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">🇺🇸 United States</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>3,241+ cities covered</li>
+                                <li>All 50 states</li>
+                                <li>5 regional divisions</li>
+                                <li>Real-time NWS data</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">🇨🇦 Canada</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>Major municipalities covered</li>
+                                <li>All provinces & territories</li>
+                                <li>4 regional divisions</li>
+                                <li>Real-time Environment Canada data</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">API Integration</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        The website and Discord bot are tightly integrated through a custom API. This ensures:
+                    </p>
+                    <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
+                        <li>Real-time synchronization of weather data</li>
+                        <li>Live bot status monitoring for both U.S. and Canadian servers</li>
+                        <li>Instant announcement broadcasting</li>
+                        <li>Consistent experience across platforms and countries</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                   <h2 style="margin-bottom: 1rem;">Support</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        For questions, issues, or feedback, visit our Discord server or check the Status page for system health information.
+                    </p>
+                </div>
+
+                <div class="card" style="margin: 2rem 0;">
+                    <h2 style="margin-bottom: 1rem;">🎙️ Podcast Integration (Coming Soon)</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        Midwest Weather Bot is expanding to support podcast creators! This feature is currently in development.
+                    </p>
+                    <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
+                        <li>Request real-time weather updates during live recordings</li>
+                        <li>Get detailed forecast information for show planning</li>
+                        <li>Access weather data for multiple locations simultaneously</li>
+                    </ul>
+                    <p style="color: #f59e0b; margin-top: 1rem; font-weight: 600;">⚠️ This sector is currently closed for development. We'll announce when podcast features go live!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANNOUNCEMENTS PAGE -->
+        <div id="announcements" class="page">
+            <div class="container">
+                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💬 Announcements</h1>
+                <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Latest updates and system notifications</p>
+
+                <div class="card">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Filter by Type</label>
+                    <select id="announcement-filter" onchange="filterAnnouncements()">
+                        <option value="all">All Announcements</option>
+                        <option value="general">📢 General</option>
+                        <option value="alert">⚠️ Alerts</option>
+                        <option value="maintenance">🔧 Maintenance</option>
+                        <option value="update">✨ Updates</option>
+                    </select>
+                </div>
+
+                <div id="announcements-container">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
         <footer>
             <p style="font-weight: 600; margin-bottom: 1rem;">© 2025 Midwest Weather | Kurrasch Gaming Merch Store LLC</p>
-            <p style="color: #94a3b8;">Built from scratch • Governed under Minnesota Law • All Rights Reserved</p>
+            <p style="color: #94a3b8; margin-bottom: 1.5rem;">Built from scratch • Governed under Minnesota Law • All Rights Reserved</p>
+            <div>
+                <a onclick="navigate('terms')">Terms of Service</a>
+                <a onclick="navigate('privacy')">Privacy Policy</a>
+                <a onclick="navigate('copyright')">Copyright Notice</a>
+            </div>
             <p style="margin-top: 1.5rem; color: #64748b;">Bot v2.5 • 3,241+ U.S. Cities • Canadian Coverage • All 50 States</p>
         </footer>
     </div>
 
     <script>
         const API_URL = 'http://localhost:3000';
-        let allCities = [], allCanadaCities = [], allAnnouncements = [];
+        const NEXUS_SERVER_ID = '1430022675765395509';
+        let allCities = [];
+        let allCanadaCities = [];
+        let allAnnouncements = [];
+        let currentWeatherCondition = null;
+        let currentCountry = 'usa';
 
-        function navigate(p) { document.querySelectorAll('.page').forEach(x => x.classList.remove('active')); document.getElementById(p).classList.add('active'); window.scrollTo(0, 0); if(p==='status')loadStatus(); if(p==='announcements')loadAnnouncements(); }
-        function switchCountry(c) { document.getElementById('usa-weather').style.display = c==='usa'?'block':'none'; document.getElementById('canada-weather').style.display = c==='canada'?'block':'none'; document.getElementById('usa-tab').className = c==='usa'?'btn btn-primary':'btn btn-secondary'; document.getElementById('canada-tab').className = c==='canada'?'btn btn-primary':'btn btn-secondary'; }
+        // Navigation
+        function navigate(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
 
-        const canvas = document.getElementById('weather-canvas'), ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            if (pageId === 'status') loadStatus();
+            if (pageId === 'announcements') loadAnnouncements();
+        }
+
+        // Country switcher
+        function switchCountry(country) {
+            currentCountry = country;
+            
+            if (country === 'usa') {
+                document.getElementById('usa-weather').style.display = 'block';
+                document.getElementById('canada-weather').style.display = 'none';
+                document.getElementById('usa-tab').className = 'btn btn-primary';
+                document.getElementById('canada-tab').className = 'btn btn-secondary';
+            } else {
+                document.getElementById('usa-weather').style.display = 'none';
+                document.getElementById('canada-weather').style.display = 'block';
+                document.getElementById('usa-tab').className = 'btn btn-secondary';
+                document.getElementById('canada-tab').className = 'btn btn-primary';
+            }
+        }
+
+        // Weather Canvas Effects
+        const canvas = document.getElementById('weather-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
         let particles = [];
-        class Particle { constructor(t) { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height-canvas.height; this.type=t; this.speed=Math.random()*3+2; } update() { this.y+=this.speed; if(this.y>canvas.height) this.y=-20; } draw() { ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.beginPath(); ctx.arc(this.x,this.y,2,0,Math.PI*2); ctx.fill(); } }
-        function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
-        for(let i=0;i<50;i++) particles.push(new Particle());
-        animate();
+        let weatherEffect = getSeason();
 
-        async function fetchStatus() { try { const r = await fetch(`${API_URL}/api/status`); const d = await r.json(); document.getElementById('home-servers-count').textContent=d.servers||'0'; document.getElementById('home-users-count').textContent=d.users||'0'; } catch(e) { document.getElementById('home-servers-count').textContent='0'; document.getElementById('home-users-count').textContent='0'; } }
-        async function loadStatus() { document.getElementById('server-list-container').innerHTML='<div class="card"><p style="text-align:center;color:#94a3b8;">Loading server list...</p></div>'; }
-        async function loadAnnouncements() { document.getElementById('announcements-container').innerHTML='<div class="card"><p style="text-align:center;color:#94a3b8;">Loading announcements...</p></div>'; }
-        async function loadCitiesData() { try { const r=await fetch(`${API_URL}/api/cities`); const d=await r.json(); allCities=d.cities; document.getElementById('home-cities-count').textContent=allCities.length.toLocaleString(); } catch(e) { document.getElementById('home-cities-count').textContent='0'; } try { const r=await fetch(`${API_URL}/api/cities-canada`); const d=await r.json(); allCanadaCities=d.cities; document.getElementById('home-canada-cities-count').textContent=allCanadaCities.length.toLocaleString(); } catch(e) { document.getElementById('home-canada-cities-count').textContent='0'; } }
-        function loadStates() { const r=document.getElementById('region-select').value; const s=document.getElementById('state-select'); s.innerHTML='<option value="">Select State</option>'; if(!r||!allCities.length) { s.disabled=true; return; } [...new Set(allCities.filter(c=>c.region===r).map(c=>c.state))].sort().forEach(st=>{const o=document.createElement('option');o.value=st;o.textContent=st;s.appendChild(o);}); s.disabled=false; }
-        function loadCities() { const r=document.getElementById('region-select').value; const s=document.getElementById('state-select').value; const c=document.getElementById('city-select'); c.innerHTML='<option value="">Select City</option>'; if(!s) { c.disabled=true; return; } allCities.filter(x=>x.region===r&&x.state===s).sort((a,b)=>a.name.localeCompare(b.name)).forEach(ct=>{const o=document.createElement('option');o.value=ct.id;o.textContent=`${ct.name} (${ct.zip})`;c.appendChild(o);}); c.disabled=false; }
-        async function loadWeather() { document.getElementById('weather-result').innerHTML='<div class="spinner"></div>'; }
-        function loadCanadaProvinces() { const r=document.getElementById('canada-region-select').value; const p=document.getElementById('canada-province-select'); p.innerHTML='<option value="">Select Province/Territory</option>'; if(!r||!allCanadaCities.length) { p.disabled=true; return; } [...new Set(allCanadaCities.filter(c=>c.region===r).map(c=>c.province))].sort().forEach(pr=>{const o=document.createElement('option');o.value=pr;o.textContent=pr;p.appendChild(o);}); p.disabled=false; }
-        function loadCanadaCities() { const r=document.getElementById('canada-region-select').value; const p=document.getElementById('canada-province-select').value; const c=document.getElementById('canada-city-select'); c.innerHTML='<option value="">Select Municipality</option>'; if(!p) { c.disabled=true; return; } allCanadaCities.filter(x=>x.region===r&&x.province===p).sort((a,b)=>a.name.localeCompare(b.name)).forEach(ct=>{const o=document.createElement('option');o.value=ct.id;o.textContent=`${ct.name}${ct.postal?' ('+ct.postal+')':''}`;c.appendChild(o);}); c.disabled=false; }
-        async function loadCanadaWeather() { document.getElementById('canada-weather-result').innerHTML='<div class="spinner"></div>'; }
+        function getSeason() {
+            const month = new Date().getMonth();
+            if (month >= 2 && month <= 4) return 'spring';
+            if (month >= 5 && month <= 7) return 'summer';
+            if (month >= 8 && month <= 10) return 'fall';
+            return 'winter';
+        }
 
-        loadCitiesData(); fetchStatus(); setInterval(fetchStatus, 30000);
+        class Particle {
+            constructor(type) {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.type = type;
+                
+                if (type === 'rain') {
+                    this.speed = Math.random() * 5 + 5;
+                    this.length = Math.random() * 20 + 10;
+                    this.opacity = Math.random() * 0.5 + 0.5;
+                } else if (type === 'snow') {
+                    this.speed = Math.random() * 2 + 1;
+                    this.radius = Math.random() * 3 + 2;
+                    this.drift = Math.random() * 2 - 1;
+                } else if (type === 'leaf') {
+                    this.speed = Math.random() * 3 + 2;
+                    this.size = Math.random() * 10 + 5;
+                    this.drift = Math.random() * 3 - 1.5;
+                    this.rotation = Math.random() * 360;
+                    this.rotationSpeed = Math.random() * 5 - 2.5;
+                } else if (type === 'petal') {
+                    this.speed = Math.random() * 2 + 1;
+                    this.size = Math.random() * 8 + 4;
+                    this.drift = Math.random() * 2 - 1;
+                    this.rotation = Math.random() * 360;
+                    this.rotationSpeed = Math.random() * 3;
+                }
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.type !== 'rain') this.x += this.drift;
+                if (this.type === 'leaf' || this.type === 'petal') this.rotation += this.rotationSpeed;
+                if (this.y > canvas.height) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                if (this.type === 'rain') {
+                    ctx.strokeStyle = `rgba(174, 194, 224, ${this.opacity})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x, this.y + this.length);
+                    ctx.stroke();
+                } else if (this.type === 'snow') {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (this.type === 'leaf') {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation * Math.PI / 180);
+                    ctx.fillStyle = 'rgba(255, 183, 77, 0.7)';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                } else if (this.type === 'petal') {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation * Math.PI / 180);
+                    ctx.fillStyle = 'rgba(255, 182, 193, 0.7)';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+        }
+
+        function initParticles(type, count) {
+            particles = [];
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle(type));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        function setWeatherEffect(condition) {
+            let effect = 'rain';
+            let count = 100;
+
+            if (condition) {
+                const cond = condition.toLowerCase();
+                if (cond.includes('snow') || cond.includes('flurr')) {
+                    effect = 'snow';
+                    count = 100;
+                } else if (cond.includes('rain') || cond.includes('shower') || cond.includes('drizzle')) {
+                    effect = 'rain';
+                    count = 150;
+                } else {
+                    count = 0;
+                }
+            } else {
+                if (weatherEffect === 'winter') {
+                    effect = 'snow';
+                    count = 80;
+                } else if (weatherEffect === 'fall') {
+                    effect = 'leaf';
+                    count = 50;
+                } else if (weatherEffect === 'spring') {
+                    effect = 'petal';
+                    count = 60;
+                } else {
+                    count = 0;
+                }
+            }
+
+            particles = [];
+            if (count > 0) initParticles(effect, count);
+        }
+
+        // Fetch bot status
+        async function fetchStatus() {
+            const startTime = Date.now();
+            try {
+                const response = await fetch(`${API_URL}/api/status`);
+                if (!response.ok) throw new Error('API offline');
+                
+                const data = await response.json();
+                const responseTime = Date.now() - startTime;
+                
+                // Update home page
+                document.getElementById('home-servers-count').textContent = data.servers || '0';
+                document.getElementById('home-users-count').textContent = data.users || '0';
+                
+                const statusBadge = document.getElementById('home-status-badge');
+                if (data.status === 'online') {
+                    statusBadge.className = 'status-badge online';
+                    statusBadge.innerHTML = '<div class="status-dot online"></div><span>All Systems Operational</span>';
+                } else {
+                    statusBadge.className = 'status-badge offline';
+                    statusBadge.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+                }
+                
+                return { data, responseTime };
+            } catch (error) {
+                const statusBadge = document.getElementById('home-status-badge');
+                statusBadge.className = 'status-badge offline';
+                statusBadge.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+                
+                document.getElementById('home-servers-count').textContent = '0';
+                document.getElementById('home-users-count').textContent = '0';
+                
+                return null;
+            }
+        }
+
+        // Load status page
+        async function loadStatus() {
+            const startTime = Date.now();
+            try {
+                const response = await fetch(`${API_URL}/api/status`);
+                if (!response.ok) throw new Error('API offline');
+                
+                const data = await response.json();
+                const responseTime = Date.now() - startTime;
+                
+                // Overall status
+                const overall = document.getElementById('status-overall');
+                if (data.status === 'online') {
+                    overall.innerHTML = '<div class="status-dot online"></div><span>All Systems Operational</span>';
+                } else {
+                    overall.innerHTML = '<div class="status-dot offline"></div><span>System Experiencing Issues</span>';
+                }
+                
+                // Bot status
+                const botBadge = document.getElementById('bot-status-badge');
+                if (data.status === 'online') {
+                    botBadge.className = 'status-badge online';
+                    botBadge.innerHTML = '<div class="status-dot online"></div><span>Operational</span>';
+                } else {
+                    botBadge.className = 'status-badge offline';
+                    botBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+                }
+                
+                const uptimeMinutes = Math.floor(data.uptime / 1000 / 60);
+                const hours = Math.floor(uptimeMinutes / 60);
+                const minutes = uptimeMinutes % 60;
+                document.getElementById('bot-uptime').textContent = `${hours}h ${minutes}m`;
+                document.getElementById('bot-servers').textContent = data.servers || '0';
+                document.getElementById('bot-users').textContent = data.users || '0';
+                
+                // Load server list
+                await loadServerList();
+                
+                // API status
+                const apiBadge = document.getElementById('api-status-badge');
+                apiBadge.className = 'status-badge online';
+                apiBadge.innerHTML = '<div class="status-dot online"></div><span>Operational</span>';
+                
+                document.getElementById('api-response').textContent = `${responseTime}ms`;
+                document.getElementById('api-database').textContent = 'Connected';
+                document.getElementById('api-last-update').textContent = 'Just now';
+            } catch (error) {
+                // Overall offline
+                document.getElementById('status-overall').innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+                
+                // Bot offline
+                const botBadge = document.getElementById('bot-status-badge');
+                botBadge.className = 'status-badge offline';
+                botBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+                document.getElementById('bot-uptime').textContent = '--';
+                document.getElementById('bot-servers').textContent = '0';
+                document.getElementById('bot-users').textContent = '0';
+                
+                // Server list error
+                document.getElementById('server-list-container').innerHTML = '<div class="card"><p style="text-align: center; color: #ef4444;">Failed to load server list</p></div>';
+                
+                // API offline
+                const apiBadge = document.getElementById('api-status-badge');
+                apiBadge.className = 'status-badge offline';
+                apiBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+                document.getElementById('api-response').textContent = '--';
+                document.getElementById('api-database').textContent = 'Disconnected';
+                document.getElementById('api-last-update').textContent = '--';
+            }
+        }
+
+        // Load server list
+        async function loadServerList() {
+            const container = document.getElementById('server-list-container');
+            try {
+                const response = await fetch(`${API_URL}/api/servers`);
+                if (!response.ok) throw new Error('Failed to load servers');
+                
+                const data = await response.json();
+                
+                if (!data.servers || data.servers.length === 0) {
+                    container.innerHTML = '<div class="card"><p style="text-align: center; color: #94a3b8;">No servers connected</p></div>';
+                    return;
+                }
+                
+                let html = '<div class="grid grid-3">';
+                data.servers.forEach(server => {
+                    html += `
+                        <div class="card">
+                            <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">${server.name}</h3>
+                            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">${server.memberCount} members</p>
+                            <div style="display: flex; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                                <span style="color: #64748b; font-size: 0.85rem;">ID: ${server.id}</span>
+                                <span class="status-badge online" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                                    <div class="status-dot online" style="width: 6px; height: 6px;"></div>
+                                    Online
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<div class="card"><p style="text-align: center; color: #ef4444;">Failed to load server list</p></div>';
+            }
+        }
+
+        // Load cities
+        async function loadCitiesData() {
+            try {
+                const response = await fetch(`${API_URL}/api/cities`);
+                if (!response.ok) throw new Error('API offline');
+                const data = await response.json();
+                allCities = data.cities;
+                document.getElementById('home-cities-count').textContent = allCities.length.toLocaleString();
+            } catch (error) {
+                document.getElementById('home-cities-count').textContent = '0';
+                console.error('Failed to load cities:', error);
+            }
+
+            try {
+                const canadaResponse = await fetch(`${API_URL}/api/cities-canada`);
+                if (!canadaResponse.ok) throw new Error('API offline');
+                const canadaData = await canadaResponse.json();
+                allCanadaCities = canadaData.cities;
+                document.getElementById('home-canada-cities-count').textContent = allCanadaCities.length.toLocaleString();
+            } catch (error) {
+                document.getElementById('home-canada-cities-count').textContent = '0';
+                console.error('Failed to load Canada cities:', error);
+            }
+        }
+
+        // USA Weather page functions
+        function loadStates() {
+            const region = document.getElementById('region-select').value;
+            const stateSelect = document.getElementById('state-select');
+            const citySelect = document.getElementById('city-select');
+            
+            stateSelect.innerHTML = '<option value="">Select State</option>';
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            citySelect.disabled = true;
+            document.getElementById('weather-result').innerHTML = '';
+            
+            if (!region || allCities.length === 0) {
+                stateSelect.disabled = true;
+                return;
+            }
+            
+            const states = [...new Set(allCities.filter(c => c.region === region).map(c => c.state))].sort();
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateSelect.appendChild(option);
+            });
+            
+            stateSelect.disabled = false;
+        }
+
+        function loadCities() {
+            const region = document.getElementById('region-select').value;
+            const state = document.getElementById('state-select').value;
+            const citySelect = document.getElementById('city-select');
+            
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            document.getElementById('weather-result').innerHTML = '';
+            
+            if (!state) {
+                citySelect.disabled = true;
+                return;
+            }
+            
+            const cities = allCities.filter(c => c.region === region && c.state === state).sort((a, b) => a.name.localeCompare(b.name));
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city.id;
+                option.textContent = `${city.name} (${city.zip})`;
+                citySelect.appendChild(option);
+            });
+            
+            citySelect.disabled = false;
+        }
+
+        async function loadWeather() {
+            const cityId = document.getElementById('city-select').value;
+            if (!cityId) return;
+            
+            const resultDiv = document.getElementById('weather-result');
+            resultDiv.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/weather/${cityId}`);
+                if (!response.ok) throw new Error('Failed to fetch weather');
+                
+                const data = await response.json();
+                const city = data.city;
+                const weather = data.weather;
+                
+                // Get weather icon
+                const condition = weather.condition.toLowerCase();
+                let icon = '☁️';
+                if (condition.includes('rain')) icon = '🌧️';
+                else if (condition.includes('snow')) icon = '❄️';
+                else if (condition.includes('clear') || condition.includes('sunny')) icon = '☀️';
+                else if (condition.includes('cloud')) icon = '☁️';
+                else if (condition.includes('storm') || condition.includes('thunder')) icon = '⛈️';
+                
+                // Build weather display
+                let html = `
+                    <div class="weather-hero">
+                        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${city.name}, ${city.state}</h2>
+                        <div class="weather-icon">${icon}</div>
+                        <div class="temperature">${weather.temp}°F</div>
+                        <p style="font-size: 1.5rem; color: #cbd5e1; margin-top: 1rem;">${weather.condition}</p>
+                    </div>
+                    
+                    <div class="weather-stats">
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">💧</div>
+                            <div class="weather-stat-value">${weather.humidity}%</div>
+                            <div class="weather-stat-label">Humidity</div>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">💨</div>
+                            <div class="weather-stat-value">${weather.wind}</div>
+                            <div class="weather-stat-label">Wind</div>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">🌡️</div>
+                            <div class="weather-stat-value">${weather.feels}°F</div>
+                            <div class="weather-stat-label">Feels Like</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <button class="btn btn-primary" onclick="loadWeather()">🔄 Refresh Weather</button>
+                    </div>
+                `;
+                
+                // Add forecast
+                if (weather.forecast && weather.forecast.length > 0) {
+                    html += '<div class="card" style="margin-top: 2rem;"><h2 style="margin-bottom: 1.5rem;">7-Day Forecast</h2><div class="grid grid-4">';
+                    weather.forecast.forEach(day => {
+                        html += `
+                            <div class="card" style="text-align: center;">
+                                <h3 style="margin-bottom: 0.5rem;">${day.period}</h3>
+                                <p style="font-size: 2rem; font-weight: 700; margin: 1rem 0;">${day.temp}°</p>
+                                <p style="color: #94a3b8;">${day.desc}</p>
+                            </div>
+                        `;
+                    });
+                    html += '</div></div>';
+                }
+                
+                resultDiv.innerHTML = html;
+                
+                // Update weather effect
+                setWeatherEffect(weather.condition);
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="card" style="text-align: center; margin-top: 2rem;">
+                        <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
+                        <p style="color: #94a3b8; margin-top: 1rem;">Please try again or check the status page</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Canada Weather page functions
+        function loadCanadaProvinces() {
+            const region = document.getElementById('canada-region-select').value;
+            const provinceSelect = document.getElementById('canada-province-select');
+            const citySelect = document.getElementById('canada-city-select');
+            
+            provinceSelect.innerHTML = '<option value="">Select Province/Territory</option>';
+            citySelect.innerHTML = '<option value="">Select Municipality</option>';
+            citySelect.disabled = true;
+            document.getElementById('canada-weather-result').innerHTML = '';
+            
+            if (!region || allCanadaCities.length === 0) {
+                provinceSelect.disabled = true;
+                return;
+            }
+            
+            const provinces = [...new Set(allCanadaCities.filter(c => c.region === region).map(c => c.province))].sort();
+            provinces.forEach(province => {
+                const option = document.createElement('option');
+                option.value = province;
+                option.textContent = province;
+                provinceSelect.appendChild(option);
+            });
+            
+            provinceSelect.disabled = false;
+        }
+
+        function loadCanadaCities() {
+            const region = document.getElementById('canada-region-select').value;
+            const province = document.getElementById('canada-province-select').value;
+            const citySelect = document.getElementById('canada-city-select');
+            
+            citySelect.innerHTML = '<option value="">Select Municipality</option>';
+            document.getElementById('canada-weather-result').innerHTML = '';
+            
+            if (!province) {
+                citySelect.disabled = true;
+                return;
+            }
+            
+            const cities = allCanadaCities.filter(c => c.region === region && c.province === province).sort((a, b) => a.name.localeCompare(b.name));
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city.id;
+                option.textContent = `${city.name}${city.postal ? ' (' + city.postal + ')' : ''}`;
+                citySelect.appendChild(option);
+            });
+            
+            citySelect.disabled = false;
+        }
+
+        async function loadCanadaWeather() {
+            const cityId = document.getElementById('canada-city-select').value;
+            if (!cityId) return;
+            
+            const resultDiv = document.getElementById('canada-weather-result');
+            resultDiv.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/weather-canada/${cityId}`);
+                if (!response.ok) throw new Error('Failed to fetch weather');
+                
+                const data = await response.json();
+                const city = data.city;
+                const weather = data.weather;
+                
+                // Get weather icon
+                const condition = weather.condition.toLowerCase();
+                let icon = '☁️';
+                if (condition.includes('rain')) icon = '🌧️';
+                else if (condition.includes('snow')) icon = '❄️';
+                else if (condition.includes('clear') || condition.includes('sunny')) icon = '☀️';
+                else if (condition.includes('cloud')) icon = '☁️';
+                else if (condition.includes('storm') || condition.includes('thunder')) icon = '⛈️';
+                
+                // Build weather display
+                let html = `
+                    <div class="weather-hero">
+                        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${city.name}, ${city.province}</h2>
+                        <div class="weather-icon">${icon}</div>
+                        <div class="temperature">${weather.temp}°C</div>
+                        <p style="font-size: 1.5rem; color: #cbd5e1; margin-top: 1rem;">${weather.condition}</p>
+                    </div>
+                    
+                    <div class="weather-stats">
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">💧</div>
+                            <div class="weather-stat-value">${weather.humidity}%</div>
+                            <div class="weather-stat-label">Humidity</div>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">💨</div>
+                            <div class="weather-stat-value">${weather.wind}</div>
+                            <div class="weather-stat-label">Wind</div>
+                        </div>
+                        <div class="weather-stat">
+                            <div class="weather-stat-icon">🌡️</div>
+                            <div class="weather-stat-value">${weather.feels}°C</div>
+                            <div class="weather-stat-label">Feels Like</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <button class="btn btn-primary" onclick="loadCanadaWeather()">🔄 Refresh Weather</button>
+                    </div>
+                `;
+                
+                // Add forecast
+                if (weather.forecast && weather.forecast.length > 0) {
+                    html += '<div class="card" style="margin-top: 2rem;"><h2 style="margin-bottom: 1.5rem;">7-Day Forecast</h2><div class="grid grid-4">';
+                    weather.forecast.forEach(day => {
+                        html += `
+                            <div class="card" style="text-align: center;">
+                                <h3 style="margin-bottom: 0.5rem;">${day.period}</h3>
+                                <p style="font-size: 2rem; font-weight: 700; margin: 1rem 0;">${day.temp}°</p>
+                                <p style="color: #94a3b8;">${day.desc}</p>
+                            </div>
+                        `;
+                    });
+                    html += '</div></div>';
+                }
+                
+                resultDiv.innerHTML = html;
+                
+                // Update weather effect
+                setWeatherEffect(weather.condition);
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="card" style="text-align: center; margin-top: 2rem;">
+                        <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
+                        <p style="color: #94a3b8; margin-top: 1rem;">Please try again or check the status page</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load announcements
+        async function loadAnnouncements() {
+            const container = document.getElementById('announcements-container');
+            container.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/announcements`);
+                if (!response.ok) throw new Error('Failed to load announcements');
+                
+                const data = await response.json();
+                allAnnouncements = data.announcements;
+                
+                if (allAnnouncements.length === 0) {
+                    container.innerHTML = '<div class="card"><p style="text-align: center; color: #94a3b8;">No announcements yet.</p></div>';
+                    return;
+                }
+                
+                displayAnnouncements(allAnnouncements);
+            } catch (error) {
+                container.innerHTML = '<div class="card"><p style="text-align: center; color: #ef4444;">❌ Failed to load announcements</p></div>';
+            }
+        }
+
+        function displayAnnouncements(announcements) {
+            const container = document.getElementById('announcements-container');
+            container.innerHTML = '';
+            
+            const icons = {
+                general: '📢',
+                alert: '⚠️',
+                maintenance: '🔧',
+                update: '✨'
+            };
+            
+            announcements.forEach(ann => {
+                const date = new Date(ann.timestamp).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const div = document.createElement('div');
+                div.className = `announcement ${ann.type}`;
+                div.innerHTML = `
+                    <div class="announcement-header">
+                        <div class="announcement-title">${icons[ann.type]} ${ann.title}</div>
+                        <div class="announcement-date">${date}</div>
+                    </div>
+                    <div class="announcement-body">${ann.message}</div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                        <small style="color: #94a3b8;">Posted by ${ann.author}</small>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function filterAnnouncements() {
+            const filter = document.getElementById('announcement-filter').value;
+            
+            if (filter === 'all') {
+                displayAnnouncements(allAnnouncements);
+            } else {
+                const filtered = allAnnouncements.filter(a => a.type === filter);
+                if (filtered.length === 0) {
+                    document.getElementById('announcements-container').innerHTML = '<div class="card"><p style="text-align: center; color: #94a3b8;">No announcements of this type.</p></div>';
+                } else {
+                    displayAnnouncements(filtered);
+                }
+            }
+        }
+
+        // Resize canvas
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Initialize
+        async function init() {
+            setWeatherEffect(null);
+            animate();
+            await loadCitiesData();
+            await fetchStatus();
+            setInterval(fetchStatus, 30000);
+        }
+
+        init();
     </script>
 </body>
 </html>
