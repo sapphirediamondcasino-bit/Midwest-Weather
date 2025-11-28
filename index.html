@@ -1344,7 +1344,7 @@
             }
 
             try {
-                const canadaResponse = await fetch(`${API_URL}/api/cities-canada`);
+                const canadaResponse = await fetch(`${API_URL}/api/cities-ca`);
                 if (!canadaResponse.ok) throw new Error('API offline');
                 const canadaData = await canadaResponse.json();
                 allCanadaCities = canadaData.cities;
@@ -1550,7 +1550,7 @@
             resultDiv.innerHTML = '<div class="spinner"></div>';
             
             try {
-                const response = await fetch(`${API_URL}/api/weather-canada/${cityId}`);
+                const response = await fetch(`${API_URL}/api/weather-ca/${cityId}`);
                 if (!response.ok) throw new Error('Failed to fetch weather');
                 
                 const data = await response.json();
