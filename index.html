@@ -646,10 +646,9 @@
                         <div class="stat-label">Canadian Municipalities</div>
                     </div>
                     <div class="stat-card">
-                   <div class="stat-number">8</div>
-                   <div class="stat-label">Australian States/Territories</div>
-                   <div class="coming-soon-badge">Feb 2026</div>
-                   </div>
+                    <div class="stat-value" id="home-australia-cities-count">--</div>
+                    <div class="stat-label">Australian Cities</div>
+                    </div>
                     <div class="stat-card">
                         <div class="stat-value" id="home-servers-count">--</div>
                         <div class="stat-label">Discord Servers</div>
@@ -1524,162 +1523,656 @@
 
         // Country switcher
         function switchCountry(country) {
-            currentCountry = country;
-            
-            if (country === 'usa') {
-                document.getElementById('usa-weather').style.display = 'block';
-                document.getElementById('canada-weather').style.display = 'none';
-                document.getElementById('usa-tab').className = 'btn btn-primary';
-                document.getElementById('canada-tab').className = 'btn btn-secondary';
-            } else {
-                document.getElementById('usa-weather').style.display = 'none';
-                document.getElementById('canada-weather').style.display = 'block';
-                document.getElementById('usa-tab').className = 'btn btn-secondary';
-                document.getElementById('canada-tab').className = 'btn btn-primary';
-            }
+    currentCountry = country;
+    
+    // Hide all sections
+    document.getElementById('usa-weather').style.display = 'none';
+    document.getElementById('canada-weather').style.display = 'none';
+    document.getElementById('australia-weather').style.display = 'none';
+    
+    // Reset button styles
+    document.getElementById('usa-tab').className = 'btn btn-secondary';
+    document.getElementById('canada-tab').className = 'btn btn-secondary';
+    document.getElementById('australia-tab').className = 'btn btn-secondary';
+    
+    // Show selected section and highlight button
+    if (country === 'usa') {
+        document.getElementById('usa-weather').style.display = 'block';
+        document.getElementById('usa-tab').className = 'btn btn-primary';
+    } else if (country === 'canada') {
+        document.getElementById('canada-weather').style.display = 'block';
+        document.getElementById('canada-tab').className = 'btn btn-primary';
+    } else if (country === 'australia') {
+        document.getElementById('australia-weather').style.display = 'block';
+        document.getElementById('australia-tab').className = 'btn btn-primary';
+    }
+}
+
+        // Enhanced Weather Canvas Effects with Holiday Support
+const canvas = document.getElementById('weather-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+let weatherEffect = null;
+let currentHoliday = null;
+
+// Holiday Detection System
+function getCurrentHoliday() {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    
+    // New Year's Day
+    if (month === 1 && day === 1) return { name: 'New Year', effect: 'fireworks' };
+    
+    // MLK Day (3rd Monday in January)
+    if (month === 1 && isNthWeekday(now, 1, 3)) return { name: 'MLK Day', effect: 'stars' };
+    
+    // Groundhog Day
+    if (month === 2 && day === 2) return { name: 'Groundhog Day', effect: 'snow' };
+    
+    // Valentine's Day
+    if (month === 2 && day === 14) return { name: "Valentine's Day", effect: 'hearts' };
+    
+    // Presidents' Day (3rd Monday in February)
+    if (month === 2 && isNthWeekday(now, 1, 3)) return { name: "Presidents' Day", effect: 'flags' };
+    
+    // St. Patrick's Day
+    if (month === 3 && day === 17) return { name: "St. Patrick's Day", effect: 'shamrocks' };
+    
+    // Easter Season (early-mid April)
+    if (month === 4 && day >= 1 && day <= 20) return { name: 'Easter Season', effect: 'eggs' };
+    
+    // Earth Day
+    if (month === 4 && day === 22) return { name: 'Earth Day', effect: 'leaves' };
+    
+    // Cinco de Mayo
+    if (month === 5 && day === 5) return { name: 'Cinco de Mayo', effect: 'confetti' };
+    
+    // Memorial Day (Last Monday in May)
+    if (month === 5 && isLastWeekday(now, 1)) return { name: 'Memorial Day', effect: 'flags' };
+    
+    // Flag Day
+    if (month === 6 && day === 14) return { name: 'Flag Day', effect: 'flags' };
+    
+    // Juneteenth
+    if (month === 6 && day === 19) return { name: 'Juneteenth', effect: 'stars' };
+    
+    // Independence Day (July 1-7 for week-long celebration)
+    if (month === 7 && day >= 1 && day <= 7) return { name: 'Independence Day', effect: 'fireworks' };
+    
+    // Labor Day (1st Monday in September)
+    if (month === 9 && isNthWeekday(now, 1, 1)) return { name: 'Labor Day', effect: 'stars' };
+    
+    // Columbus Day (2nd Monday in October)
+    if (month === 10 && isNthWeekday(now, 1, 2)) return { name: 'Columbus Day', effect: 'leaves' };
+    
+    // Halloween (Oct 25-31)
+    if (month === 10 && day >= 25) return { name: 'Halloween', effect: 'halloween' };
+    
+    // Veterans Day
+    if (month === 11 && day === 11) return { name: 'Veterans Day', effect: 'flags' };
+    
+    // Thanksgiving (4th Thursday in November)
+    if (month === 11 && isNthWeekday(now, 4, 4)) return { name: 'Thanksgiving', effect: 'thanksgiving' };
+    
+    // Christmas Season (Dec 1-26)
+    if (month === 12 && day <= 26) return { name: 'Christmas Season', effect: 'christmas' };
+    
+    // New Year's Eve
+    if (month === 12 && day === 31) return { name: "New Year's Eve", effect: 'fireworks' };
+    
+    return null;
+}
+
+// Helper functions for holiday calculation
+function isNthWeekday(date, weekday, n) {
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    let count = 0;
+    for (let day = 1; day <= date.getDate(); day++) {
+        const checkDate = new Date(date.getFullYear(), date.getMonth(), day);
+        if (checkDate.getDay() === weekday) {
+            count++;
+            if (count === n && day === date.getDate()) return true;
         }
+    }
+    return false;
+}
 
-        // Weather Canvas Effects
-        const canvas = document.getElementById('weather-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        let particles = [];
-        let weatherEffect = getSeason();
-
-        function getSeason() {
-            const month = new Date().getMonth();
-            if (month >= 2 && month <= 4) return 'spring';
-            if (month >= 5 && month <= 7) return 'summer';
-            if (month >= 8 && month <= 10) return 'fall';
-            return 'winter';
+function isLastWeekday(date, weekday) {
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    for (let day = lastDay.getDate(); day >= 1; day--) {
+        const checkDate = new Date(date.getFullYear(), date.getMonth(), day);
+        if (checkDate.getDay() === weekday) {
+            return day === date.getDate();
         }
+    }
+    return false;
+}
 
-        class Particle {
-            constructor(type) {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height - canvas.height;
-                this.type = type;
+function getSeason() {
+    const month = new Date().getMonth();
+    if (month >= 2 && month <= 4) return 'spring';
+    if (month >= 5 && month <= 7) return 'summer';
+    if (month >= 8 && month <= 10) return 'fall';
+    return 'winter';
+}
+
+class Particle {
+    constructor(type) {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height - canvas.height;
+        this.type = type;
+        this.opacity = Math.random() * 0.5 + 0.5;
+        
+        switch(type) {
+            case 'rain':
+                this.speed = Math.random() * 5 + 5;
+                this.length = Math.random() * 20 + 10;
+                break;
                 
-                if (type === 'rain') {
-                    this.speed = Math.random() * 5 + 5;
-                    this.length = Math.random() * 20 + 10;
-                    this.opacity = Math.random() * 0.5 + 0.5;
-                } else if (type === 'snow') {
-                    this.speed = Math.random() * 2 + 1;
-                    this.radius = Math.random() * 3 + 2;
-                    this.drift = Math.random() * 2 - 1;
-                } else if (type === 'leaf') {
-                    this.speed = Math.random() * 3 + 2;
-                    this.size = Math.random() * 10 + 5;
-                    this.drift = Math.random() * 3 - 1.5;
-                    this.rotation = Math.random() * 360;
-                    this.rotationSpeed = Math.random() * 5 - 2.5;
-                } else if (type === 'petal') {
-                    this.speed = Math.random() * 2 + 1;
-                    this.size = Math.random() * 8 + 4;
-                    this.drift = Math.random() * 2 - 1;
-                    this.rotation = Math.random() * 360;
-                    this.rotationSpeed = Math.random() * 3;
+            case 'snow':
+                this.speed = Math.random() * 2 + 1;
+                this.radius = Math.random() * 4 + 2;
+                this.drift = Math.random() * 2 - 1;
+                break;
+                
+            case 'leaf':
+            case 'leaves':
+                this.speed = Math.random() * 3 + 2;
+                this.size = Math.random() * 12 + 6;
+                this.drift = Math.random() * 3 - 1.5;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 5 - 2.5;
+                this.color = ['#ff6b35', '#f7931e', '#fdc500', '#c1272d'][Math.floor(Math.random() * 4)];
+                break;
+                
+            case 'petal':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 10 + 5;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 3;
+                break;
+                
+            case 'hearts':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 15 + 10;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 2;
+                this.color = ['#ff1744', '#f50057', '#ff4081', '#ff80ab'][Math.floor(Math.random() * 4)];
+                break;
+                
+            case 'shamrocks':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 12 + 8;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 3;
+                break;
+                
+            case 'fireworks':
+                this.speed = Math.random() * 3 + 2;
+                this.size = Math.random() * 6 + 3;
+                this.color = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff'][Math.floor(Math.random() * 7)];
+                this.drift = (Math.random() - 0.5) * 4;
+                this.fadeSpeed = Math.random() * 0.015 + 0.01;
+                this.sparkles = [];
+                for (let i = 0; i < 8; i++) {
+                    this.sparkles.push({
+                        angle: (i * 45) * Math.PI / 180,
+                        distance: this.size * 1.5
+                    });
                 }
-            }
+                break;
+                
+            case 'halloween':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 20 + 15;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 4;
+                this.variant = Math.floor(Math.random() * 3); // pumpkin, ghost, bat
+                break;
+                
+            case 'christmas':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 15 + 10;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 3;
+                this.variant = Math.floor(Math.random() * 4); // snowflake, ornament, star, candy cane
+                this.ornamentColor = ['#ff0000', '#00ff00', '#0000ff', '#ffd700'][Math.floor(Math.random() * 4)];
+                break;
+                
+            case 'thanksgiving':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 18 + 12;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 3;
+                break;
+                
+            case 'flags':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 20 + 15;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 2;
+                break;
+                
+            case 'stars':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 10 + 5;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 5;
+                this.color = ['#ffd700', '#ffffff', '#add8e6'][Math.floor(Math.random() * 3)];
+                break;
+                
+            case 'confetti':
+                this.speed = Math.random() * 4 + 3;
+                this.size = Math.random() * 8 + 4;
+                this.drift = (Math.random() - 0.5) * 3;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 10;
+                this.color = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'][Math.floor(Math.random() * 6)];
+                break;
+                
+            case 'eggs':
+                this.speed = Math.random() * 2 + 1;
+                this.size = Math.random() * 15 + 10;
+                this.drift = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 3;
+                this.color = ['#ff69b4', '#87ceeb', '#98fb98', '#ffb6c1', '#ffd700'][Math.floor(Math.random() * 5)];
+                break;
+        }
+    }
 
-            update() {
-                this.y += this.speed;
-                if (this.type !== 'rain') this.x += this.drift;
-                if (this.type === 'leaf' || this.type === 'petal') this.rotation += this.rotationSpeed;
-                if (this.y > canvas.height) {
-                    this.y = -20;
-                    this.x = Math.random() * canvas.width;
+    update() {
+        this.y += this.speed;
+        if (this.drift !== undefined) this.x += this.drift;
+        if (this.rotation !== undefined && this.rotationSpeed !== undefined) {
+            this.rotation += this.rotationSpeed;
+        }
+        if (this.type === 'fireworks' && this.fadeSpeed) {
+            this.opacity -= this.fadeSpeed;
+            if (this.opacity <= 0) {
+                this.y = -20;
+                this.x = Math.random() * canvas.width;
+                this.opacity = 1;
+            }
+        }
+        if (this.y > canvas.height) {
+            this.y = -20;
+            this.x = Math.random() * canvas.width;
+        }
+    }
+
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.translate(this.x, this.y);
+        if (this.rotation !== undefined) {
+            ctx.rotate(this.rotation * Math.PI / 180);
+        }
+
+        switch(this.type) {
+            case 'rain':
+                ctx.strokeStyle = `rgba(174, 194, 224, ${this.opacity})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(0, this.length);
+                ctx.stroke();
+                break;
+
+            case 'snow':
+                // Main snowflake
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+                // Sparkle
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(this.radius * 0.4, -this.radius * 0.4, this.radius * 0.4, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+
+            case 'leaf':
+            case 'leaves':
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Vein
+                ctx.strokeStyle = 'rgba(139, 69, 19, 0.4)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size * 0.6);
+                ctx.lineTo(0, this.size * 0.6);
+                ctx.stroke();
+                break;
+
+            case 'petal':
+                ctx.fillStyle = 'rgba(255, 182, 193, 0.85)';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+
+            case 'hearts':
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.moveTo(0, this.size * 0.3);
+                ctx.bezierCurveTo(-this.size, -this.size * 0.3, -this.size * 0.3, -this.size, 0, -this.size * 0.3);
+                ctx.bezierCurveTo(this.size * 0.3, -this.size, this.size, -this.size * 0.3, 0, this.size * 0.3);
+                ctx.fill();
+                break;
+
+            case 'shamrocks':
+                ctx.fillStyle = '#00ff00';
+                // Draw 4-leaf clover
+                for (let i = 0; i < 4; i++) {
+                    ctx.save();
+                    ctx.rotate((i * 90) * Math.PI / 180);
+                    ctx.beginPath();
+                    ctx.arc(0, -this.size * 0.3, this.size * 0.4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
                 }
-            }
+                // Center
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+                break;
 
-            draw() {
-                if (this.type === 'rain') {
-                    ctx.strokeStyle = `rgba(174, 194, 224, ${this.opacity})`;
+            case 'fireworks':
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
+                gradient.addColorStop(0, this.color);
+                gradient.addColorStop(1, 'transparent');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                // Sparkles
+                this.sparkles.forEach(sparkle => {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(
+                        Math.cos(sparkle.angle) * sparkle.distance, 
+                        Math.sin(sparkle.angle) * sparkle.distance, 
+                        this.size * 0.3, 
+                        0, 
+                        Math.PI * 2
+                    );
+                    ctx.fill();
+                });
+                break;
+
+            case 'halloween':
+                if (this.variant === 0) { // Pumpkin
+                    ctx.fillStyle = '#ff6600';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Face
+                    ctx.fillStyle = '#000000';
+                    ctx.beginPath();
+                    ctx.arc(-this.size * 0.3, -this.size * 0.2, this.size * 0.15, 0, Math.PI * 2);
+                    ctx.arc(this.size * 0.3, -this.size * 0.2, this.size * 0.15, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(-this.size * 0.4, this.size * 0.3);
+                    ctx.lineTo(this.size * 0.4, this.size * 0.3);
+                    ctx.lineTo(0, this.size * 0.5);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (this.variant === 1) { // Ghost
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillRect(-this.size * 0.8, 0, this.size * 1.6, this.size);
+                    // Eyes
+                    ctx.fillStyle = '#000000';
+                    ctx.beginPath();
+                    ctx.arc(-this.size * 0.3, -this.size * 0.2, this.size * 0.15, 0, Math.PI * 2);
+                    ctx.arc(this.size * 0.3, -this.size * 0.2, this.size * 0.15, 0, Math.PI * 2);
+                    ctx.fill();
+                } else { // Bat
+                    ctx.fillStyle = '#1a1a1a';
+                    // Body
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, this.size * 0.3, this.size * 0.5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Wings
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(-this.size, -this.size * 0.5, -this.size * 1.2, 0);
+                    ctx.quadraticCurveTo(-this.size, this.size * 0.3, 0, 0);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(this.size, -this.size * 0.5, this.size * 1.2, 0);
+                    ctx.quadraticCurveTo(this.size, this.size * 0.3, 0, 0);
+                    ctx.fill();
+                }
+                break;
+
+            case 'christmas':
+                if (this.variant === 0) { // Snowflake
+                    ctx.strokeStyle = '#87ceeb';
                     ctx.lineWidth = 2;
+                    for (let i = 0; i < 6; i++) {
+                        ctx.save();
+                        ctx.rotate((i * 60) * Math.PI / 180);
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(0, -this.size);
+                        ctx.moveTo(0, -this.size * 0.7);
+                        ctx.lineTo(-this.size * 0.3, -this.size);
+                        ctx.moveTo(0, -this.size * 0.7);
+                        ctx.lineTo(this.size * 0.3, -this.size);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                } else if (this.variant === 1) { // Ornament
+                    ctx.fillStyle = this.ornamentColor;
                     ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.x, this.y + this.length);
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Top hook
+                    ctx.fillStyle = '#ffd700';
+                    ctx.fillRect(-this.size * 0.2, -this.size * 1.2, this.size * 0.4, this.size * 0.3);
+                } else if (this.variant === 2) { // Star
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        const angle = (i * 72 - 90) * Math.PI / 180;
+                        const x = Math.cos(angle) * this.size;
+                        const y = Math.sin(angle) * this.size;
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                } else { // Candy cane
+                    ctx.strokeStyle = '#ff0000';
+                    ctx.lineWidth = this.size * 0.3;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.arc(0, -this.size * 0.5, this.size * 0.4, Math.PI, 0);
+                    ctx.lineTo(this.size * 0.4, this.size);
                     ctx.stroke();
-                } else if (this.type === 'snow') {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                } else if (this.type === 'leaf') {
+                    // White stripes
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = this.size * 0.1;
+                    for (let i = 0; i < 3; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(this.size * 0.4, i * this.size * 0.4);
+                        ctx.lineTo(this.size * 0.4, i * this.size * 0.4 + this.size * 0.2);
+                        ctx.stroke();
+                    }
+                }
+                break;
+
+            case 'thanksgiving':
+                // Turkey
+                ctx.fillStyle = '#8b4513';
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+                // Feathers
+                const featherColors = ['#ff6600', '#ff0000', '#ffcc00', '#8b4513'];
+                for (let i = 0; i < 5; i++) {
+                    ctx.fillStyle = featherColors[i % featherColors.length];
                     ctx.save();
-                    ctx.translate(this.x, this.y);
-                    ctx.rotate(this.rotation * Math.PI / 180);
-                    ctx.fillStyle = 'rgba(255, 183, 77, 0.7)';
+                    ctx.rotate(((i - 2) * 30) * Math.PI / 180);
                     ctx.beginPath();
-                    ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+                    ctx.ellipse(0, -this.size, this.size * 0.3, this.size * 0.6, 0, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.restore();
-                } else if (this.type === 'petal') {
-                    ctx.save();
-                    ctx.translate(this.x, this.y);
-                    ctx.rotate(this.rotation * Math.PI / 180);
-                    ctx.fillStyle = 'rgba(255, 182, 193, 0.7)';
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
                 }
-            }
-        }
+                // Head
+                ctx.fillStyle = '#8b4513';
+                ctx.beginPath();
+                ctx.arc(0, -this.size * 0.3, this.size * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                // Beak
+                ctx.fillStyle = '#ffaa00';
+                ctx.beginPath();
+                ctx.moveTo(this.size * 0.2, -this.size * 0.3);
+                ctx.lineTo(this.size * 0.5, -this.size * 0.3);
+                ctx.lineTo(this.size * 0.35, -this.size * 0.15);
+                ctx.closePath();
+                ctx.fill();
+                break;
 
-        function initParticles(type, count) {
-            particles = [];
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle(type));
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-            requestAnimationFrame(animate);
-        }
-
-        function setWeatherEffect(condition) {
-            let effect = 'rain';
-            let count = 100;
-
-            if (condition) {
-                const cond = condition.toLowerCase();
-                if (cond.includes('snow') || cond.includes('flurr')) {
-                    effect = 'snow';
-                    count = 100;
-                } else if (cond.includes('rain') || cond.includes('shower') || cond.includes('drizzle')) {
-                    effect = 'rain';
-                    count = 150;
-                } else {
-                    count = 0;
+            case 'flags':
+                // American flag
+                ctx.fillStyle = '#b22234';
+                ctx.fillRect(-this.size, -this.size * 0.7, this.size * 2, this.size * 1.4);
+                // White stripes
+                ctx.fillStyle = '#ffffff';
+                for (let i = 0; i < 7; i += 2) {
+                    ctx.fillRect(-this.size, -this.size * 0.7 + (i * this.size * 0.2), this.size * 2, this.size * 0.2);
                 }
-            } else {
-                if (weatherEffect === 'winter') {
-                    effect = 'snow';
-                    count = 80;
-                } else if (weatherEffect === 'fall') {
-                    effect = 'leaf';
-                    count = 50;
-                } else if (weatherEffect === 'spring') {
-                    effect = 'petal';
-                    count = 60;
-                } else {
-                    count = 0;
-                }
-            }
+                // Blue canton
+                ctx.fillStyle = '#3c3b6e';
+                ctx.fillRect(-this.size, -this.size * 0.7, this.size, this.size * 0.7);
+                break;
 
-            particles = [];
-            if (count > 0) initParticles(effect, count);
+            case 'stars':
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * 72 - 90) * Math.PI / 180;
+                    const x = Math.cos(angle) * this.size;
+                    const y = Math.sin(angle) * this.size;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fill();
+                break;
+
+            case 'confetti':
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                break;
+
+            case 'eggs':
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size * 0.7, this.size, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Decorative stripes
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-this.size * 0.5, 0);
+                ctx.lineTo(this.size * 0.5, 0);
+                ctx.stroke();
+                break;
         }
 
+        ctx.restore();
+    }
+}
+
+function initParticles(type, count) {
+    particles = [];
+    for (let i = 0; i < count; i++) {
+        particles.push(new Particle(type));
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+    });
+    requestAnimationFrame(animate);
+}
+
+function setWeatherEffect(condition) {
+    // Check for holiday first (holidays override weather)
+    currentHoliday = getCurrentHoliday();
+    
+    if (currentHoliday) {
+        console.log(`🎉 Holiday detected: ${currentHoliday.name}`);
+        let count = 120;
+        if (currentHoliday.effect === 'fireworks') count = 80;
+        if (currentHoliday.effect === 'halloween') count = 60;
+        particles = [];
+        initParticles(currentHoliday.effect, count);
+        return;
+    }
+    
+    // Otherwise use weather condition
+    let effect = 'rain';
+    let count = 100;
+
+    if (condition) {
+        const cond = condition.toLowerCase();
+        if (cond.includes('snow') || cond.includes('flurr')) {
+            effect = 'snow';
+            count = 150;
+        } else if (cond.includes('rain') || cond.includes('shower') || cond.includes('drizzle')) {
+            effect = 'rain';
+            count = 150;
+        } else if (cond.includes('clear') || cond.includes('sunny')) {
+            count = 0; // Clear skies = no particles
+        } else {
+            count = 0; // Default: no particles for other conditions
+        }
+    } else {
+        // Use seasonal defaults when no weather data
+        const season = getSeason();
+        if (season === 'winter') {
+            effect = 'snow';
+            count = 80;
+        } else if (season === 'fall') {
+            effect = 'leaves';
+            count = 60;
+        } else if (season === 'spring') {
+            effect = 'petal';
+            count = 60;
+        } else {
+            count = 0; // Summer default: clear
+        }
+    }
+
+    particles = [];
+    if (count > 0) initParticles(effect, count);
+}
         // Fetch bot status
         async function fetchStatus() {
             const startTime = Date.now();
@@ -1847,6 +2340,19 @@
                 document.getElementById('home-canada-cities-count').textContent = '0';
                 console.error('Failed to load Canada cities:', error);
             }
+           
+              // Update Australian cities count on home page
+             try {
+              const australiaResponse = await fetch(`${API_URL}/api/cities-au`);
+              if (!australiaResponse.ok) throw new Error('API offline');
+              const australiaData = await australiaResponse.json();
+                allAustraliaCities = australiaData.cities;
+            document.getElementById('home-australia-cities-count').textContent = allAustraliaCities.length.toLocaleString();
+           console.log(`🇦🇺 Loaded ${allAustraliaCities.length} Australian cities`);
+        } catch (error) {
+          document.getElementById('home-australia-cities-count').textContent = '0';
+          console.log('⚠️ Australian cities not yet available');
+      }
         }
 
         // USA Weather page functions
@@ -2059,7 +2565,142 @@
                 else if (condition.includes('clear') || condition.includes('sunny')) icon = '☀️';
                 else if (condition.includes('cloud')) icon = '☁️';
                 else if (condition.includes('storm') || condition.includes('thunder')) icon = '⛈️';
-                
+
+                // Australia Weather page functions (for February 2026 launch)
+function loadAustraliaStates() {
+    const region = document.getElementById('australia-region-select').value;
+    const stateSelect = document.getElementById('australia-state-select');
+    const citySelect = document.getElementById('australia-city-select');
+    
+    stateSelect.innerHTML = '<option value="">Select State/Territory</option>';
+    citySelect.innerHTML = '<option value="">Select City</option>';
+    citySelect.disabled = true;
+    document.getElementById('australia-weather-result').innerHTML = '';
+    
+    if (!region || allAustraliaCities.length === 0) {
+        stateSelect.disabled = true;
+        return;
+    }
+    
+    const states = [...new Set(allAustraliaCities.filter(c => c.region === region).map(c => c.state))].sort();
+    states.forEach(state => {
+        const option = document.createElement('option');
+        option.value = state;
+        option.textContent = state;
+        stateSelect.appendChild(option);
+    });
+    
+    stateSelect.disabled = false;
+}
+
+function loadAustraliaCities() {
+    const region = document.getElementById('australia-region-select').value;
+    const state = document.getElementById('australia-state-select').value;
+    const citySelect = document.getElementById('australia-city-select');
+    
+    citySelect.innerHTML = '<option value="">Select City</option>';
+    document.getElementById('australia-weather-result').innerHTML = '';
+    
+    if (!state) {
+        citySelect.disabled = true;
+        return;
+    }
+    
+    const cities = allAustraliaCities.filter(c => c.region === region && c.state === state).sort((a, b) => a.name.localeCompare(b.name));
+    cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city.id;
+        option.textContent = `${city.name}${city.postcode ? ' (' + city.postcode + ')' : ''}`;
+        citySelect.appendChild(option);
+    });
+    
+    citySelect.disabled = false;
+}
+
+async function loadAustraliaWeather() {
+    const cityId = document.getElementById('australia-city-select').value;
+    if (!cityId) return;
+    
+    const resultDiv = document.getElementById('australia-weather-result');
+    resultDiv.innerHTML = '<div class="spinner"></div>';
+    
+    try {
+        const response = await fetch(`${API_URL}/api/weather-au/${cityId}`);
+        if (!response.ok) throw new Error('Failed to fetch weather');
+        
+        const data = await response.json();
+        const city = data.city;
+        const weather = data.weather;
+        
+        // Get weather icon
+        const condition = weather.condition.toLowerCase();
+        let icon = '☁️';
+        if (condition.includes('rain')) icon = '🌧️';
+        else if (condition.includes('snow')) icon = '❄️';
+        else if (condition.includes('clear') || condition.includes('sunny')) icon = '☀️';
+        else if (condition.includes('cloud')) icon = '☁️';
+        else if (condition.includes('storm') || condition.includes('thunder')) icon = '⛈️';
+        
+        // Build weather display
+        let html = `
+            <div class="weather-hero">
+                <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${city.name}, ${city.state}</h2>
+                <div class="weather-icon">${icon}</div>
+                <div class="temperature">${weather.tempC}°C</div>
+                <p style="font-size: 1.5rem; color: #cbd5e1; margin-top: 1rem;">${weather.condition}</p>
+            </div>
+            
+            <div class="weather-stats">
+                <div class="weather-stat">
+                    <div class="weather-stat-icon">💧</div>
+                    <div class="weather-stat-value">${weather.humidity}%</div>
+                    <div class="weather-stat-label">Humidity</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="weather-stat-icon">💨</div>
+                    <div class="weather-stat-value">${weather.wind}</div>
+                    <div class="weather-stat-label">Wind</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="weather-stat-icon">🌡️</div>
+                    <div class="weather-stat-value">${weather.feelsC}°C</div>
+                    <div class="weather-stat-label">Feels Like</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 2rem 0;">
+                <button class="btn btn-primary" onclick="loadAustraliaWeather()">🔄 Refresh Weather</button>
+            </div>
+        `;
+        
+        // Add forecast
+        if (weather.forecast && weather.forecast.length > 0) {
+            html += '<div class="card" style="margin-top: 2rem;"><h2 style="margin-bottom: 1.5rem;">7-Day Forecast</h2><div class="grid grid-4">';
+            weather.forecast.forEach(day => {
+                html += `
+                    <div class="card" style="text-align: center;">
+                        <h3 style="margin-bottom: 0.5rem;">${day.period}</h3>
+                        <p style="font-size: 2rem; font-weight: 700; margin: 1rem 0;">${day.tempC}°</p>
+                        <p style="color: #94a3b8;">${day.desc}</p>
+                    </div>
+                `;
+            });
+            html += '</div></div>';
+        }
+        
+        resultDiv.innerHTML = html;
+        
+        // Update weather effect
+        setWeatherEffect(weather.condition);
+    } catch (error) {
+        resultDiv.innerHTML = `
+            <div class="card" style="text-align: center; margin-top: 2rem;">
+                <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
+                <p style="color: #94a3b8; margin-top: 1rem;">Australian weather data will be available in February 2026</p>
+            </div>
+        `;
+    }
+}
                 // Build weather display
                 let html = `
                     <div class="weather-hero">
