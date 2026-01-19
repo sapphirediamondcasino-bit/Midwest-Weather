@@ -811,121 +811,137 @@
     </div>
 </div>
         <!-- COMMANDS PAGE -->
-        <div id="commands" class="page">
-            <div class="container">
-                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📋 Bot Commands</h1>
-                <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Complete command reference for Midwest Weather Bot v2.5</p>
+<div id="commands" class="page">
+    <div class="container">
+        <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📋 Bot Commands</h1>
+        <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Complete command reference for Midwest Weather Bot v2.5</p>
 
-                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇺🇸 United States Commands</h2>
+        <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇺🇸 United States Commands</h2>
 
-                <div class="grid grid-2">
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/weather</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported U.S. city. Choose from multiple display styles.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #94a3b8;">Options:</strong>
-                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>city - Select any U.S. city (autocomplete)</li>
-                                <li>template - Compact, Card, Full, or Radar view</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/forecast</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for U.S. cities for planning ahead.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #94a3b8;">Options:</strong>
-                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>city - Select any U.S. city (autocomplete)</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/dashboard</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for U.S. cities with refresh, radar, and alerts buttons.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #94a3b8;">Options:</strong>
-                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>city - Select any U.S. city (autocomplete)</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/announce</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Send official announcements to Discord servers and website.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #ef4444;">Owner Only</strong>
-                            <p style="color: #94a3b8; margin-top: 0.5rem;">This command is restricted to the bot owner.</p>
-                        </div>
-                    </div>
+        <div class="grid grid-2">
+            <!-- US Commands stay the same -->
+            <div class="command-card">
+                <h3 style="margin-bottom: 1rem;"><code>/weather</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported U.S. city. Choose from multiple display styles.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>city - Select any U.S. city (autocomplete)</li>
+                        <li>template - Compact, Card, Full, or Radar view</li>
+                    </ul>
                 </div>
+            </div>
 
-                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇨🇦 Canadian Commands</h2>
+            <div class="command-card">
+                <h3 style="margin-bottom: 1rem;"><code>/forecast</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for U.S. cities for planning ahead.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>city - Select any U.S. city (autocomplete)</li>
+                    </ul>
+                </div>
+            </div>
 
-                <div class="grid grid-2">
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/weather-ca</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported Canadian municipality. Choose from multiple display styles.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #94a3b8;">Options:</strong>
-                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>municipality - Select any Canadian municipality (autocomplete)</li>
-                                <li>template - Compact, Card, Full, or Radar view</li>
-                            </ul>
-                        </div>
-                    </div>
+            <div class="command-card">
+                <h3 style="margin-bottom: 1rem;"><code>/dashboard</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for U.S. cities with refresh, radar, and alerts buttons.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>city - Select any U.S. city (autocomplete)</li>
+                    </ul>
+                </div>
+            </div>
 
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/forecast-ca</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for Canadian municipalities for planning ahead.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #94a3b8;">Options:</strong>
-                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>municipality - Select any Canadian municipality (autocomplete)</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="command-card">
-                        <h3 style="margin-bottom: 1rem;"><code>/dashboard-ca</code></h3>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for Canadian municipalities with refresh, radar, and alerts buttons.</p>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-                            <strong style="color: #94a3b8;">Options:</strong>
-                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
-                                <li>municipality - Select any Canadian municipality (autocomplete)</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <h2>🇦🇺 Australian Commands <span class="coming-soon-tag">Coming Feb 2026</span></h2>
-
-                     <div class="command-card disabled">
-                     <h3>/weather-au</h3>
-                      <p>Get current weather conditions for any Australian city.</p>
-                        <div class="options">
-                        <strong>Options:</strong>
-                         <ul>
-                      <li>city - Select any Australian city (autocomplete)</li>
-                       <li>template - Compact, Card, Full, or Radar view</li>
-                      </ul>
-                      </div>
-                      </div>
-
-                  <div class="command-card disabled">
-                        <h3>/forecast-au</h3>
-              <p>View 7-day weather forecast for Australian cities.</p>
-                  </div>
-
-              <div class="command-card disabled">
-              <h3>/dashboard-au</h3>
-           <p>Interactive weather dashboard for Australian cities.</p>
-                 </div>
+            <div class="command-card">
+                <h3 style="margin-bottom: 1rem;"><code>/announce</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">Send official announcements to Discord servers and website.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #ef4444;">Owner Only</strong>
+                    <p style="color: #94a3b8; margin-top: 0.5rem;">This command is restricted to the bot owner.</p>
                 </div>
             </div>
         </div>
 
+        <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇨🇦 Canadian Commands</h2>
+
+        <div class="grid grid-2">
+            <div class="command-card">
+                <h3 style="margin-bottom: 1rem;"><code>/weather-ca</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any supported Canadian municipality. Choose from multiple display styles.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>municipality - Select any Canadian municipality (autocomplete)</li>
+                        <li>template - Compact, Card, Full, or Radar view</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="command-card">
+                <h3 style="margin-bottom: 1rem;"><code>/forecast-ca</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for Canadian municipalities for planning ahead.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>municipality - Select any Canadian municipality (autocomplete)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="command-card">
+                <h3 style="margin-bottom: 1rem;"><code>/dashboard-ca</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for Canadian municipalities with refresh, radar, and alerts buttons.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>municipality - Select any Canadian municipality (autocomplete)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW AUSTRALIAN SECTION - SEPARATE FROM CANADA -->
+        <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇦🇺 Australian Commands <span class="coming-soon-tag">Coming Feb 2026</span></h2>
+
+        <div class="grid grid-2">
+            <div class="command-card disabled">
+                <h3 style="margin-bottom: 1rem;"><code>/weather-au</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for any Australian city.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>city - Select any Australian city (autocomplete)</li>
+                        <li>template - Compact, Card, Full, or Radar view</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="command-card disabled">
+                <h3 style="margin-bottom: 1rem;"><code>/forecast-au</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for Australian cities.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>city - Select any Australian city (autocomplete)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="command-card disabled">
+                <h3 style="margin-bottom: 1rem;"><code>/dashboard-au</code></h3>
+                <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for Australian cities.</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                    <strong style="color: #94a3b8;">Options:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                        <li>city - Select any Australian city (autocomplete)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
         <!-- STATUS PAGE -->
         <div id="status" class="page">
             <div class="container">
@@ -998,118 +1014,125 @@
         </div>
 
         <!-- DOCUMENTATION PAGE -->
-        <div id="docs" class="page">
-            <div class="container">
-                <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📖 Documentation</h1>
-                <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Everything you need to know about Midwest Weather</p>
+<div id="docs" class="page">
+    <div class="container">
+        <h1 style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📖 Documentation</h1>
+        <p style="text-align: center; color: #94a3b8; margin-bottom: 3rem;">Everything you need to know about Midwest Weather</p>
 
-                <div class="card" style="margin: 2rem 0;">
-                    <h2 style="margin-bottom: 1rem;">Getting Started</h2>
-                    <p style="color: #cbd5e1; line-height: 1.8;">
-                        Midwest Weather provides comprehensive weather data for all 50 U.S. states and Canadian provinces/territories through both a Discord bot and this website. 
-                        No account required for website access - just select your location and get instant weather updates.
-                    </p>
-                </div>
+        <div class="card" style="margin: 2rem 0;">
+            <h2 style="margin-bottom: 1rem;">Getting Started</h2>
+            <p style="color: #cbd5e1; line-height: 1.8;">
+                Midwest Weather provides comprehensive weather data for all 50 U.S. states and Canadian provinces/territories through both a Discord bot and this website. 
+                No account required for website access - just select your location and get instant weather updates.
+            </p>
+        </div>
 
-                <div class="card" style="margin: 2rem 0;">
-                    <h2 style="margin-bottom: 1rem;">Adding the Bot to Discord</h2>
-                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
-                        <li>Click the "Invite Bot" button in the navigation</li>
-                        <li>Select your Discord server from the dropdown</li>
-                        <li>Authorize the requested permissions</li>
-                        <li>Start using commands like <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather</code> or <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather-ca</code></li>
-                    </ol>
-                </div>
+        <div class="card" style="margin: 2rem 0;">
+            <h2 style="margin-bottom: 1rem;">Adding the Bot to Discord</h2>
+            <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                <li>Click the "Invite Bot" button in the navigation</li>
+                <li>Select your Discord server from the dropdown</li>
+                <li>Authorize the requested permissions</li>
+                <li>Start using commands like <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather</code> or <code style="background: rgba(102, 126, 234, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px;">/weather-ca</code></li>
+            </ol>
+        </div>
 
-                <div class="card" style="margin: 2rem 0;">
-                    <h2 style="margin-bottom: 1rem;">Using the Website</h2>
-                    <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 1rem;">
-                        The website provides anonymous weather lookup without needing a Discord account:
-                    </p>
-                    <h3 style="margin: 1rem 0; color: #667eea;">🇺🇸 United States</h3>
-                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
-                        <li>Navigate to the Weather page</li>
-                        <li>Select the "United States" tab</li>
-                        <li>Select your Region (Midwest, Southeast, Northeast, Southwest, or West)</li>
-                        <li>Choose your State</li>
-                        <li>Pick your City</li>
-                        <li>View current conditions and 7-day forecast</li>
-                    </ol>
-                    <h3 style="margin: 1rem 0; color: #667eea;">🇨🇦 Canada</h3>
-                    <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
-                        <li>Navigate to the Weather page</li>
-                        <li>Select the "Canada" tab</li>
-                        <li>Select your Region (Western, Central, Atlantic, or Northern)</li>
-                        <li>Choose your Province/Territory</li>
-                        <li>Pick your Municipality</li>
-                        <li>View current conditions and 7-day forecast</li>
-                    </ol>
-                </div>
+        <div class="card" style="margin: 2rem 0;">
+            <h2 style="margin-bottom: 1rem;">Using the Website</h2>
+            <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 1rem;">
+                The website provides anonymous weather lookup without needing a Discord account:
+            </p>
+            
+            <h3 style="margin: 1.5rem 0 0.5rem 0; color: #667eea;">🇺🇸 United States</h3>
+            <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                <li>Navigate to the Weather page</li>
+                <li>Select the "United States" tab</li>
+                <li>Select your Region (Midwest, Southeast, Northeast, Southwest, or West)</li>
+                <li>Choose your State</li>
+                <li>Pick your City</li>
+                <li>View current conditions and 7-day forecast</li>
+            </ol>
+            
+            <h3 style="margin: 1.5rem 0 0.5rem 0; color: #667eea;">🇨🇦 Canada</h3>
+            <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                <li>Navigate to the Weather page</li>
+                <li>Select the "Canada" tab</li>
+                <li>Select your Region (Western, Central, Atlantic, or Northern)</li>
+                <li>Choose your Province/Territory</li>
+                <li>Pick your Municipality</li>
+                <li>View current conditions and 7-day forecast</li>
+            </ol>
+        </div>
 
-                <div class="card" style="margin: 2rem 0;">
-                    <h2 style="margin-bottom: 1rem;">Coverage</h2>
-                    <div class="grid grid-2">
-                        <div>
-                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">🇺🇸 United States</h3>
-                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
-                                <li>3,187+ cities covered</li>
-                                <li>All 50 states</li>
-                                <li>5 regional divisions</li>
-                                <li>Real-time NWS data</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 style="margin-bottom: 0.5rem; color: #667eea;">🇨🇦 Canada</h3>
-                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
-                                <li>Major municipalities covered</li>
-                                <li>All provinces & territories</li>
-                                <li>4 regional divisions</li>
-                                <li>Real-time Environment Canada data</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card" style="margin: 2rem 0;">
-                    <h2 style="margin-bottom: 1rem;">API Integration</h2>
-                    <p style="color: #cbd5e1; line-height: 1.8;">
-                        The website and Discord bot are tightly integrated through a custom API. This ensures:
-                    </p>
-                    <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
-                        <li>Real-time synchronization of weather data</li>
-                        <li>Live bot status monitoring for both U.S. and Canadian servers</li>
-                        <li>Instant announcement broadcasting</li>
-                        <li>Consistent experience across platforms and countries</li>
+        <div class="card" style="margin: 2rem 0;">
+            <h2 style="margin-bottom: 1rem;">Coverage</h2>
+            <div class="grid grid-2" style="margin-bottom: 2rem;">
+                <div>
+                    <h3 style="margin-bottom: 0.5rem; color: #667eea;">🇺🇸 United States</h3>
+                    <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                        <li>3,187+ cities covered</li>
+                        <li>All 50 states</li>
+                        <li>5 regional divisions</li>
+                        <li>Real-time NWS data</li>
                     </ul>
                 </div>
-                <h3>🇦🇺 Australia <span class="coming-soon-badge">February 2026</span></h3>
-                <ul>
-               <li>Major cities across all states</li>
-              <li>All 8 states & territories</li>
-              <li>Regional divisions</li>
-             <li>Real-time Bureau of Meteorology data</li>
-             </ul>
-                <div class="card" style="margin: 2rem 0;">
-                   <h2 style="margin-bottom: 1rem;">Support</h2>
-                    <p style="color: #cbd5e1; line-height: 1.8;">
-                        For questions, issues, or feedback, visit our Discord server or check the Status page for system health information.
-                    </p>
-                </div>
-
-                <div class="card" style="margin: 2rem 0;">
-                    <h2 style="margin-bottom: 1rem;">🎙️ Podcast Integration (Coming Soon)</h2>
-                    <p style="color: #cbd5e1; line-height: 1.8;">
-                        Midwest Weather Bot is expanding to support podcast creators! This feature is currently in development.
-                    </p>
-                    <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
-                        <li>Request real-time weather updates during live recordings</li>
-                        <li>Get detailed forecast information for show planning</li>
-                        <li>Access weather data for multiple locations simultaneously</li>
+                <div>
+                    <h3 style="margin-bottom: 0.5rem; color: #667eea;">🇨🇦 Canada</h3>
+                    <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                        <li>820+ municipalities covered</li>
+                        <li>All provinces & territories</li>
+                        <li>4 regional divisions</li>
+                        <li>Real-time Environment Canada data</li>
                     </ul>
-                    <p style="color: #f59e0b; margin-top: 1rem; font-weight: 600;">⚠️ This sector is currently closed for development. We'll announce when podcast features go live!</p>
                 </div>
             </div>
+            
+            <!-- AUSTRALIAN COVERAGE SECTION -->
+            <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem;">
+                <h3 style="margin-bottom: 0.5rem; color: #fbbf24;">🇦🇺 Australia <span class="coming-soon-badge">February 2026</span></h3>
+                <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
+                    <li>Major cities across all states</li>
+                    <li>All 8 states & territories</li>
+                    <li>Regional divisions</li>
+                    <li>Real-time Bureau of Meteorology data</li>
+                </ul>
+            </div>
         </div>
+
+        <div class="card" style="margin: 2rem 0;">
+            <h2 style="margin-bottom: 1rem;">API Integration</h2>
+            <p style="color: #cbd5e1; line-height: 1.8;">
+                The website and Discord bot are tightly integrated through a custom API. This ensures:
+            </p>
+            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
+                <li>Real-time synchronization of weather data</li>
+                <li>Live bot status monitoring for both U.S. and Canadian servers</li>
+                <li>Instant announcement broadcasting</li>
+                <li>Consistent experience across platforms and countries</li>
+            </ul>
+        </div>
+
+        <div class="card" style="margin: 2rem 0;">
+            <h2 style="margin-bottom: 1rem;">Support</h2>
+            <p style="color: #cbd5e1; line-height: 1.8;">
+                For questions, issues, or feedback, visit our Discord server or check the Status page for system health information.
+            </p>
+        </div>
+
+        <div class="card" style="margin: 2rem 0;">
+            <h2 style="margin-bottom: 1rem;">🎙️ Podcast Integration (Coming Soon)</h2>
+            <p style="color: #cbd5e1; line-height: 1.8;">
+                Midwest Weather Bot is expanding to support podcast creators! This feature is currently in development.
+            </p>
+            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem; margin-top: 1rem;">
+                <li>Request real-time weather updates during live recordings</li>
+                <li>Get detailed forecast information for show planning</li>
+                <li>Access weather data for multiple locations simultaneously</li>
+            </ul>
+            <p style="color: #f59e0b; margin-top: 1rem; font-weight: 600;">⚠️ This sector is currently closed for development. We'll announce when podcast features go live!</p>
+        </div>
+    </div>
+</div>
 
         <!-- ANNOUNCEMENTS PAGE -->
         <div id="announcements" class="page">
