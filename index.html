@@ -359,6 +359,145 @@
             color: #94a3b8;
             margin-top: 0.25rem;
         }
+        /* Radar Modal Styles */
+.radar-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.radar-modal-content {
+    background: rgba(15, 23, 42, 0.98);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.radar-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.radar-close-btn:hover {
+    background: rgba(239, 68, 68, 0.4);
+    transform: scale(1.05);
+}
+
+.radar-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #e4e4e7;
+    font-weight: 700;
+}
+
+.radar-subtitle {
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.radar-image-container {
+    text-align: center;
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 2px solid rgba(148, 163, 184, 0.2);
+}
+
+.radar-image {
+    max-width: 100%;
+    border-radius: 12px;
+    border: 2px solid rgba(148, 163, 184, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+.radar-footer {
+    color: #64748b;
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.radar-loading {
+    text-align: center;
+    padding: 3rem;
+    color: #94a3b8;
+}
+
+.radar-loading::after {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(102, 126, 234, 0.3);
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 1rem;
+}
+
+/* Radar Button Styles */
+.btn-radar {
+    background: rgba(68, 114, 196, 0.2);
+    color: #4472C4;
+    border: 1px solid #4472C4;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+.btn-radar:hover {
+    background: rgba(68, 114, 196, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(68, 114, 196, 0.3);
+}
+
+/* Responsive Radar Modal */
+@media (max-width: 768px) {
+    .radar-modal {
+        padding: 1rem;
+    }
+    
+    .radar-modal-content {
+        padding: 1.5rem;
+    }
+    
+    .radar-title {
+        font-size: 1.5rem;
+    }
+    
+    .radar-image-container {
+        padding: 0.5rem;
+    }
+}
 
         /* Command Card */
         .command-card {
@@ -677,6 +816,11 @@
                         <div style="font-size: 3rem;">📊</div>
                         <h3 style="margin: 1rem 0;">7-Day Forecast</h3>
                         <p style="color: #94a3b8;">Plan ahead with predictions</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 3rem;">📊</div>
+                        <h3 style="margin: 1rem 0;">Live Doppler Radar</h3>
+                        <p style="color: #94a3b8;">See live</p>
                     </div>
                     <div class="card" style="text-align: center;">
                         <div style="font-size: 3rem;">🤖</div>
@@ -2458,8 +2602,9 @@ function setWeatherEffect(condition) {
                     </div>
                     
                     <div style="text-align: center; margin: 2rem 0;">
-                        <button class="btn btn-primary" onclick="loadWeather()">🔄 Refresh Weather</button>
-                    </div>
+                    <button class="btn btn-primary" onclick="loadWeather()">🔄 Refresh Weather</button>
+                    <button class="btn btn-secondary" onclick="showRadar('usa', '${cityId}')">📡 View Radar</button>
+                 </div>
                 `;
                 
                 // Add forecast
@@ -2729,8 +2874,9 @@ async function loadAustraliaWeather() {
                     </div>
                     
                     <div style="text-align: center; margin: 2rem 0;">
-                        <button class="btn btn-primary" onclick="loadCanadaWeather()">🔄 Refresh Weather</button>
-                    </div>
+                   <button class="btn btn-primary" onclick="loadCanadaWeather()">🔄 Refresh Weather</button>
+                   <button class="btn btn-secondary" onclick="showRadar('canada', '${cityId}')">📡 View Radar</button>
+                   </div>
                 `;
                 
                 // Add forecast
@@ -2761,6 +2907,82 @@ async function loadAustraliaWeather() {
                 `;
             }
         }
+        // Doppler Radar Functions (API-based with CSS classes)
+async function showRadar(country, cityId) {
+    let radarData;
+    
+    try {
+        // Show loading state
+        const loadingModal = document.createElement('div');
+        loadingModal.className = 'radar-modal';
+        loadingModal.id = 'radar-loading';
+        loadingModal.innerHTML = `
+            <div class="radar-modal-content">
+                <div class="radar-loading">Loading radar data...</div>
+            </div>
+        `;
+        document.body.appendChild(loadingModal);
+        
+        // Fetch radar data from API
+        const endpoint = country === 'usa' ? `/api/radar/${cityId}` : `/api/radar-ca/${cityId}`;
+        const response = await fetch(`${API_URL}${endpoint}`);
+        
+        if (!response.ok) throw new Error('Failed to fetch radar');
+        
+        radarData = await response.json();
+        
+        // Remove loading modal
+        document.getElementById('radar-loading').remove();
+        
+    } catch (error) {
+        document.getElementById('radar-loading')?.remove();
+        alert('❌ Failed to load radar data');
+        return;
+    }
+    
+    const { city, radarUrl, station } = radarData;
+    const title = country === 'usa' 
+        ? `Live Doppler Radar - ${city.name}, ${city.state}` 
+        : `Live Doppler Radar - ${city.name}, ${city.province}`;
+    
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.className = 'radar-modal';
+    modal.innerHTML = `
+        <div class="radar-modal-content">
+            <button class="radar-close-btn" onclick="this.closest('.radar-modal').remove()">✕ Close</button>
+            <h2 class="radar-title">${title}</h2>
+            <p class="radar-subtitle">Real-time radar imagery updates every few minutes</p>
+            <div class="radar-image-container">
+                <img src="${radarUrl}" alt="Doppler Radar" class="radar-image">
+            </div>
+            <p class="radar-footer">
+                Data source: ${country === 'usa' ? `NOAA Radar Station ${station}` : 'RainViewer'}
+            </p>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+function getRadarStation(state) {
+    const radarStations = {
+        'Alabama': 'BMX', 'Alaska': 'ABC', 'Arizona': 'EMX', 'Arkansas': 'LZK',
+        'California': 'MUX', 'Colorado': 'FTG', 'Connecticut': 'BOX', 'Delaware': 'DOX',
+        'Florida': 'TBW', 'Georgia': 'FFC', 'Hawaii': 'HKI', 'Idaho': 'CBX',
+        'Illinois': 'LOT', 'Indiana': 'IND', 'Iowa': 'DMX', 'Kansas': 'ICT',
+        'Kentucky': 'LVX', 'Louisiana': 'LCH', 'Maine': 'GYX', 'Maryland': 'LWX',
+        'Massachusetts': 'BOX', 'Michigan': 'GRR', 'Minnesota': 'MPX', 'Mississippi': 'GWX',
+        'Missouri': 'SGF', 'Montana': 'TFX', 'Nebraska': 'OAX', 'Nevada': 'ESX',
+        'New Hampshire': 'GYX', 'New Jersey': 'DIX', 'New Mexico': 'ABX', 'New York': 'BGM',
+        'North Carolina': 'RAX', 'North Dakota': 'BIS', 'Ohio': 'ILN', 'Oklahoma': 'OUN',
+        'Oregon': 'RTX', 'Pennsylvania': 'CCX', 'Rhode Island': 'BOX', 'South Carolina': 'CAE',
+        'South Dakota': 'FSD', 'Tennessee': 'MRX', 'Texas': 'FWS', 'Utah': 'MTX',
+        'Vermont': 'BTV', 'Virginia': 'AKQ', 'Washington': 'ATX', 'West Virginia': 'RLX',
+        'Wisconsin': 'GRB', 'Wyoming': 'CYS'
+    };
+    
+    return radarStations[state] || 'FWS';
+}
 
         // Load announcements
         async function loadAnnouncements() {
