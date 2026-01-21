@@ -2983,6 +2983,25 @@ function getRadarStation(state) {
     
     return radarStations[state] || 'FWS';
 }
+        function getCanadianRadarStation(province) {
+  const radarStations = {
+    'Alberta': 'CASRA',
+    'British Columbia': 'CASBV', 
+    'Manitoba': 'XWL',
+    'New Brunswick': 'XAM',
+    'Newfoundland and Labrador': 'XME',
+    'Northwest Territories': 'XNC',
+    'Nova Scotia': 'XGO',
+    'Nunavut': 'XEU',
+    'Ontario': 'WKR',
+    'Prince Edward Island': 'XAM',
+    'Quebec': 'XLA',
+    'Saskatchewan': 'XBE',
+    'Yukon': 'XSM'
+  };
+  
+  return radarStations[province] || 'WKR';
+}
 
         // Load announcements
         async function loadAnnouncements() {
