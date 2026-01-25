@@ -2222,6 +2222,15 @@
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             window.scrollTo(0, 0);
+            
+            // Load page-specific data
+            if (pageId === 'status') {
+                loadStatusPage();
+            } else if (pageId === 'announcements') {
+                loadAnnouncements();
+            } else if (pageId === 'bot') {
+                loadStatusPage();
+            }
         }
 
         // Country Switcher
@@ -2250,7 +2259,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             container.appendChild(renderer.domElement);
             
-            // Detect weather/holiday mode
             const today = new Date();
             const month = today.getMonth() + 1;
             const day = today.getDate();
@@ -2258,18 +2266,16 @@
             let weatherMode = 'default';
             let particleCount = 2000;
             
-            // Holiday detection
             if ((month === 12) || (month === 1 && day <= 5)) {
-                weatherMode = 'snow'; // Christmas season
+                weatherMode = 'snow';
             } else if (month === 12 && day === 31) {
-                weatherMode = 'fireworks'; // New Year's Eve
+                weatherMode = 'fireworks';
             } else if (month === 7 && day === 4) {
-                weatherMode = 'fireworks'; // Independence Day
+                weatherMode = 'fireworks';
             } else if (month === 7 && day === 1) {
-                weatherMode = 'fireworks'; // Canada Day
+                weatherMode = 'fireworks';
             } else {
-                // Weather-based (can be dynamic based on actual weather API)
-                weatherMode = 'rain'; // Default to rain particles
+                weatherMode = 'rain';
             }
             
             const particles = new THREE.BufferGeometry();
@@ -2282,13 +2288,12 @@
                 positions[i + 1] = Math.random() * 100 - 50;
                 positions[i + 2] = (Math.random() - 0.5) * 100;
                 
-                // Set colors based on mode
                 if (weatherMode === 'snow') {
-                    colors[i] = 0.9 + Math.random() * 0.1;     // White
+                    colors[i] = 0.9 + Math.random() * 0.1;
                     colors[i + 1] = 0.9 + Math.random() * 0.1;
                     colors[i + 2] = 1.0;
                     velocities[i] = (Math.random() - 0.5) * 0.02;
-                    velocities[i + 1] = -Math.random() * 0.05 - 0.02; // Falling
+                    velocities[i + 1] = -Math.random() * 0.05 - 0.02;
                     velocities[i + 2] = (Math.random() - 0.5) * 0.02;
                 } else if (weatherMode === 'fireworks') {
                     colors[i] = Math.random();
@@ -2298,11 +2303,11 @@
                     velocities[i + 1] = Math.random() * 0.1;
                     velocities[i + 2] = (Math.random() - 0.5) * 0.1;
                 } else if (weatherMode === 'rain') {
-                    colors[i] = 0.5 + Math.random() * 0.3;     // Blue-ish
+                    colors[i] = 0.5 + Math.random() * 0.3;
                     colors[i + 1] = 0.6 + Math.random() * 0.3;
                     colors[i + 2] = 0.9 + Math.random() * 0.1;
                     velocities[i] = (Math.random() - 0.5) * 0.01;
-                    velocities[i + 1] = -Math.random() * 0.15 - 0.1; // Fast falling
+                    velocities[i + 1] = -Math.random() * 0.15 - 0.1;
                     velocities[i + 2] = (Math.random() - 0.5) * 0.01;
                 } else {
                     colors[i] = 0.4 + Math.random() * 0.3;
@@ -2330,7 +2335,6 @@
             
             camera.position.z = 50;
             
-            // Animation loop with weather physics
             function animate() {
                 requestAnimationFrame(animate);
                 
@@ -2341,7 +2345,6 @@
                     positions[i + 1] += velocities[i + 1];
                     positions[i + 2] += velocities[i + 2];
                     
-                    // Reset particles that go out of bounds
                     if (positions[i + 1] < -50) {
                         positions[i + 1] = 50;
                         positions[i] = (Math.random() - 0.5) * 100;
@@ -2349,7 +2352,6 @@
                     }
                     
                     if (weatherMode === 'fireworks') {
-                        // Fade and gravity for fireworks
                         velocities[i + 1] -= 0.001;
                         if (positions[i + 1] < -50) {
                             positions[i] = (Math.random() - 0.5) * 100;
@@ -2405,18 +2407,50 @@
             }, 1000);
         }
 
-        // Quick Search
-        function quickSearchWeather() {
-            const query = document.getElementById('quick-search-input').value;
-            // TODO: Implement search functionality
-            console.log('Searching for:', query);
+        // Quick Search Function
+        async function quickSearchWeather() {
+            const query = document.getElementById('quick-search-input').value.trim();
+            if (!query) return;
+            
+            const isZip = /^\d{5}$/.test(query);
+            let foundCity = null;
+            
+            if (isZip) {
+                foundCity = allCities.find(c => c.zip === query);
+            } else {
+                const searchLower = query.toLowerCase();
+                foundCity = allCities.find(c => c.name.toLowerCase().includes(searchLower));
+                
+                if (!foundCity) {
+                    foundCity = allCanadaCities.find(c => c.name.toLowerCase().includes(searchLower));
+                    if (foundCity) {
+                        switchCountry('canada');
+                        document.getElementById('canada-city-select').value = foundCity.id;
+                        await loadCanadaWeather();
+                        return;
+                    }
+                }
+            }
+            
+            if (foundCity) {
+                switchCountry('usa');
+                document.getElementById('region-select').value = foundCity.region;
+                loadStates();
+                setTimeout(() => {
+                    document.getElementById('state-select').value = foundCity.state;
+                    loadCities();
+                    setTimeout(() => {
+                        document.getElementById('city-select').value = foundCity.id;
+                        loadWeather();
+                    }, 100);
+                }, 100);
+            } else {
+                alert('❌ City not found. Try another search term.');
+            }
         }
 
-        // ========================================
-        // API INTEGRATION - LOAD CITIES DATA
-        // ========================================
+        // Load Cities Data
         async function loadCitiesData() {
-            // Load U.S. Cities
             try {
                 const response = await fetch(`${API_URL}/api/cities`);
                 if (!response.ok) throw new Error('API offline');
@@ -2429,7 +2463,6 @@
                 console.error('Failed to load U.S. cities:', error);
             }
 
-            // Load Canadian Cities
             try {
                 const canadaResponse = await fetch(`${API_URL}/api/cities-ca`);
                 if (!canadaResponse.ok) throw new Error('API offline');
@@ -2442,7 +2475,6 @@
                 console.error('Failed to load Canadian cities:', error);
             }
            
-            // Load Australian Cities
             try {
                 const australiaResponse = await fetch(`${API_URL}/api/cities-au`);
                 if (!australiaResponse.ok) throw new Error('API offline');
@@ -2456,9 +2488,61 @@
             }
         }
 
-        // ========================================
-        // USA WEATHER FUNCTIONS
-        // ========================================
+        // Status Page
+        async function loadStatusPage() {
+            try {
+                const response = await fetch(`${API_URL}/api/status`);
+                if (!response.ok) throw new Error('API offline');
+                
+                const data = await response.json();
+                
+                const homeStatus = document.getElementById('home-status-badge');
+                if (homeStatus) {
+                    if (data.status === 'online') {
+                        homeStatus.className = 'status-badge online';
+                        homeStatus.innerHTML = '<div class="status-dot online"></div><span>All Systems Operational</span>';
+                    } else {
+                        homeStatus.className = 'status-badge offline';
+                        homeStatus.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+                    }
+                }
+                
+                if (document.getElementById('home-servers-count')) {
+                    document.getElementById('home-servers-count').textContent = data.servers || '0';
+                }
+                if (document.getElementById('home-users-count')) {
+                    document.getElementById('home-users-count').textContent = data.users || '0';
+                }
+                
+                if (document.getElementById('bot-status-badge')) {
+                    const botBadge = document.getElementById('bot-status-badge');
+                    if (data.status === 'online') {
+                        botBadge.className = 'status-badge online';
+                        botBadge.innerHTML = '<div class="status-dot online"></div><span>Operational</span>';
+                    } else {
+                        botBadge.className = 'status-badge offline';
+                        botBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+                    }
+                    
+                    const uptimeMinutes = Math.floor(data.uptime / 1000 / 60);
+                    const hours = Math.floor(uptimeMinutes / 60);
+                    const minutes = uptimeMinutes % 60;
+                    document.getElementById('bot-uptime').textContent = `${hours}h ${minutes}m`;
+                    document.getElementById('bot-servers').textContent = data.servers || '0';
+                    document.getElementById('bot-users').textContent = data.users || '0';
+                }
+                
+            } catch (error) {
+                console.error('Status fetch failed:', error);
+                const homeStatus = document.getElementById('home-status-badge');
+                if (homeStatus) {
+                    homeStatus.className = 'status-badge offline';
+                    homeStatus.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+                }
+            }
+        }
+
+        // USA Weather Functions
         function handleRegionChange() {
             loadStates();
         }
@@ -2536,7 +2620,6 @@
                 const city = data.city;
                 const weather = data.weather;
                 
-                // Get weather icon
                 const condition = weather.condition.toLowerCase();
                 let icon = '☁️';
                 if (condition.includes('rain')) icon = '🌧️';
@@ -2545,7 +2628,6 @@
                 else if (condition.includes('cloud')) icon = '☁️';
                 else if (condition.includes('storm') || condition.includes('thunder')) icon = '⛈️';
                 
-                // Build weather display
                 let html = `
                     <div class="weather-hero">
                         <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${city.name}, ${city.state}</h2>
@@ -2577,7 +2659,6 @@
                     </div>
                 `;
                 
-                // Add forecast if available
                 if (weather.forecast && weather.forecast.length > 0) {
                     html += '<div class="card" style="margin-top: 2rem;"><h2 style="margin-bottom: 1.5rem;">7-Day Forecast</h2><div class="grid grid-4">';
                     weather.forecast.forEach(day => {
@@ -2603,9 +2684,7 @@
             }
         }
 
-        // ========================================
-        // CANADIAN WEATHER FUNCTIONS
-        // ========================================
+        // Canadian Weather Functions
         function handleCanadaRegionChange() {
             loadCanadaProvinces();
         }
@@ -2683,7 +2762,6 @@
                 const city = data.city;
                 const weather = data.weather;
                 
-                // Get weather icon
                 const condition = weather.condition.toLowerCase();
                 let icon = '☁️';
                 if (condition.includes('rain')) icon = '🌧️';
@@ -2692,7 +2770,6 @@
                 else if (condition.includes('cloud')) icon = '☁️';
                 else if (condition.includes('storm') || condition.includes('thunder')) icon = '⛈️';
                 
-                // Build weather display
                 let html = `
                     <div class="weather-hero">
                         <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${city.name}, ${city.province}</h2>
@@ -2724,7 +2801,6 @@
                     </div>
                 `;
                 
-                // Add forecast if available
                 if (weather.forecast && weather.forecast.length > 0) {
                     html += '<div class="card" style="margin-top: 2rem;"><h2 style="margin-bottom: 1.5rem;">7-Day Forecast</h2><div class="grid grid-4">';
                     weather.forecast.forEach(day => {
@@ -2750,9 +2826,7 @@
             }
         }
 
-        // ========================================
-        // AUSTRALIAN WEATHER FUNCTIONS
-        // ========================================
+        // Australian Weather Functions
         function handleAustraliaRegionChange() {
             loadAustraliaStates();
         }
@@ -2813,292 +2887,160 @@
 
         function handleAustraliaCityChange() {
             loadAustraliaWeather();
-        }
-
-        async function loadAustraliaWeather() {
-            const cityId = document.getElementById('australia-city-select').value;
-            if (!cityId) return;
+}
+    async function loadAustraliaWeather() {
+        const cityId = document.getElementById('australia-city-select').value;
+        if (!cityId) return;
+        
+        const resultDiv = document.getElementById('australia-weather-result');
+        resultDiv.innerHTML = '<div class="spinner"></div>';
+        
+        try {
+            const response = await fetch(`${API_URL}/api/weather-au/${cityId}`);
+            if (!response.ok) throw new Error('Failed to fetch weather');
             
-            const resultDiv = document.getElementById('australia-weather-result');
-            resultDiv.innerHTML = '<div class="spinner"></div>';
+            const data = await response.json();
+            resultDiv.innerHTML = `<div class="card"><h2>${data.city.name}, ${data.city.state}</h2></div>`;
+        } catch (error) {
+            resultDiv.innerHTML = `
+                <div class="card" style="text-align: center; margin-top: 2rem;">
+                    <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
+                    <p style="color: #94a3b8; margin-top: 1rem;">Australian weather coming February 2026</p>
+                </div>
+            `;
+        }
+    }
+
+    // Radar Functions
+    async function loadRadar() {
+        const region = document.getElementById('radar-region').value;
+        if (!region) {
+            alert('Please select a region first');
+            return;
+        }
+        
+        const display = document.getElementById('radar-display');
+        display.innerHTML = '<div class="spinner"></div>';
+        
+        const radarStations = {
+            'national': 'CONUS',
+            'midwest': 'MPX',
+            'southeast': 'FFC',
+            'northeast': 'OKX',
+            'southwest': 'FWS',
+            'west': 'MUX',
+            'canada': 'CASRA',
+            'australia': 'BOM'
+        };
+        
+        const station = radarStations[region] || 'CONUS';
+        
+        if (region !== 'canada' && region !== 'australia') {
+            const radarUrl = `https://radar.weather.gov/ridge/standard/${station}_loop.gif`;
             
-            try {
-                const response = await fetch(`${API_URL}/api/weather-au/${cityId}`);
-                if (!response.ok) throw new Error('Failed to fetch weather');
-                
-                const data = await response.json();
-                // Display Australian weather data
-                resultDiv.innerHTML = `<div class="card"><h2>${data.city.name}, ${data.city.state}</h2></div>`;
-            } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="card" style="text-align: center; margin-top: 2rem;">
-                        <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
-                        <p style="color: #94a3b8; margin-top: 1rem;">Australian weather coming February 2026</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Radar Functions
-async function loadRadar() {
-    const region = document.getElementById('radar-region').value;
-    if (!region) {
-        alert('Please select a region first');
-        return;
-    }
-    
-    const display = document.getElementById('radar-display');
-    display.innerHTML = '<div class="spinner"></div>';
-    
-    // Map regions to radar stations
-    const radarStations = {
-        'national': 'CONUS',
-        'midwest': 'MPX',
-        'southeast': 'FFC',
-        'northeast': 'OKX',
-        'southwest': 'FWS',
-        'west': 'MUX',
-        'canada': 'CASRA',
-        'australia': 'BOM'
-    };
-    
-    const station = radarStations[region] || 'CONUS';
-    
-    // Use NOAA radar for US regions
-    if (region !== 'canada' && region !== 'australia') {
-        const radarUrl = `https://radar.weather.gov/ridge/standard/${station}_loop.gif`;
-        
-        display.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Live Doppler Radar - ${region.charAt(0).toUpperCase() + region.slice(1)}</h3>
-                <img src="${radarUrl}" 
-                     alt="Radar ${station}" 
-                     style="max-width: 100%; border-radius: 12px; border: 2px solid rgba(148, 163, 184, 0.2);"
-                     onerror="this.parentElement.innerHTML='<p style=color:#ef4444>❌ Radar temporarily unavailable</p>'">
-                <p style="color: #94a3b8; margin-top: 1rem; font-size: 0.9rem;">
-                    Station: ${station} • Updates every 5 minutes
-                </p>
-            </div>
-        `;
-    } else if (region === 'canada') {
-        display.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Canadian Radar</h3>
-                <p style="color: #94a3b8;">Environment Canada radar integration coming soon</p>
-            </div>
-        `;
-    } else {
-        display.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-                <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Australian Radar</h3>
-                <p style="color: #94a3b8;">BOM Australia radar launching February 2026</p>
-            </div>
-        `;
-    }
-}
-
-function toggleRadarAnimation() {
-    // Toggle between static and animated radar
-    const display = document.getElementById('radar-display');
-    const img = display.querySelector('img');
-    if (img) {
-        const currentSrc = img.src;
-        if (currentSrc.includes('_loop.gif')) {
-            // Switch to static
-            img.src = currentSrc.replace('_loop.gif', '_0.gif');
+            display.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Live Doppler Radar - ${region.charAt(0).toUpperCase() + region.slice(1)}</h3>
+                    <img src="${radarUrl}" 
+                         alt="Radar ${station}" 
+                         style="max-width: 100%; border-radius: 12px; border: 2px solid rgba(148, 163, 184, 0.2);"
+                         onerror="this.parentElement.innerHTML='<p style=color:#ef4444>❌ Radar temporarily unavailable</p>'">
+                    <p style="color: #94a3b8; margin-top: 1rem; font-size: 0.9rem;">
+                        Station: ${station} • Updates every 5 minutes
+                    </p>
+                </div>
+            `;
+        } else if (region === 'canada') {
+            display.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Canadian Radar</h3>
+                    <p style="color: #94a3b8;">Environment Canada radar integration coming soon</p>
+                </div>
+            `;
         } else {
-            // Switch to animated
-            img.src = currentSrc.replace('_0.gif', '_loop.gif');
+            display.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Australian Radar</h3>
+                    <p style="color: #94a3b8;">BOM Australia radar launching February 2026</p>
+                </div>
+            `;
         }
     }
-}
 
-        // Announcements Filter
-        function filterAnnouncements() {
-            const filter = document.getElementById('announcement-filter').value;
-            console.log('Filtering by:', filter);
-        }
-
-        function sortAnnouncements() {
-            const sort = document.getElementById('announcement-sort').value;
-            console.log('Sorting by:', sort);
-        }
-
-        function refreshAnnouncements() {
-            const container = document.getElementById('announcements-container');
-            container.innerHTML = '<div class="spinner"></div>';
-            loadAnnouncements();
-        }
-
-        async function loadAnnouncements() {
-            try {
-                const response = await fetch(`${API_URL}/api/announcements`);
-                if (!response.ok) throw new Error('Failed to load');
-                
-                const data = await response.json();
-                allAnnouncements = data.announcements;
-                
-                const container = document.getElementById('announcements-container');
-                if (allAnnouncements.length === 0) {
-                    container.innerHTML = '<div class="card"><p style="text-align: center;">No announcements yet.</p></div>';
-                    return;
-                }
-                
-                container.innerHTML = allAnnouncements.map(ann => `
-                    <div class="card">
-                        <h3>${ann.title}</h3>
-                        <p style="color: #94a3b8; margin: 1rem 0;">${ann.message}</p>
-                        <small style="color: #64748b;">${new Date(ann.timestamp).toLocaleDateString()}</small>
-                    </div>
-                `).join('');
-            } catch (error) {
-                document.getElementById('announcements-container').innerHTML=
-'<div class="card"><p style="color: #ef4444;">Failed to load announcements</p></div>';
-}
-// ========================================
-// STATUS PAGE FUNCTIONS
-// ========================================
-async function loadStatusPage() {
-    try {
-        const response = await fetch(`${API_URL}/api/status`);
-        if (!response.ok) throw new Error('API offline');
-        
-        const data = await response.json();
-        
-        // Update home page status
-        const homeStatus = document.getElementById('home-status-badge');
-        if (data.status === 'online') {
-            homeStatus.className = 'status-badge online';
-            homeStatus.innerHTML = '<div class="status-dot online"></div><span>All Systems Operational</span>';
-        } else {
-            homeStatus.className = 'status-badge offline';
-            homeStatus.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
-        }
-        
-        // Update stats
-        document.getElementById('home-servers-count').textContent = data.servers || '0';
-        document.getElementById('home-users-count').textContent = data.users || '0';
-        
-        // If on status page, update detailed info
-        if (document.getElementById('bot-status-badge')) {
-            const botBadge = document.getElementById('bot-status-badge');
-            if (data.status === 'online') {
-                botBadge.className = 'status-badge online';
-                botBadge.innerHTML = '<div class="status-dot online"></div><span>Operational</span>';
+    function toggleRadarAnimation() {
+        const display = document.getElementById('radar-display');
+        const img = display.querySelector('img');
+        if (img) {
+            const currentSrc = img.src;
+            if (currentSrc.includes('_loop.gif')) {
+                img.src = currentSrc.replace('_loop.gif', '_0.gif');
             } else {
-                botBadge.className = 'status-badge offline';
-                botBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+                img.src = currentSrc.replace('_0.gif', '_loop.gif');
             }
-            
-            const uptimeMinutes = Math.floor(data.uptime / 1000 / 60);
-            const hours = Math.floor(uptimeMinutes / 60);
-            const minutes = uptimeMinutes % 60;
-            document.getElementById('bot-uptime').textContent = `${hours}h ${minutes}m`;
-            document.getElementById('bot-servers').textContent = data.servers || '0';
-            document.getElementById('bot-users').textContent = data.users || '0';
         }
-        
-    } catch (error) {
-        console.error('Status fetch failed:', error);
-        const homeStatus = document.getElementById('home-status-badge');
-        homeStatus.className = 'status-badge offline';
-        homeStatus.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
-        
-        document.getElementById('home-servers-count').textContent = '0';
-        document.getElementById('home-users-count').textContent = '0';
     }
-}
-// Quick Search Function
-async function quickSearchWeather() {
-    const query = document.getElementById('quick-search-input').value.trim();
-    if (!query) return;
-    
-    // Check if it's a ZIP code (5 digits)
-    const isZip = /^\d{5}$/.test(query);
-    
-    let foundCity = null;
-    
-    if (isZip) {
-        // Search by ZIP
-        foundCity = allCities.find(c => c.zip === query);
-    } else {
-        // Search by name
-        const searchLower = query.toLowerCase();
-        foundCity = allCities.find(c => c.name.toLowerCase().includes(searchLower));
-        
-        // If not found in US, try Canada
-        if (!foundCity) {
-            foundCity = allCanadaCities.find(c => c.name.toLowerCase().includes(searchLower));
-            if (foundCity) {
-                // Switch to Canada tab and load
-                switchCountry('canada');
-                document.getElementById('canada-city-select').value = foundCity.id;
-                await loadCanadaWeather();
+
+    // Announcements
+    function filterAnnouncements() {
+        const filter = document.getElementById('announcement-filter').value;
+        console.log('Filtering by:', filter);
+    }
+
+    function sortAnnouncements() {
+        const sort = document.getElementById('announcement-sort').value;
+        console.log('Sorting by:', sort);
+    }
+
+    function refreshAnnouncements() {
+        const container = document.getElementById('announcements-container');
+        container.innerHTML = '<div class="spinner"></div>';
+        loadAnnouncements();
+    }
+
+    async function loadAnnouncements() {
+        try {
+            const response = await fetch(`${API_URL}/api/announcements`);
+            if (!response.ok) throw new Error('Failed to load');
+            
+            const data = await response.json();
+            allAnnouncements = data.announcements;
+            
+            const container = document.getElementById('announcements-container');
+            if (allAnnouncements.length === 0) {
+                container.innerHTML = '<div class="card"><p style="text-align: center;">No announcements yet.</p></div>';
                 return;
             }
+            
+            container.innerHTML = allAnnouncements.map(ann => `
+                <div class="card">
+                    <h3>${ann.title}</h3>
+                    <p style="color: #94a3b8; margin: 1rem 0;">${ann.message}</p>
+                    <small style="color: #64748b;">${new Date(ann.timestamp).toLocaleDateString()}</small>
+                </div>
+            `).join('');
+        } catch (error) {
+            document.getElementById('announcements-container').innerHTML = '<div class="card"><p style="color: #ef4444;">Failed to load announcements</p></div>';
         }
     }
-    
-    if (foundCity) {
-        // Auto-populate dropdowns and load weather
-        switchCountry('usa');
-        document.getElementById('region-select').value = foundCity.region;
-        loadStates();
-        setTimeout(() => {
-            document.getElementById('state-select').value = foundCity.state;
-            loadCities();
-            setTimeout(() => {
-                document.getElementById('city-select').value = foundCity.id;
-                loadWeather();
-            }, 100);
-        }, 100);
-    } else {
-        alert('❌ City not found. Try another search term.');
-    }
-}
 
-// Allow Enter key to search
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('quick-search-input');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                quickSearchWeather();
-            }
-        });
-    }
-});
-// Page Navigation
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-    window.scrollTo(0, 0);
-    
-    // Load page-specific data
-    if (pageId === 'status') {
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+        init3DParticles();
+        updateUKCountdown();
+        loadCitiesData();
         loadStatusPage();
-    } else if (pageId === 'announcements') {
-        loadAnnouncements();
-    } else if (pageId === 'bot') {
-        loadStatusPage(); // Also updates bot stats
-    }
-}
-}
- // Initialize on load
-window.addEventListener('DOMContentLoaded', () => {
-    init3DParticles();
-    updateUKCountdown();
-    loadCitiesData();
-    loadStatusPage();
-    
-    // Refresh status every 30 seconds
-    setInterval(loadStatusPage, 30000);
-    
-    // If on announcements page, load them
-    if (document.getElementById('announcements-container')) {
-        loadAnnouncements();
-    }
-});
+        
+        setInterval(loadStatusPage, 30000);
+        
+        const searchInput = document.getElementById('quick-search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    quickSearchWeather();
+                }
+            });
+        }
+    });
 </script>
 </body>
 </html>
