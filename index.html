@@ -397,76 +397,68 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* Status Page */
-        .status-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
+        /* Status Page Styles */
+.status-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
 
-        .status-overall {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
+.status-overall {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
 
-        .service-status {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            margin-bottom: 2rem;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
+.service-status {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
 
-        .service-status:hover {
-            border-color: rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
-        }
+.service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
 
-        .service-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            background: rgba(102, 126, 234, 0.05);
-        }
+.service-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
 
-        .service-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
+.service-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
 
-        .service-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            padding: 1.5rem;
-        }
+.service-detail {
+    display: flex;
+    flex-direction: column;
+}
 
-        .service-detail {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+.service-detail-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
 
-        .service-detail-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .service-detail-value {
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
+.service-detail-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
         /* Spinner */
         .spinner {
             width: 50px;
@@ -1083,232 +1075,233 @@
             </div>
         </div>
 
-        <!-- STATUS PAGE (Connected to your existing API) -->
-        <div id="status" class="page">
-            <div class="container">
-                <div class="status-header">
-                    <h1 style="font-size: 3rem; margin-bottom: 1rem;">System Status</h1>
-                    <div id="status-overall" class="status-overall">
-                        <div class="status-dot online"></div>
-                        <span>Checking System Status...</span>
-                    </div>
-                </div>
+        <!-- STATUS PAGE -->
+<div id="status" class="page">
+    <div class="container">
+        <div class="status-header">
+            <h1 style="font-size: 3rem; margin-bottom: 1rem;">System Status</h1>
+            <div id="status-overall" class="status-overall">
+                <div class="status-dot online"></div>
+                <span>Checking System Status...</span>
+            </div>
+        </div>
 
-                <!-- Discord Bot Status -->
-                <div class="service-status">
-                    <div class="service-header">
-                        <div class="service-name">🤖 Discord Bot v2.5</div>
-                        <div id="bot-status-badge" class="status-badge offline">
-                            <div class="status-dot offline"></div>
-                            <span>Checking...</span>
-                        </div>
-                    </div>
-                    <div class="service-details">
-                        <div class="service-detail">
-                            <span class="service-detail-label">Uptime</span>
-                            <span class="service-detail-value" id="bot-uptime">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Connected Servers</span>
-                            <span class="service-detail-value" id="bot-servers">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Total Users</span>
-                            <span class="service-detail-value" id="bot-users">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Version</span>
-                            <span class="service-detail-value">v2.5</span>
-                        </div>
-                    </div>
+        <!-- Discord Bot Status -->
+        <div class="service-status">
+            <div class="service-header">
+                <div class="service-name">🤖 Discord Bot v2.5</div>
+                <div id="bot-status-badge" class="status-badge offline">
+                    <div class="status-dot offline"></div>
+                    <span>Checking...</span>
                 </div>
-
-                <!-- API Server Status -->
-                <div class="service-status">
-                    <div class="service-header">
-                        <div class="service-name">🌐 API Server</div>
-                        <div id="api-status-badge" class="status-badge offline">
-                            <div class="status-dot offline"></div>
-                            <span>Checking...</span>
-                        </div>
-                    </div>
-                    <div class="service-details">
-                        <div class="service-detail">
-                            <span class="service-detail-label">Response Time</span>
-                            <span class="service-detail-value" id="api-response">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Database</span>
-                            <span class="service-detail-value" id="api-database">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Last Updated</span>
-                            <span class="service-detail-value" id="api-last-update">--</span>
-                        </div>
-                    </div>
+            </div>
+            <div class="service-details">
+                <div class="service-detail">
+                    <span class="service-detail-label">Uptime</span>
+                    <span class="service-detail-value" id="bot-uptime">--</span>
                 </div>
-
-                <!-- Weather Data Sources -->
-                <div class="service-status">
-                    <div class="service-header">
-                        <div class="service-name">🌤️ Weather Data Sources</div>
-                        <div id="weather-sources-badge" class="status-badge offline">
-                            <div class="status-dot offline"></div>
-                            <span>Checking...</span>
-                        </div>
-                    </div>
-                    <div class="service-details">
-                        <div class="service-detail">
-                            <span class="service-detail-label">NWS (US Data)</span>
-                            <span class="service-detail-value" id="nws-status">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Environment Canada</span>
-                            <span class="service-detail-value" id="ec-status">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">BOM Australia</span>
-                            <span class="service-detail-value" id="bom-status">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Data Refresh Rate</span>
-                            <span class="service-detail-value" id="refresh-rate">--</span>
-                        </div>
-                    </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Connected Servers</span>
+                    <span class="service-detail-value" id="bot-servers">--</span>
                 </div>
-
-                <!-- Radar System -->
-                <div class="service-status">
-                    <div class="service-header">
-                        <div class="service-name">📡 Live Radar System</div>
-                        <div id="radar-status-badge" class="status-badge offline">
-                            <div class="status-dot offline"></div>
-                            <span>Checking...</span>
-                        </div>
-                    </div>
-                    <div class="service-details">
-                        <div class="service-detail">
-                            <span class="service-detail-label">Radar Stations</span>
-                            <span class="service-detail-value" id="radar-stations">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Update Frequency</span>
-                            <span class="service-detail-value" id="radar-frequency">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Coverage</span>
-                            <span class="service-detail-value" id="radar-coverage">--</span>
-                        </div>
-                    </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Total Users</span>
+                    <span class="service-detail-value" id="bot-users">--</span>
                 </div>
-
-                <!-- Alert System -->
-                <div class="service-status">
-                    <div class="service-header">
-                        <div class="service-name">🔔 Alert System</div>
-                        <div id="alert-system-badge" class="status-badge offline">
-                            <div class="status-dot offline"></div>
-                            <span>Checking...</span>
-                        </div>
-                    </div>
-                    <div class="service-details">
-                        <div class="service-detail">
-                            <span class="service-detail-label">Active Subscriptions</span>
-                            <span class="service-detail-value" id="alert-subscriptions">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Alerts Sent Today</span>
-                            <span class="service-detail-value" id="alerts-today">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Avg Delivery Time</span>
-                            <span class="service-detail-value" id="alert-delivery">--</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Website -->
-                <div class="service-status">
-                    <div class="service-header">
-                        <div class="service-name">🌐 Website</div>
-                        <div id="website-badge" class="status-badge offline">
-                            <div class="status-dot offline"></div>
-                            <span>Checking...</span>
-                        </div>
-                    </div>
-                    <div class="service-details">
-                        <div class="service-detail">
-                            <span class="service-detail-label">Load Time</span>
-                            <span class="service-detail-value" id="website-load">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Daily Visitors</span>
-                            <span class="service-detail-value" id="daily-visitors">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">CDN Status</span>
-                            <span class="service-detail-value" id="cdn-status">--</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Database -->
-                <div class="service-status">
-                    <div class="service-header">
-                        <div class="service-name">💾 Database</div>
-                        <div id="database-badge" class="status-badge offline">
-                            <div class="status-dot offline"></div>
-                            <span>Checking...</span>
-                        </div>
-                    </div>
-                    <div class="service-details">
-                        <div class="service-detail">
-                            <span class="service-detail-label">Response Time</span>
-                            <span class="service-detail-value" id="db-response">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Storage Used</span>
-                            <span class="service-detail-value" id="db-storage">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Backup Status</span>
-                            <span class="service-detail-value" id="db-backup">--</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Command Processing -->
-                <div class="service-status">
-                    <div class="service-header">
-                        <div class="service-name">⚡ Command Processing</div>
-                        <div id="command-badge" class="status-badge offline">
-                            <div class="status-dot offline"></div>
-                            <span>Checking...</span>
-                        </div>
-                    </div>
-                    <div class="service-details">
-                        <div class="service-detail">
-                            <span class="service-detail-label">Commands Today</span>
-                            <span class="service-detail-value" id="commands-today">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Avg Response Time</span>
-                            <span class="service-detail-value" id="command-response">--</span>
-                        </div>
-                        <div class="service-detail">
-                            <span class="service-detail-label">Success Rate</span>
-                            <span class="service-detail-value" id="command-success">--</span>
-                        </div>
-                    </div>
-                </div>
-
-                <h2 style="font-size: 1.5rem; margin: 3rem 0 1rem 0;">Server List</h2>
-                <p style="color: #94a3b8; margin-bottom: 1rem;">Auto-refreshes every 30 seconds</p>
-                <div id="server-list-container">
-                    <div class="spinner"></div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Version</span>
+                    <span class="service-detail-value">v2.5</span>
                 </div>
             </div>
         </div>
+
+        <!-- API Server Status -->
+        <div class="service-status">
+            <div class="service-header">
+                <div class="service-name">🌐 API Server</div>
+                <div id="api-status-badge" class="status-badge offline">
+                    <div class="status-dot offline"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-detail">
+                    <span class="service-detail-label">Response Time</span>
+                    <span class="service-detail-value" id="api-response">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Database</span>
+                    <span class="service-detail-value" id="api-database">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Last Updated</span>
+                    <span class="service-detail-value" id="api-last-update">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Data Sources -->
+        <div class="service-status">
+            <div class="service-header">
+                <div class="service-name">🌤️ Weather Data Sources</div>
+                <div id="weather-sources-badge" class="status-badge offline">
+                    <div class="status-dot offline"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-detail">
+                    <span class="service-detail-label">NWS (US Data)</span>
+                    <span class="service-detail-value" id="nws-status">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Environment Canada</span>
+                    <span class="service-detail-value" id="ec-status">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">BOM Australia</span>
+                    <span class="service-detail-value" id="bom-status">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Data Refresh Rate</span>
+                    <span class="service-detail-value" id="refresh-rate">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Radar System -->
+        <div class="service-status">
+            <div class="service-header">
+                <div class="service-name">📡 Live Radar System</div>
+                <div id="radar-status-badge" class="status-badge offline">
+                    <div class="status-dot offline"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-detail">
+                    <span class="service-detail-label">Radar Stations</span>
+                    <span class="service-detail-value" id="radar-stations">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Update Frequency</span>
+                    <span class="service-detail-value" id="radar-frequency">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Coverage</span>
+                    <span class="service-detail-value" id="radar-coverage">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert System -->
+        <div class="service-status">
+            <div class="service-header">
+                <div class="service-name">🔔 Alert System</div>
+                <div id="alert-system-badge" class="status-badge offline">
+                    <div class="status-dot offline"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-detail">
+                    <span class="service-detail-label">Active Subscriptions</span>
+                    <span class="service-detail-value" id="alert-subscriptions">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Alerts Sent Today</span>
+                    <span class="service-detail-value" id="alerts-today">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Avg Delivery Time</span>
+                    <span class="service-detail-value" id="alert-delivery">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Website -->
+        <div class="service-status">
+            <div class="service-header">
+                <div class="service-name">🌐 Website</div>
+                <div id="website-badge" class="status-badge offline">
+                    <div class="status-dot offline"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-detail">
+                    <span class="service-detail-label">Load Time</span>
+                    <span class="service-detail-value" id="website-load">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Daily Visitors</span>
+                    <span class="service-detail-value" id="daily-visitors">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">CDN Status</span>
+                    <span class="service-detail-value" id="cdn-status">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database -->
+        <div class="service-status">
+            <div class="service-header">
+                <div class="service-name">💾 Database</div>
+                <div id="database-badge" class="status-badge offline">
+                    <div class="status-dot offline"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-detail">
+                    <span class="service-detail-label">Response Time</span>
+                    <span class="service-detail-value" id="db-response">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Storage Used</span>
+                    <span class="service-detail-value" id="db-storage">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Backup Status</span>
+                    <span class="service-detail-value" id="db-backup">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Command Processing -->
+        <div class="service-status">
+            <div class="service-header">
+                <div class="service-name">⚡ Command Processing</div>
+                <div id="command-badge" class="status-badge offline">
+                    <div class="status-dot offline"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-detail">
+                    <span class="service-detail-label">Commands Today</span>
+                    <span class="service-detail-value" id="commands-today">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Avg Response Time</span>
+                    <span class="service-detail-value" id="command-response">--</span>
+                </div>
+                <div class="service-detail">
+                    <span class="service-detail-label">Success Rate</span>
+                    <span class="service-detail-value" id="command-success">--</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="font-size: 1.5rem; margin: 3rem 0 1rem 0;">Server List</h2>
+        <p style="color: #94a3b8; margin-bottom: 1rem;">Auto-refreshes every 30 seconds</p>
+        <div id="server-list-container">
+            <div class="spinner"></div>
+        </div>
+    </div>
+</div>
+                
 
         <!-- ALERTS PAGE -->
         <div id="alerts" class="page">
