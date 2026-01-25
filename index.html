@@ -2840,22 +2840,78 @@
         }
 
         // Radar Functions
-        function loadRadar() {
-            const region = document.getElementById('radar-region').value;
-            if (!region) return;
-            
-            const display = document.getElementById('radar-display');
-            display.innerHTML = '<div class="spinner"></div>';
-            
-            // TODO: Implement radar loading
-            setTimeout(() => {
-                display.innerHTML = '<p style="color: #94a3b8;">Radar feature coming soon</p>';
-            }, 1000);
-        }
+async function loadRadar() {
+    const region = document.getElementById('radar-region').value;
+    if (!region) {
+        alert('Please select a region first');
+        return;
+    }
+    
+    const display = document.getElementById('radar-display');
+    display.innerHTML = '<div class="spinner"></div>';
+    
+    // Map regions to radar stations
+    const radarStations = {
+        'national': 'CONUS',
+        'midwest': 'MPX',
+        'southeast': 'FFC',
+        'northeast': 'OKX',
+        'southwest': 'FWS',
+        'west': 'MUX',
+        'canada': 'CASRA',
+        'australia': 'BOM'
+    };
+    
+    const station = radarStations[region] || 'CONUS';
+    
+    // Use NOAA radar for US regions
+    if (region !== 'canada' && region !== 'australia') {
+        const radarUrl = `https://radar.weather.gov/ridge/standard/${station}_loop.gif`;
+        
+        display.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Live Doppler Radar - ${region.charAt(0).toUpperCase() + region.slice(1)}</h3>
+                <img src="${radarUrl}" 
+                     alt="Radar ${station}" 
+                     style="max-width: 100%; border-radius: 12px; border: 2px solid rgba(148, 163, 184, 0.2);"
+                     onerror="this.parentElement.innerHTML='<p style=color:#ef4444>❌ Radar temporarily unavailable</p>'">
+                <p style="color: #94a3b8; margin-top: 1rem; font-size: 0.9rem;">
+                    Station: ${station} • Updates every 5 minutes
+                </p>
+            </div>
+        `;
+    } else if (region === 'canada') {
+        display.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Canadian Radar</h3>
+                <p style="color: #94a3b8;">Environment Canada radar integration coming soon</p>
+            </div>
+        `;
+    } else {
+        display.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Australian Radar</h3>
+                <p style="color: #94a3b8;">BOM Australia radar launching February 2026</p>
+            </div>
+        `;
+    }
+}
 
-        function toggleRadarAnimation() {
-            console.log('Toggle radar animation');
+function toggleRadarAnimation() {
+    // Toggle between static and animated radar
+    const display = document.getElementById('radar-display');
+    const img = display.querySelector('img');
+    if (img) {
+        const currentSrc = img.src;
+        if (currentSrc.includes('_loop.gif')) {
+            // Switch to static
+            img.src = currentSrc.replace('_loop.gif', '_0.gif');
+        } else {
+            // Switch to animated
+            img.src = currentSrc.replace('_0.gif', '_loop.gif');
         }
+    }
+}
 
         // Announcements Filter
         function filterAnnouncements() {
@@ -2899,13 +2955,150 @@
                 document.getElementById('announcements-container').innerHTML=
 '<div class="card"><p style="color: #ef4444;">Failed to load announcements</p></div>';
 }
+// ========================================
+// STATUS PAGE FUNCTIONS
+// ========================================
+async function loadStatusPage() {
+    try {
+        const response = await fetch(`${API_URL}/api/status`);
+        if (!response.ok) throw new Error('API offline');
+        
+        const data = await response.json();
+        
+        // Update home page status
+        const homeStatus = document.getElementById('home-status-badge');
+        if (data.status === 'online') {
+            homeStatus.className = 'status-badge online';
+            homeStatus.innerHTML = '<div class="status-dot online"></div><span>All Systems Operational</span>';
+        } else {
+            homeStatus.className = 'status-badge offline';
+            homeStatus.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+        }
+        
+        // Update stats
+        document.getElementById('home-servers-count').textContent = data.servers || '0';
+        document.getElementById('home-users-count').textContent = data.users || '0';
+        
+        // If on status page, update detailed info
+        if (document.getElementById('bot-status-badge')) {
+            const botBadge = document.getElementById('bot-status-badge');
+            if (data.status === 'online') {
+                botBadge.className = 'status-badge online';
+                botBadge.innerHTML = '<div class="status-dot online"></div><span>Operational</span>';
+            } else {
+                botBadge.className = 'status-badge offline';
+                botBadge.innerHTML = '<div class="status-dot offline"></div><span>Offline</span>';
+            }
+            
+            const uptimeMinutes = Math.floor(data.uptime / 1000 / 60);
+            const hours = Math.floor(uptimeMinutes / 60);
+            const minutes = uptimeMinutes % 60;
+            document.getElementById('bot-uptime').textContent = `${hours}h ${minutes}m`;
+            document.getElementById('bot-servers').textContent = data.servers || '0';
+            document.getElementById('bot-users').textContent = data.users || '0';
+        }
+        
+    } catch (error) {
+        console.error('Status fetch failed:', error);
+        const homeStatus = document.getElementById('home-status-badge');
+        homeStatus.className = 'status-badge offline';
+        homeStatus.innerHTML = '<div class="status-dot offline"></div><span>System Offline</span>';
+        
+        document.getElementById('home-servers-count').textContent = '0';
+        document.getElementById('home-users-count').textContent = '0';
+    }
+}
+// Quick Search Function
+async function quickSearchWeather() {
+    const query = document.getElementById('quick-search-input').value.trim();
+    if (!query) return;
+    
+    // Check if it's a ZIP code (5 digits)
+    const isZip = /^\d{5}$/.test(query);
+    
+    let foundCity = null;
+    
+    if (isZip) {
+        // Search by ZIP
+        foundCity = allCities.find(c => c.zip === query);
+    } else {
+        // Search by name
+        const searchLower = query.toLowerCase();
+        foundCity = allCities.find(c => c.name.toLowerCase().includes(searchLower));
+        
+        // If not found in US, try Canada
+        if (!foundCity) {
+            foundCity = allCanadaCities.find(c => c.name.toLowerCase().includes(searchLower));
+            if (foundCity) {
+                // Switch to Canada tab and load
+                switchCountry('canada');
+                document.getElementById('canada-city-select').value = foundCity.id;
+                await loadCanadaWeather();
+                return;
+            }
+        }
+    }
+    
+    if (foundCity) {
+        // Auto-populate dropdowns and load weather
+        switchCountry('usa');
+        document.getElementById('region-select').value = foundCity.region;
+        loadStates();
+        setTimeout(() => {
+            document.getElementById('state-select').value = foundCity.state;
+            loadCities();
+            setTimeout(() => {
+                document.getElementById('city-select').value = foundCity.id;
+                loadWeather();
+            }, 100);
+        }, 100);
+    } else {
+        alert('❌ City not found. Try another search term.');
+    }
+}
+
+// Allow Enter key to search
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('quick-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                quickSearchWeather();
+            }
+        });
+    }
+});
+// Page Navigation
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo(0, 0);
+    
+    // Load page-specific data
+    if (pageId === 'status') {
+        loadStatusPage();
+    } else if (pageId === 'announcements') {
+        loadAnnouncements();
+    } else if (pageId === 'bot') {
+        loadStatusPage(); // Also updates bot stats
+    }
+}
 }
  // Initialize on load
-    window.addEventListener('DOMContentLoaded', () => {
-        init3DParticles();
-        updateUKCountdown();
-        loadCitiesData();
-    });
+window.addEventListener('DOMContentLoaded', () => {
+    init3DParticles();
+    updateUKCountdown();
+    loadCitiesData();
+    loadStatusPage();
+    
+    // Refresh status every 30 seconds
+    setInterval(loadStatusPage, 30000);
+    
+    // If on announcements page, load them
+    if (document.getElementById('announcements-container')) {
+        loadAnnouncements();
+    }
+});
 </script>
 </body>
 </html>
