@@ -699,6 +699,15 @@
                         <div class="stat-value">8</div>
                         <div class="stat-label">Australian States/Territories</div>
                     </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="home-united-kingdom-cities-count">0</div>
+                        <div class="stat-label">United Kingdom Cities</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">United Kingdom States/Territories</div>
+                    </div>
                     <div class="stat-card">
                         <div class="stat-value" id="home-servers-count">0</div>
                         <div class="stat-label">Discord Servers</div>
@@ -720,8 +729,8 @@
 
                 <!-- UK Launch Countdown -->
                 <div class="countdown-container">
-                    <div class="countdown-title">🇬🇧 UK Coverage Launch</div>
-                    <p style="font-size: 1.2rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem;">Going Live March 1st, 2026</p>
+                    <div class="countdown-title">🇬🇧 Germany Coverage Launch</div>
+                    <p style="font-size: 1.2rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem;">Going Live May 1st, 2026</p>
                     <div class="countdown-timer" id="uk-countdown">
                         <div class="countdown-block">
                             <div class="countdown-number" id="days-uk">--</div>
@@ -844,7 +853,6 @@
                                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
                                 <select id="canada-region-select" onchange="handleCanadaRegionChange()">
                                     <option value="">Select Region</option>
-                                    <option value="West Coast">West Coast</option>
                                     <option value="Central Canada">Central Canada</option>
                                     <option value="Prairie Provinces">Prairie Provinces</option>
                                     <option value="Atlantic Canada">Atlantic Canada</option>
@@ -900,6 +908,38 @@
                 </div>
             </div>
         </div>
+     <!-- UK Weather Section -->
+                <div id="australia-weather" class="country-weather-section" style="display: none;">
+                    <div class="card">
+                        <div class="grid grid-3">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
+                               <select id="uk-region-select" onchange="handleUKRegionChange()">
+                               <option value="">Select Region</option>
+                               <option value="Northern UK">Northern UK</option>
+                               <option value="Southern UK">Southern UK</option>
+                               <option value="Eastern UK">Eastern UK</option>
+                               <option value="Western UK">Western UK</option>
+                              </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">State/Territory</label>
+                                <select id="australia-state-select" disabled onchange="handleAustraliaStateChange()">
+                                    <option value="">Select State/Territory</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</label>
+                                <select id="australia-city-select" disabled onchange="handleAustraliaCityChange()">
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="australia-weather-result"></div>
+                </div>
+            </div>
+        </div>
 
         <!-- LIVE RADAR PAGE -->
         <div id="radar" class="page">
@@ -920,6 +960,7 @@
                             <option value="west">West</option>
                             <option value="canada">Canada</option>
                             <option value="australia">Australia</option>
+                           <option value="united-kingdom">United Kingdom</option>
                         </select>
                         <button class="btn btn-primary" onclick="loadRadar()">Load Radar</button>
                         <button class="btn btn-secondary" onclick="toggleRadarAnimation()">Play/Pause</button>
@@ -2206,6 +2247,7 @@
         let allCities = [];
         let allCanadaCities = [];
         let allAustraliaCities = [];
+        let allUKCities = [];
         let allAnnouncements = [];
         let currentWeatherCondition = null;
         let currentCountry = 'usa';
@@ -2375,20 +2417,20 @@
             });
         }
 
-        // UK Launch Countdown
+        // Germany Launch Countdown
         function updateUKCountdown() {
-            const launchDate = new Date('March 1, 2026 00:00:00').getTime();
+            const launchDate = new Date('May 1, 2026 00:00:00').getTime();
             
             setInterval(() => {
                 const now = new Date().getTime();
                 const distance = launchDate - now;
                 
                 if (distance < 0) {
-                    if (document.getElementById('days-uk')) {
-                        document.getElementById('days-uk').textContent = '00';
-                        document.getElementById('hours-uk').textContent = '00';
-                        document.getElementById('minutes-uk').textContent = '00';
-                        document.getElementById('seconds-uk').textContent = '00';
+                    if (document.getElementById('days-germany')) {
+                        document.getElementById('days-germany').textContent = '00';
+                        document.getElementById('hours-germany').textContent = '00';
+                        document.getElementById('minutes-germany').textContent = '00';
+                        document.getElementById('seconds-germany').textContent = '00';
                     }
                     return;
                 }
@@ -2398,11 +2440,11 @@
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                 
-                if (document.getElementById('days-uk')) {
-                    document.getElementById('days-uk').textContent = days.toString().padStart(2, '0');
-                    document.getElementById('hours-uk').textContent = hours.toString().padStart(2, '0');
-                    document.getElementById('minutes-uk').textContent = minutes.toString().padStart(2, '0');
-                    document.getElementById('seconds-uk').textContent = seconds.toString().padStart(2, '0');
+                if (document.getElementById('days-germany')) {
+                    document.getElementById('days-germany').textContent = days.toString().padStart(2, '0');
+                    document.getElementById('hours-germany').textContent = hours.toString().padStart(2, '0');
+                    document.getElementById('minutes-germany').textContent = minutes.toString().padStart(2, '0');
+                    document.getElementById('seconds-germany').textContent = seconds.toString().padStart(2, '0');
                 }
             }, 1000);
         }
@@ -2500,6 +2542,24 @@
                 }
                 console.log('⚠️ Australian cities not yet available');
             }
+            try {
+                const ukResponse = await fetch(`${API_URL}/api/cities-uk`);
+                if (!ukResponse.ok) throw new Error('API offline');
+                const ukData = await ukResponse.json();
+                 allUKCities = ukData.cities;
+
+                if (document.getElementById('home-uk-cities-count')) {
+                document.getElementById('home-uk-cities-count').textContent = allUKCities.length.toLocaleString();
+               }
+
+               console.log(`🇬🇧 Loaded ${allUKCities.length} UK cities`);
+              } catch (error) {
+             if (document.getElementById('home-uk-cities-count')) {
+              document.getElementById('home-uk-cities-count').textContent = '0';
+              }
+
+             console.log('⚠️ UK cities not yet available');
+}
         }
 
         // ENHANCED Status Page Loading
@@ -3127,6 +3187,94 @@ if (weather.forecast && weather.forecast.length > 0) {
             `;
         }
     }
+        // UK Weather Functions
+function handleUKRegionChange() {
+    loadUKStates();
+}
+
+function loadUKStates() {
+    const region = document.getElementById('uk-region-select').value;
+    const stateSelect = document.getElementById('uk-state-select');
+    const citySelect = document.getElementById('uk-city-select');
+
+    stateSelect.innerHTML = '<option value="">Select County/Area</option>';
+    citySelect.innerHTML = '<option value="">Select City</option>';
+    citySelect.disabled = true;
+    document.getElementById('uk-weather-result').innerHTML = '';
+
+    if (!region || allUKCities.length === 0) {
+        stateSelect.disabled = true;
+        return;
+    }
+
+    const states = [...new Set(allUKCities.filter(c => c.region === region).map(c => c.state))].sort();
+    states.forEach(state => {
+        const option = document.createElement('option');
+        option.value = state;
+        option.textContent = state;
+        stateSelect.appendChild(option);
+    });
+
+    stateSelect.disabled = false;
+}
+
+function handleUKStateChange() {
+    loadUKCities();
+}
+
+function loadUKCities() {
+    const region = document.getElementById('uk-region-select').value;
+    const state = document.getElementById('uk-state-select').value;
+    const citySelect = document.getElementById('uk-city-select');
+
+    citySelect.innerHTML = '<option value="">Select City</option>';
+    document.getElementById('uk-weather-result').innerHTML = '';
+
+    if (!state) {
+        citySelect.disabled = true;
+        return;
+    }
+
+    const cities = allUKCities
+        .filter(c => c.region === region && c.state === state)
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+    cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city.id;
+        option.textContent = `${city.name}${city.postcode ? ' (' + city.postcode + ')' : ''}`;
+        citySelect.appendChild(option);
+    });
+
+    citySelect.disabled = false;
+}
+
+function handleUKCityChange() {
+    loadUKWeather();
+}
+
+async function loadUKWeather() {
+    const cityId = document.getElementById('uk-city-select').value;
+    if (!cityId) return;
+
+    const resultDiv = document.getElementById('uk-weather-result');
+    resultDiv.innerHTML = '<div class="spinner"></div>';
+
+    try {
+        const response = await fetch(`${API_URL}/api/weather-uk/${cityId}`);
+        if (!response.ok) throw new Error('Failed to fetch weather');
+
+        const data = await response.json();
+        resultDiv.innerHTML = `<div class="card"><h2>${data.city.name}, ${data.city.state}</h2></div>`;
+    } catch (error) {
+        resultDiv.innerHTML = `
+            <div class="card" style="text-align: center; margin-top: 2rem;">
+                <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
+                <p style="color: #94a3b8; margin-top: 1rem;">UK weather not yet available</p>
+            </div>
+        `;
+    }
+}
 
     // Radar Functions
     async function loadRadar() {
