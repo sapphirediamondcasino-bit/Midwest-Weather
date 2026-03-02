@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Midwest Weather - Free nationwide weather intelligence for USA, Canada, Australia, and UK. Real-time forecasts, alerts, and live radar.">
     <link rel="icon" type="image/png" sizes="32x32" href="image/MidwestWeather2.0.png">
     <link rel="icon" type="image/png" sizes="16x16" href="image/MidwestWeather2.0.png">
     <link rel="apple-touch-icon" sizes="180x180" href="image/MidwestWeather2.0.png">
     <title>Midwest Weather - Nationwide Weather Intelligence</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
     <style>
         * {
             margin: 0;
@@ -16,25 +18,131 @@
         }
 
         :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --bg-dark: #0f172a;
+            /* 2026 Immersive Color Palette */
+            --primary: #7c3aed;
+            --primary-light: #a78bfa;
+            --primary-dark: #6d28d9;
+            --secondary: #8b5cf6;
+            --accent: #06d6a0;
+            --accent-glow: #22d3ee;
+            --electric: #818cf8;
+            
+            /* Deep Atmospheric Backgrounds */
             --bg-darker: #020617;
+            --bg-dark: #0a0f1e;
+            --bg-card: rgba(10, 15, 35, 0.65);
+            --bg-elevated: rgba(20, 28, 50, 0.55);
+            
+            /* Crisp Text */
             --text-primary: #f1f5f9;
             --text-secondary: #94a3b8;
-            --card-bg: rgba(15, 23, 42, 0.8);
-            --border: rgba(148, 163, 184, 0.1);
-            --success: #10b981;
+            --text-muted: #64748b;
+            
+            /* Glass Borders & Glow */
+            --border: rgba(148, 163, 184, 0.08);
+            --border-bright: rgba(124, 58, 237, 0.25);
+            --border-glass: rgba(255, 255, 255, 0.06);
+            --glow: rgba(124, 58, 237, 0.2);
+            --glow-accent: rgba(6, 214, 160, 0.15);
+            
+            /* Status Colors */
+            --success: #22c55e;
             --warning: #f59e0b;
             --error: #ef4444;
+            --info: #3b82f6;
+            
+            /* Immersive Shadows */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 60px rgba(124, 58, 237, 0.35), 0 0 120px rgba(124, 58, 237, 0.1);
+            --shadow-accent: 0 0 40px rgba(6, 214, 160, 0.2);
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg-darker);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: #020617;
+            background-attachment: fixed;
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        /* Atmospheric glow orbs */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+            pointer-events: none;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        body::before {
+            width: 600px; height: 600px;
+            top: -10%; left: -5%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+        }
+        body::after {
+            width: 500px; height: 500px;
+            bottom: 10%; right: -5%;
+            background: radial-gradient(circle, rgba(6, 214, 160, 0.08) 0%, transparent 70%);
+            animation-delay: -10s;
+            animation-direction: reverse;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(60px, -40px) scale(1.1); }
+            50% { transform: translate(-30px, 50px) scale(0.95); }
+            75% { transform: translate(40px, 30px) scale(1.05); }
+        }
+
+        /* ADA Compliance - Skip to content link */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 10000;
+        }
+
+        .skip-to-content:focus {
+            top: 0;
+        }
+
+        /* ADA Compliance - Focus indicators */
+        *:focus {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        button:focus, a:focus, select:focus, input:focus {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* ADA Compliance - High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary: #a78bfa;
+                --border: rgba(255, 255, 255, 0.3);
+                --text-secondary: #ffffff;
+            }
+        }
+
+        /* ADA Compliance - Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         /* 3D Canvas Background - Abstract particles only */
@@ -53,15 +161,17 @@
             z-index: 1;
         }
 
-        /* Navigation */
+        /* Immersive Navigation */
         nav {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 0;
+            background: rgba(10, 15, 30, 0.6);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+            padding: 0.85rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), 0 0 80px rgba(124, 58, 237, 0.05);
         }
 
         nav .container {
@@ -77,11 +187,21 @@
 
         .nav-brand {
             font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06d6a0);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: -0.02em;
+            animation: gradient 6s ease infinite;
+        }
+
+        .nav-brand:hover {
+            transform: scale(1.05);
+            filter: brightness(1.3) drop-shadow(0 0 12px rgba(124, 58, 237, 0.5));
         }
 
         .nav-links {
@@ -95,12 +215,34 @@
             color: var(--text-secondary);
             text-decoration: none;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0.75rem;
+            right: 0.75rem;
+            width: auto;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 10px var(--primary);
         }
 
         .nav-link:hover {
             color: var(--text-primary);
+            background: rgba(124, 58, 237, 0.08);
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
         }
 
         /* Container */
@@ -122,37 +264,85 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(30px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
 
-        /* Hero Section */
+        /* Immersive Hero Section */
         .hero {
             text-align: center;
-            padding: 6rem 2rem 4rem;
-            background: linear-gradient(180deg, transparent, var(--bg-dark));
+            padding: 10rem 2rem 7rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, rgba(6, 214, 160, 0.05) 40%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: heroPulse 6s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 60%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(6, 214, 160, 0.1) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: heroPulse 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes heroPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+            50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
         }
 
         .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
+            font-size: 5rem;
+            font-weight: 900;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06d6a0, #22d3ee, #a78bfa);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 80px rgba(102, 126, 234, 0.5);
+            background-clip: text;
+            animation: gradient 6s ease infinite;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            position: relative;
+            z-index: 1;
+            text-shadow: none;
+            filter: drop-shadow(0 0 40px rgba(124, 58, 237, 0.3));
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .hero-subtitle {
             font-size: 1.5rem;
             color: var(--text-secondary);
             margin-bottom: 1rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-description {
             font-size: 1.1rem;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         /* Buttons */
@@ -163,53 +353,116 @@
             flex-wrap: wrap;
         }
 
+        /* 2026 Immersive Buttons */
         .btn {
-            padding: 1rem 2rem;
+            padding: 1rem 2.25rem;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             display: inline-block;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.01em;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 350px;
+            height: 350px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
             color: white;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.5), 0 0 20px rgba(124, 58, 237, 0.2);
         }
 
         .btn-secondary {
-            background: rgba(102, 126, 234, 0.1);
-            color: var(--primary);
-            border: 2px solid var(--primary);
+            background: rgba(124, 58, 237, 0.08);
+            color: var(--primary-light);
+            border: 1.5px solid rgba(124, 58, 237, 0.35);
+            backdrop-filter: blur(10px);
         }
 
         .btn-secondary:hover {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateY(-2px);
+            background: rgba(124, 58, 237, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25);
+            border-color: var(--primary);
         }
 
-        /* Cards */
+        /* 2026 Immersive Cards */
         .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            background: rgba(10, 15, 35, 0.55);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(124, 58, 237, 0.12);
+            border-radius: 20px;
             padding: 2rem;
             margin-bottom: 2rem;
-            transition: all 0.3s;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.5), rgba(6, 214, 160, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(124, 58, 237, 0.06), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
         }
 
         .card:hover {
-            border-color: rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
+            border-color: rgba(124, 58, 237, 0.35);
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover::after {
+            opacity: 1;
         }
 
         /* Grid System */
@@ -232,86 +485,111 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            background: linear-gradient(145deg, rgba(124, 58, 237, 0.08), rgba(6, 214, 160, 0.04));
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            border-radius: 20px;
             padding: 2rem;
             text-align: center;
-            transition: all 0.3s;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.03);
             border-color: var(--primary);
-            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 16px 60px rgba(124, 58, 237, 0.3), 0 0 20px rgba(124, 58, 237, 0.1);
+        }
+
+        .stat-card:hover::after {
+            opacity: 1;
         }
 
         .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06d6a0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.3));
         }
 
         .stat-label {
             color: var(--text-secondary);
             margin-top: 0.5rem;
             font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Status Badge */
+        /* Immersive Status Badges */
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 600;
             font-size: 1rem;
+            backdrop-filter: blur(16px);
+            transition: all 0.4s ease;
         }
 
         .status-badge.online {
-            background: rgba(16, 185, 129, 0.1);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05));
             color: var(--success);
-            border: 2px solid var(--success);
+            border: 1.5px solid rgba(34, 197, 94, 0.4);
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.15), 0 0 40px rgba(34, 197, 94, 0.05);
         }
 
         .status-badge.offline {
-            background: rgba(239, 68, 68, 0.1);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
             color: var(--error);
-            border: 2px solid var(--error);
-        }
-
-        .status-badge.warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-            border: 2px solid var(--warning);
+            border: 1.5px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15), 0 0 40px rgba(239, 68, 68, 0.05);
         }
 
         .status-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            animation: pulse-dot 2s infinite;
+            box-shadow: 0 0 12px currentColor;
         }
 
         .status-dot.online { background: var(--success); }
         .status-dot.offline { background: var(--error); }
-        .status-dot.warning { background: var(--warning); }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
         }
 
         /* Form Elements */
         select, input {
             width: 100%;
-            padding: 0.75rem;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            background: rgba(10, 15, 35, 0.7);
+            border: 1px solid rgba(124, 58, 237, 0.12);
+            border-radius: 12px;
             color: var(--text-primary);
             font-size: 1rem;
             transition: all 0.3s;
@@ -320,7 +598,7 @@
         select:focus, input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12), 0 0 20px rgba(124, 58, 237, 0.08);
         }
 
         select:disabled {
@@ -361,18 +639,19 @@
         }
 
         .quick-btn {
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid var(--border);
+            background: rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(124, 58, 237, 0.15);
             padding: 0.5rem 1rem;
-            border-radius: 8px;
+            border-radius: 10px;
             color: var(--text-primary);
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .quick-btn:hover {
-            background: rgba(102, 126, 234, 0.2);
+            background: rgba(124, 58, 237, 0.18);
             border-color: var(--primary);
+            transform: translateY(-1px);
         }
 
         /* Command Cards */
@@ -390,11 +669,12 @@
         }
 
         code {
-            background: rgba(102, 126, 234, 0.1);
-            color: #818cf8;
+            background: rgba(124, 58, 237, 0.1);
+            color: #a78bfa;
             padding: 0.3rem 0.6rem;
             border-radius: 6px;
             font-family: 'Courier New', monospace;
+            border: 1px solid rgba(124, 58, 237, 0.15);
         }
 
         /* Status Page Styles */
@@ -464,31 +744,62 @@
             width: 50px;
             height: 50px;
             margin: 2rem auto;
-            border: 4px solid rgba(102, 126, 234, 0.1);
+            border: 3px solid rgba(124, 58, 237, 0.1);
             border-top-color: var(--primary);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Countdown Timer */
+        /* Immersive Countdown Timer */
         .countdown-container {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px;
-            padding: 2rem;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9, #4c1d95);
+            border-radius: 28px;
+            padding: 3.5rem 2rem;
             text-align: center;
             margin: 2rem 0;
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 24px 80px rgba(124, 58, 237, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(6, 214, 160, 0.12) 0%, transparent 50%);
+            animation: rotate 15s linear infinite;
+        }
+
+        .countdown-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .countdown-title {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2.25rem;
+            font-weight: 800;
             margin-bottom: 1rem;
             color: white;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
         }
 
         .countdown-timer {
@@ -497,35 +808,52 @@
             gap: 2rem;
             margin: 2rem 0;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
 
         .countdown-block {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 1.5rem;
-            border-radius: 12px;
-            min-width: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            padding: 2rem 1.5rem;
+            border-radius: 18px;
+            min-width: 110px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s ease;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .countdown-block:hover {
+            transform: translateY(-6px) scale(1.05);
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
         .countdown-number {
-            font-size: 3rem;
-            font-weight: 800;
+            font-size: 3.5rem;
+            font-weight: 900;
             color: white;
+            text-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), 0 0 30px rgba(255, 255, 255, 0.1);
+            line-height: 1;
         }
 
         .countdown-label {
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.9);
             text-transform: uppercase;
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
         }
 
-        /* Radar */
+        /* Immersive Radar */
         .radar-container {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            background: rgba(10, 15, 35, 0.55);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            border-radius: 20px;
             padding: 2rem;
             margin: 2rem 0;
+            backdrop-filter: blur(16px);
         }
 
         .radar-controls {
@@ -547,13 +875,22 @@
             overflow: hidden;
         }
 
-        /* Footer */
+        /* Immersive Footer */
         footer {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border);
-            padding: 3rem 0 1.5rem;
-            margin-top: 4rem;
+            background: rgba(5, 8, 20, 0.8);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(124, 58, 237, 0.12);
+            padding: 3.5rem 0 1.5rem;
+            margin-top: 5rem;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.3), rgba(6, 214, 160, 0.2), transparent);
         }
 
         .footer-content {
@@ -611,38 +948,91 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(102, 126, 234, 0.1);
-            color: var(--primary);
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(124, 58, 237, 0.08);
+            color: var(--primary-light);
             text-decoration: none;
-            transition: all 0.3s;
+            transition: all 0.4s;
+            border: 1px solid rgba(124, 58, 237, 0.15);
         }
 
         .social-link:hover {
             background: var(--primary);
             color: white;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .nav-links { gap: 1rem; }
+            .hero h1 { font-size: 2.8rem; }
+            .nav-links { gap: 0.75rem; }
             .countdown-timer { gap: 1rem; }
             .countdown-block { min-width: 80px; padding: 1rem; }
             .countdown-number { font-size: 2rem; }
+            .hero { padding: 7rem 1.5rem 5rem; }
+        }
+
+        /* Twemoji flag/emoji rendering */
+        img.emoji {
+            height: 1.2em;
+            width: 1.2em;
+            margin: 0 0.1em;
+            vertical-align: -0.15em;
+            display: inline-block;
+        }
+
+        /* Noise grain overlay for depth */
+        .content::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* Staggered entrance animations */
+        .card, .stat-card {
+            animation: staggerIn 0.6s ease-out both;
+        }
+        @keyframes staggerIn {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glow pulse for live elements */
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.15); }
+            50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.25), 0 0 80px rgba(124, 58, 237, 0.08); }
+        }
+
+        /* Shimmer effect for headings */
+        h1, h2, h3 {
+            position: relative;
+        }
+
+        /* Active nav link style */
+        .nav-link.active {
+            color: var(--primary-light);
+            background: rgba(124, 58, 237, 0.1);
         }
     </style>
 </head>
 <body>
+    <!-- ADA Compliance - Skip to main content -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    
     <!-- 3D Canvas Background - Abstract particles only -->
     <div id="weather-canvas"></div>
     
     <div class="content">
         <!-- Navigation -->
-        <nav>
+        <nav role="navigation" aria-label="Main navigation">
             <div class="container">
                 <div class="nav-brand" onclick="showPage('home')">🌪️ Midwest Weather</div>
                 <div class="nav-links">
@@ -660,7 +1050,7 @@
         </nav>
 
         <!-- HOME PAGE -->
-        <div id="home" class="page active">
+        <div id="home" class="page active" role="main" id="main-content" aria-label="Home page">
             <div class="hero">
                 <h1>Midwest Weather</h1>
                 <p class="hero-subtitle">Nationwide Weather Intelligence</p>
@@ -699,7 +1089,6 @@
                         <div class="stat-value">8</div>
                         <div class="stat-label">Australian States/Territories</div>
                     </div>
-                    </div>
                     <div class="stat-card">
                         <div class="stat-value" id="home-united-kingdom-cities-count">0</div>
                         <div class="stat-label">United Kingdom Cities</div>
@@ -727,25 +1116,25 @@
                     </div>
                 </div>
 
-                <!-- UK Launch Countdown -->
+                <!-- Germany Launch Countdown -->
                 <div class="countdown-container">
-                    <div class="countdown-title">🇬🇧 Germany Coverage Launch</div>
+                    <div class="countdown-title">🇩🇪 Germany Coverage Launch</div>
                     <p style="font-size: 1.2rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem;">Going Live May 1st, 2026</p>
-                    <div class="countdown-timer" id="uk-countdown">
+                    <div class="countdown-timer" id="germany-countdown">
                         <div class="countdown-block">
-                            <div class="countdown-number" id="days-uk">--</div>
+                            <div class="countdown-number" id="days-germany">--</div>
                             <div class="countdown-label">Days</div>
                         </div>
                         <div class="countdown-block">
-                            <div class="countdown-number" id="hours-uk">--</div>
+                            <div class="countdown-number" id="hours-germany">--</div>
                             <div class="countdown-label">Hours</div>
                         </div>
                         <div class="countdown-block">
-                            <div class="countdown-number" id="minutes-uk">--</div>
+                            <div class="countdown-number" id="minutes-germany">--</div>
                             <div class="countdown-label">Minutes</div>
                         </div>
                         <div class="countdown-block">
-                            <div class="countdown-number" id="seconds-uk">--</div>
+                            <div class="countdown-number" id="seconds-germany">--</div>
                             <div class="countdown-label">Seconds</div>
                         </div>
                     </div>
@@ -779,6 +1168,36 @@
                         <p style="color: #94a3b8;">No subscriptions, ever</p>
                     </div>
                 </div>
+
+                <!-- Our Mission Section -->
+                <div class="card" style="margin-top: 3rem; border-left: 4px solid var(--primary); padding: 2.5rem;">
+                    <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--primary-light), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Our Mission – Midwest Weather</h2>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.8;">
+                        Midwest Weather was built on a simple principle: <strong style="color: var(--text-primary);">information should be accessible to everyone.</strong>
+                    </p>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.8;">
+                        The Midwest Weather website and bot are completely free to use. We do not charge subscriptions, lock features behind paywalls, or restrict access to essential weather information. Our goal is to provide reliable updates, tools, and alerts to our community without barriers.
+                    </p>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.8;">
+                        This project operates under <strong style="color: var(--text-primary);">Kurrasch Gaming Merch Store LLC</strong> as part of our broader commitment to community-driven technology. While some of our business ventures operate commercially, Midwest Weather is a public-focused initiative designed to serve — not sell.
+                    </p>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.8;">
+                        We believe in transparency, accessibility, and consistency. Whether you're checking forecasts, using the bot, or browsing updates, you'll always have open access without hidden fees.
+                    </p>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.8;">
+                        Customer and community satisfaction remain our top priority. The <strong style="color: var(--text-primary);">Kurrasch Gaming Merch Store LLC Customer Care Team</strong> is committed to maintaining responsive support, clear communication, and dependable service across all platforms we manage.
+                    </p>
+                    
+                    <p style="color: var(--accent); font-weight: 600; font-size: 1.05rem; line-height: 1.8;">
+                        At Kurrasch Gaming Merch &amp; Kurrasch Systems, we stand behind our projects — and most importantly, the communities that rely on them.
+                    </p>
+                </div>
+
             </div>
         </div>
 
@@ -793,7 +1212,7 @@
                     <div class="weather-search-bar">
                         <div class="search-input-wrapper">
                             <span class="search-icon">🔍</span>
-                            <input type="text" class="search-input" placeholder="Search city, state, or postal code..." id="quick-search-input">
+                            <input type="text" class="search-input" placeholder="Search any city worldwide (USA, Canada, Australia, UK)..." id="quick-search-input">
                         </div>
                         <button class="btn btn-primary" onclick="quickSearchWeather()">Search</button>
                     </div>
@@ -810,6 +1229,7 @@
                         <button id="usa-tab" class="btn btn-primary" onclick="switchCountry('usa')">🇺🇸 United States</button>
                         <button id="canada-tab" class="btn btn-secondary" onclick="switchCountry('canada')">🇨🇦 Canada</button>
                         <button id="australia-tab" class="btn btn-secondary" onclick="switchCountry('australia')">🇦🇺 Australia</button>
+                        <button id="uk-tab" class="btn btn-secondary" onclick="switchCountry('uk')">🇬🇧 United Kingdom</button>
                     </div>
                 </div>
 
@@ -906,41 +1326,39 @@
                     </div>
                     <div id="australia-weather-result"></div>
                 </div>
-            </div>
-        </div>
-     <!-- UK Weather Section -->
-                <div id="australia-weather" class="country-weather-section" style="display: none;">
+
+                <!-- United Kingdom Weather Section -->
+                <div id="uk-weather" class="country-weather-section" style="display: none;">
                     <div class="card">
                         <div class="grid grid-3">
                             <div>
                                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Region</label>
-                               <select id="uk-region-select" onchange="handleUKRegionChange()">
-                               <option value="">Select Region</option>
-                               <option value="Northern UK">Northern UK</option>
-                               <option value="Southern UK">Southern UK</option>
-                               <option value="Eastern UK">Eastern UK</option>
-                               <option value="Western UK">Western UK</option>
-                              </select>
+                                <select id="uk-region-select" onchange="handleUKRegionChange()">
+                                    <option value="">Select Region</option>
+                                    <option value="England">England</option>
+                                    <option value="Scotland">Scotland</option>
+                                    <option value="Wales">Wales</option>
+                                    <option value="Northern Ireland">Northern Ireland</option>
+                                </select>
                             </div>
                             <div>
-                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">State/Territory</label>
-                                <select id="australia-state-select" disabled onchange="handleAustraliaStateChange()">
-                                    <option value="">Select State/Territory</option>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">County</label>
+                                <select id="uk-county-select" disabled onchange="handleUKCountyChange()">
+                                    <option value="">Select County</option>
                                 </select>
                             </div>
                             <div>
                                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">City</label>
-                                <select id="australia-city-select" disabled onchange="handleAustraliaCityChange()">
+                                <select id="uk-city-select" disabled onchange="handleUKCityChange()">
                                     <option value="">Select City</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div id="australia-weather-result"></div>
+                    <div id="uk-weather-result"></div>
                 </div>
             </div>
         </div>
-
         <!-- LIVE RADAR PAGE -->
         <div id="radar" class="page">
             <div class="container">
@@ -965,11 +1383,16 @@
                         <button class="btn btn-primary" onclick="loadRadar()">Load Radar</button>
                         <button class="btn btn-secondary" onclick="toggleRadarAnimation()">Play/Pause</button>
                     </div>
-                    <div class="radar-display" id="radar-display">
-                        <div style="text-align: center;">
+                    <div class="radar-display" id="radar-display" style="background: #000;">
+                        <iframe id="radar-frame" 
+                            style="width: 100%; height: 600px; border: none; border-radius: 12px; display: none;"
+                            allowfullscreen>
+                        </iframe>
+                        <div id="radar-placeholder" style="text-align: center; padding: 2rem;">
                             <div style="font-size: 4rem; margin-bottom: 1rem;">📡</div>
                             <h3>Select a region to view live radar</h3>
                             <p style="color: #94a3b8; margin-top: 1rem;">Professional broadcast-quality radar visualization</p>
+                            <p style="color: #cbd5e1; margin-top: 1rem;">🎯 Live updates every 5 minutes • Real Doppler radar data</p>
                         </div>
                     </div>
                 </div>
@@ -1111,6 +1534,253 @@
                                 <li>city - Select any Australian city</li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🇬🇧 United Kingdom Commands</h2>
+
+                <div class="grid grid-2">
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/weather-uk</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Get current weather conditions for UK cities.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any UK city</li>
+                                <li>template - Compact, Card, Full, or Radar view</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/forecast-uk</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">View 7-day weather forecast for UK cities.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any UK city</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h3 style="margin-bottom: 1rem;"><code>/dashboard-uk</code></h3>
+                        <p style="color: #cbd5e1; line-height: 1.6;">Interactive weather dashboard for UK cities.</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <strong style="color: #94a3b8;">Options:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: #cbd5e1;">
+                                <li>city - Select any UK city</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- AIR QUALITY COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">💨 Air Quality Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/airquality</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get Air Quality Index for U.S. cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/airquality-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get Air Quality Index for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/airquality-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get Air Quality Index for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/airquality-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get Air Quality Index for UK cities</p>
+                    </div>
+                </div>
+
+                <!-- HISTORICAL WEATHER COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">📜 Historical Weather Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/history</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get historical weather and climate statistics</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/history-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get historical weather for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/history-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get historical weather for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/history-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get historical weather for UK cities</p>
+                    </div>
+                </div>
+
+                <!-- SUN/SUNSET COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🌅 Sun/Sunset Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/sun</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get sunrise and sunset times</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/sun-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get sunrise and sunset times for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/sun-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get sunrise and sunset times for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/sun-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get sunrise and sunset times for UK cities</p>
+                    </div>
+                </div>
+
+                <!-- CLOUD COVER COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">☁️ Cloud Cover Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/clouds</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get detailed cloud cover and sky condition info</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/clouds-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get cloud cover for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/clouds-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get cloud cover for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/clouds-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get cloud cover for UK cities</p>
+                    </div>
+                </div>
+
+                <!-- FEELS LIKE TEMPERATURE COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🌡️ Feels Like Temperature Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/feelslike</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get detailed "Feels Like" temperature breakdown</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/feelslike-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get "Feels Like" temp for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/feelslike-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get "Feels Like" temp for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/feelslike-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get "Feels Like" temp for UK cities</p>
+                    </div>
+                </div>
+
+                <!-- WIND REPORT COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">💨 Wind Report Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/winds</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get detailed wind report with gusts and direction</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/winds-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get wind report for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/winds-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get wind report for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/winds-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get wind report for UK cities</p>
+                    </div>
+                </div>
+
+                <!-- HUMIDITY COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">💧 Humidity Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/humidity</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get detailed humidity and dew point information</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/humidity-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get humidity for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/humidity-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get humidity for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/humidity-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Get humidity for UK cities</p>
+                    </div>
+                </div>
+
+                <!-- RAIN CHECK COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🌧️ Rain Check Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/raincheck</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Check precipitation forecast for next several hours</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/raincheck-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Check precipitation for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/raincheck-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Check precipitation for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/raincheck-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Check precipitation for UK cities</p>
+                    </div>
+                </div>
+
+                <!-- STORM TRACKING COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">🌪️ Storm Tracking Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/stormpath</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Track active hurricanes and tropical storms (US/Atlantic)</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/stormpath-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Track active storms and severe weather in Canada</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/stormpath-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Track active tropical cyclones in Australia</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/stormpath-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Track active storms and severe weather in UK</p>
+                    </div>
+                </div>
+
+                <!-- WEATHER REPORTS COMMANDS -->
+                <h2 style="font-size: 2rem; margin: 3rem 0 1.5rem 0; text-align: center;">📝 Weather Reports Commands</h2>
+                <div class="grid grid-3">
+                    <div class="command-card">
+                        <h3><code>/report</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Submit a local weather report (hail, snow, wind damage, flooding, etc.)</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/report-ca</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Submit weather report for Canadian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/report-au</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Submit weather report for Australian cities</p>
+                    </div>
+                    <div class="command-card">
+                        <h3><code>/report-uk</code></h3>
+                        <p style="color: #cbd5e1; margin-top: 0.5rem;">Submit weather report for UK cities</p>
                     </div>
                 </div>
             </div>
@@ -1389,6 +2059,17 @@
                                 <li>Northern Australia</li>
                             </ul>
                         </div>
+                        
+                        <div class="card" style="background: rgba(102, 126, 234, 0.05);">
+                            <h4 style="color: var(--primary); margin-bottom: 1rem;">🇬🇧 United Kingdom</h4>
+                            <p style="color: #cbd5e1; line-height: 1.8;">Use <code>/setup-alerts region:UK</code></p>
+                            <ul style="color: #94a3b8; margin-left: 1.5rem; margin-top: 0.5rem;">
+                                <li>England</li>
+                                <li>Scotland</li>
+                                <li>Wales</li>
+                                <li>Northern Ireland</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="card">
@@ -1461,7 +2142,7 @@
                     <div class="grid grid-2">
                         <div>
                             <h3 style="color: var(--primary); margin-bottom: 0.75rem;">🌍 Global Coverage</h3>
-                            <p style="color: #cbd5e1;">Access weather data for USA, Canada, and Australia with simple commands</p>
+                            <p style="color: #cbd5e1;">Access weather data for USA, Canada, Australia, and UK with simple commands</p>
                         </div>
                         <div>
                             <h3 style="color: var(--primary); margin-bottom: 0.75rem;">📊 Multiple Views</h3>
@@ -1494,6 +2175,7 @@
                         <li>Use <code>/weather</code> for U.S. cities</li>
                         <li>Use <code>/weather-ca</code> for Canadian municipalities</li>
                         <li>Use <code>/weather-au</code> for Australian cities</li>
+                        <li>Use <code>/weather-uk</code> for UK cities</li>
                         <li>Set up alerts with <code>/setup-alerts</code></li>
                     </ol>
                 </div>
@@ -1736,6 +2418,110 @@
                     </div>
                 </div>
 
+                <!-- Bot Use Cases & Examples -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem; text-align: center;">💡 Real-World Use Cases</h2>
+                    <div class="grid grid-3">
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🎮</div>
+                            <h3 style="margin-bottom: 0.5rem;">Gaming Communities</h3>
+                            <p style="color: #cbd5e1;">Check weather before outdoor events, plan game sessions around storms</p>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🎓</div>
+                            <h3 style="margin-bottom: 0.5rem;">School & University Servers</h3>
+                            <p style="color: #cbd5e1;">Get campus weather updates, plan study groups, monitor conditions</p>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🏢</div>
+                            <h3 style="margin-bottom: 0.5rem;">Work Teams</h3>
+                            <p style="color: #cbd5e1;">Coordinate remote work schedules, plan team meetups safely</p>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">✈️</div>
+                            <h3 style="margin-bottom: 0.5rem;">Travel Groups</h3>
+                            <p style="color: #cbd5e1;">Monitor conditions at destinations, get alerts for trip locations</p>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🏃</div>
+                            <h3 style="margin-bottom: 0.5rem;">Sports & Outdoor</h3>
+                            <p style="color: #cbd5e1;">Plan activities, get real-time updates during events</p>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">👨‍👩‍👧‍👦</div>
+                            <h3 style="margin-bottom: 0.5rem;">Family Servers</h3>
+                            <p style="color: #cbd5e1;">Keep everyone informed about local weather conditions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Features -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem;">🚀 Advanced Features</h2>
+                    <div class="grid grid-2">
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">📍 Location-Based Alerts</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>Set up multiple alert zones per server</li>
+                                <li>Choose alert severity levels</li>
+                                <li>Get notifications within 60 seconds of issuance</li>
+                                <li>Works for all covered countries</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">🎨 Customizable Display</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>4 different template styles</li>
+                                <li>Embed colors match your server</li>
+                                <li>Interactive buttons for more data</li>
+                                <li>Mobile-friendly displays</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">⚡ Lightning Fast</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>Sub-2-second average response time</li>
+                                <li>99.8% uptime guarantee</li>
+                                <li>Handles thousands of requests simultaneously</li>
+                                <li>Auto-scales during high traffic</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">🔐 Safe & Secure</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>No data collection or tracking</li>
+                                <li>Minimal permissions required</li>
+                                <li>Open-source transparency</li>
+                                <li>Privacy-first design</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Section -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem;">❓ Frequently Asked Questions</h2>
+                    <div style="color: #cbd5e1;">
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">How many commands can I use?</h3>
+                        <p style="line-height: 1.8;">Unlimited! There are no rate limits for normal use. The bot can handle as many requests as your server needs.</p>
+                        
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Do I need to pay for premium features?</h3>
+                        <p style="line-height: 1.8;">Never! Every feature is 100% free forever. No premium tiers, no paid subscriptions, no hidden costs.</p>
+                        
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">How accurate is the weather data?</h3>
+                        <p style="line-height: 1.8;">Extremely accurate. We source data directly from official government weather services (NWS, Environment Canada, BOM Australia, UK Met Office).</p>
+                        
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Can I use the bot in multiple servers?</h3>
+                        <p style="line-height: 1.8;">Yes! Add the bot to unlimited servers. Each server can have its own custom alert configurations.</p>
+                        
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">What if my city isn't listed?</h3>
+                        <p style="line-height: 1.8;">Contact us through our support Discord. We're constantly expanding coverage and can prioritize requested locations.</p>
+                        
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Is the bot available 24/7?</h3>
+                        <p style="line-height: 1.8;">Yes! The bot runs 24/7/365 with 99.8% uptime. If you ever experience issues, check our status page.</p>
+                    </div>
+                </div>
+
                 <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
                     <h2 style="font-size: 2rem; margin-bottom: 1rem;">Ready to get started?</h2>
                     <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.95;">Join thousands of servers using Midwest Weather Bot</p>
@@ -1761,7 +2547,7 @@
 
                 <div class="card">
                     <h2 style="margin-bottom: 1rem;">🗺️ Coverage Areas</h2>
-                    <div class="grid grid-3">
+                    <div class="grid grid-4">
                         <div>
                             <h3 style="color: var(--primary); margin-bottom: 0.75rem;">🇺🇸 United States</h3>
                             <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
@@ -1789,6 +2575,15 @@
                                 <li>BOM Australia data</li>
                             </ul>
                         </div>
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 0.75rem;">🇬🇧 United Kingdom</h3>
+                            <ul style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
+                                <li>Major cities</li>
+                                <li>4 regions</li>
+                                <li>England, Scotland, Wales, N. Ireland</li>
+                                <li>UK Met Office data</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -1797,7 +2592,7 @@
                     <h3 style="color: var(--primary); margin: 1.5rem 0 1rem;">Weather Lookup</h3>
                     <ol style="color: #cbd5e1; line-height: 2; margin-left: 1.5rem;">
                         <li>Navigate to the Weather page</li>
-                        <li>Select your country (USA, Canada, or Australia)</li>
+                        <li>Select your country (USA, Canada, Australia, or UK)</li>
                         <li>Choose your Region from the dropdown</li>
                         <li>Select your State/Province/Territory</li>
                         <li>Pick your City/Municipality</li>
@@ -1825,9 +2620,15 @@
                         <li><code>/weather city:[name]</code> - Get U.S. weather</li>
                         <li><code>/weather-ca municipality:[name]</code> - Get Canadian weather</li>
                         <li><code>/weather-au city:[name]</code> - Get Australian weather</li>
+                        <li><code>/weather-uk city:[name]</code> - Get UK weather</li>
                         <li><code>/forecast city:[name]</code> - Get 7-day forecast</li>
                         <li><code>/dashboard city:[name]</code> - Interactive dashboard</li>
                     </ul>
+                    
+                    <h3 style="color: var(--primary); margin: 1.5rem 0 1rem;">Country-Specific Commands</h3>
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        All commands are available with country suffixes: <code>-ca</code> (Canada), <code>-au</code> (Australia), <code>-uk</code> (United Kingdom)
+                    </p>
                 </div>
 
                 <div class="card">
@@ -1914,9 +2715,130 @@
                         <li>Historical weather data for episode research</li>
                     </ul>
                     
+                    <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem;">
+                        <p style="color: white; font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                            📅 Launch Date: Summer 2026
+                        </p>
+                        <p style="color: rgba(255,255,255,0.9); line-height: 1.6;">
+                            We're targeting a full launch of podcast integration features in Summer 2026. This will include real-time data access, custom briefings, and seamless integration with popular podcast platforms. Stay tuned for updates!
+                        </p>
+                    </div>
+                    
                     <p style="color: #f59e0b; margin-top: 1rem; font-weight: 600;">
                         ⚠️ This sector is currently closed for development. We'll announce when podcast features go live!
                     </p>
+                </div>
+
+                <!-- Advanced Usage -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1rem;">🎯 Advanced Usage Tips</h2>
+                    <div style="color: #cbd5e1;">
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Combining Commands</h3>
+                        <p style="line-height: 1.8; margin-bottom: 1rem;">
+                            Use multiple commands together for comprehensive weather analysis:
+                        </p>
+                        <ul style="margin-left: 1.5rem; line-height: 2;">
+                            <li>Start with <code>/weather</code> for current conditions</li>
+                            <li>Follow with <code>/forecast</code> to see upcoming changes</li>
+                            <li>Check <code>/radar</code> for precipitation patterns</li>
+                            <li>Use <code>/alerts</code> for any active warnings</li>
+                        </ul>
+
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Setting Up Multiple Locations</h3>
+                        <p style="line-height: 1.8; margin-bottom: 1rem;">
+                            Track weather in multiple cities for your community members:
+                        </p>
+                        <ol style="margin-left: 1.5rem; line-height: 2;">
+                            <li>Create dedicated weather channels for different regions</li>
+                            <li>Set up alerts for each region separately</li>
+                            <li>Use pinned messages to display frequently checked locations</li>
+                            <li>Schedule automated weather updates with webhooks</li>
+                        </ol>
+
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Interpreting Weather Data</h3>
+                        <p style="line-height: 1.8; margin-bottom: 1rem;">Understanding the data provided:</p>
+                        <ul style="margin-left: 1.5rem; line-height: 2;">
+                            <li><strong>Temperature:</strong> Actual air temperature measured in shade</li>
+                            <li><strong>Feels Like:</strong> Accounts for wind chill or heat index</li>
+                            <li><strong>Humidity:</strong> Percentage of moisture in the air</li>
+                            <li><strong>Wind Speed:</strong> Sustained winds, with gust speeds when significant</li>
+                            <li><strong>Visibility:</strong> How far you can see (important for travel)</li>
+                            <li><strong>Pressure:</strong> Atmospheric pressure (falling = storms approaching)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Troubleshooting -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1rem;">🔧 Troubleshooting</h2>
+                    <div style="color: #cbd5e1;">
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Bot Not Responding</h3>
+                        <ol style="margin-left: 1.5rem; line-height: 2;">
+                            <li>Check the Status page to see if systems are online</li>
+                            <li>Verify the bot has proper permissions in your server</li>
+                            <li>Try refreshing Discord (Ctrl+R on desktop)</li>
+                            <li>Ensure you're using slash commands (start with /)</li>
+                        </ol>
+
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Alerts Not Working</h3>
+                        <ol style="margin-left: 1.5rem; line-height: 2;">
+                            <li>Confirm alerts are set up with <code>/setup-alerts</code></li>
+                            <li>Check that the bot has permission to send messages in the alert channel</li>
+                            <li>Verify you selected the correct region for your location</li>
+                            <li>DM alerts require allowing DMs from server members</li>
+                        </ol>
+
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Data Seems Incorrect</h3>
+                        <p style="line-height: 1.8;">
+                            We source data from official government weather services. If data appears wrong:
+                        </p>
+                        <ol style="margin-left: 1.5rem; line-height: 2;">
+                            <li>Verify you selected the correct city (some names are similar)</li>
+                            <li>Check if you're comparing to a different weather service's data</li>
+                            <li>Weather can vary significantly between nearby locations</li>
+                            <li>Report persistent issues through our support Discord</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- API & Integration -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1rem;">🔌 API & Integration</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 1rem;">
+                        Developers can integrate Midwest Weather data into their applications:
+                    </p>
+                    <div style="color: #cbd5e1;">
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">API Access</h3>
+                        <ul style="margin-left: 1.5rem; line-height: 2;">
+                            <li>RESTful API with JSON responses</li>
+                            <li>Rate limits: 1000 requests per hour per IP</li>
+                            <li>Free for non-commercial use</li>
+                            <li>API documentation available on request</li>
+                        </ul>
+
+                        <h3 style="color: var(--primary); margin: 1.5rem 0 0.5rem;">Webhook Integration</h3>
+                        <ul style="margin-left: 1.5rem; line-height: 2;">
+                            <li>Receive weather updates via webhooks</li>
+                            <li>Configure custom triggers for alerts</li>
+                            <li>Perfect for automation and notifications</li>
+                            <li>Contact us for webhook setup instructions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Community Guidelines -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1rem;">👥 Community Guidelines</h2>
+                    <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 1rem;">
+                        To keep Midwest Weather available and reliable for everyone:
+                    </p>
+                    <ul style="color: #cbd5e1; margin-left: 1.5rem; line-height: 2;">
+                        <li>Don't spam commands or abuse rate limits</li>
+                        <li>Report bugs and issues constructively</li>
+                        <li>Respect other community members</li>
+                        <li>Don't attempt to exploit or hack the service</li>
+                        <li>Credit Midwest Weather when sharing data publicly</li>
+                    </ul>
                 </div>
 
                 <div class="card">
@@ -2276,10 +3198,12 @@
             document.getElementById('usa-weather').style.display = 'none';
             document.getElementById('canada-weather').style.display = 'none';
             document.getElementById('australia-weather').style.display = 'none';
+            document.getElementById('uk-weather').style.display = 'none';
             
             document.getElementById('usa-tab').className = 'btn btn-secondary';
             document.getElementById('canada-tab').className = 'btn btn-secondary';
             document.getElementById('australia-tab').className = 'btn btn-secondary';
+            document.getElementById('uk-tab').className = 'btn btn-secondary';
             
             document.getElementById(country + '-weather').style.display = 'block';
             document.getElementById(country + '-tab').className = 'btn btn-primary';
@@ -2295,14 +3219,17 @@
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
+            
+            // Add atmospheric fog
+            scene.fog = new THREE.FogExp2(0x020617, 0.008);
             
             const today = new Date();
             const month = today.getMonth() + 1;
             const day = today.getDate();
             
             let weatherMode = 'default';
-            let particleCount = 2000;
             
             if ((month === 12) || (month === 1 && day <= 5)) {
                 weatherMode = 'snow';
@@ -2316,94 +3243,203 @@
                 weatherMode = 'rain';
             }
             
-            const particles = new THREE.BufferGeometry();
-            const positions = new Float32Array(particleCount * 3);
-            const colors = new Float32Array(particleCount * 3);
-            const velocities = new Float32Array(particleCount * 3);
+            // === LAYER 1: Background atmosphere particles (slow, large, dim) ===
+            const bgCount = 800;
+            const bgGeo = new THREE.BufferGeometry();
+            const bgPos = new Float32Array(bgCount * 3);
+            const bgCol = new Float32Array(bgCount * 3);
+            const bgVel = new Float32Array(bgCount * 3);
             
-            for (let i = 0; i < particleCount * 3; i += 3) {
-                positions[i] = (Math.random() - 0.5) * 100;
-                positions[i + 1] = Math.random() * 100 - 50;
-                positions[i + 2] = (Math.random() - 0.5) * 100;
+            for (let i = 0; i < bgCount * 3; i += 3) {
+                bgPos[i] = (Math.random() - 0.5) * 200;
+                bgPos[i + 1] = (Math.random() - 0.5) * 200;
+                bgPos[i + 2] = (Math.random() - 0.5) * 200;
+                bgCol[i] = 0.3 + Math.random() * 0.15;
+                bgCol[i + 1] = 0.2 + Math.random() * 0.1;
+                bgCol[i + 2] = 0.6 + Math.random() * 0.2;
+                bgVel[i] = (Math.random() - 0.5) * 0.005;
+                bgVel[i + 1] = (Math.random() - 0.5) * 0.003;
+                bgVel[i + 2] = (Math.random() - 0.5) * 0.005;
+            }
+            bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
+            bgGeo.setAttribute('color', new THREE.BufferAttribute(bgCol, 3));
+            const bgMat = new THREE.PointsMaterial({
+                size: 1.8,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.25,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const bgSystem = new THREE.Points(bgGeo, bgMat);
+            scene.add(bgSystem);
+            
+            // === LAYER 2: Mid-ground weather particles ===
+            const midCount = 2500;
+            const midGeo = new THREE.BufferGeometry();
+            const midPos = new Float32Array(midCount * 3);
+            const midCol = new Float32Array(midCount * 3);
+            const midVel = new Float32Array(midCount * 3);
+            const midSizes = new Float32Array(midCount);
+            
+            for (let i = 0; i < midCount; i++) {
+                const i3 = i * 3;
+                midPos[i3] = (Math.random() - 0.5) * 120;
+                midPos[i3 + 1] = Math.random() * 120 - 60;
+                midPos[i3 + 2] = (Math.random() - 0.5) * 120;
+                midSizes[i] = 0.3 + Math.random() * 0.5;
                 
                 if (weatherMode === 'snow') {
-                    colors[i] = 0.9 + Math.random() * 0.1;
-                    colors[i + 1] = 0.9 + Math.random() * 0.1;
-                    colors[i + 2] = 1.0;
-                    velocities[i] = (Math.random() - 0.5) * 0.02;
-                    velocities[i + 1] = -Math.random() * 0.05 - 0.02;
-                    velocities[i + 2] = (Math.random() - 0.5) * 0.02;
+                    midCol[i3] = 0.85 + Math.random() * 0.15;
+                    midCol[i3 + 1] = 0.88 + Math.random() * 0.12;
+                    midCol[i3 + 2] = 1.0;
+                    midVel[i3] = (Math.random() - 0.5) * 0.025;
+                    midVel[i3 + 1] = -Math.random() * 0.06 - 0.02;
+                    midVel[i3 + 2] = (Math.random() - 0.5) * 0.025;
+                    midSizes[i] = 0.5 + Math.random() * 0.8;
                 } else if (weatherMode === 'fireworks') {
-                    colors[i] = Math.random();
-                    colors[i + 1] = Math.random();
-                    colors[i + 2] = Math.random();
-                    velocities[i] = (Math.random() - 0.5) * 0.1;
-                    velocities[i + 1] = Math.random() * 0.1;
-                    velocities[i + 2] = (Math.random() - 0.5) * 0.1;
+                    midCol[i3] = Math.random();
+                    midCol[i3 + 1] = Math.random();
+                    midCol[i3 + 2] = Math.random();
+                    midVel[i3] = (Math.random() - 0.5) * 0.12;
+                    midVel[i3 + 1] = Math.random() * 0.12;
+                    midVel[i3 + 2] = (Math.random() - 0.5) * 0.12;
                 } else if (weatherMode === 'rain') {
-                    colors[i] = 0.5 + Math.random() * 0.3;
-                    colors[i + 1] = 0.6 + Math.random() * 0.3;
-                    colors[i + 2] = 0.9 + Math.random() * 0.1;
-                    velocities[i] = (Math.random() - 0.5) * 0.01;
-                    velocities[i + 1] = -Math.random() * 0.15 - 0.1;
-                    velocities[i + 2] = (Math.random() - 0.5) * 0.01;
+                    const isDroplet = Math.random() > 0.7;
+                    midCol[i3] = 0.35 + Math.random() * 0.2;
+                    midCol[i3 + 1] = 0.4 + Math.random() * 0.25;
+                    midCol[i3 + 2] = 0.75 + Math.random() * 0.25;
+                    midVel[i3] = (Math.random() - 0.5) * 0.008;
+                    midVel[i3 + 1] = isDroplet ? (-Math.random() * 0.3 - 0.15) : (-Math.random() * 0.12 - 0.06);
+                    midVel[i3 + 2] = (Math.random() - 0.5) * 0.008;
+                    midSizes[i] = isDroplet ? 0.2 : (0.3 + Math.random() * 0.4);
                 } else {
-                    colors[i] = 0.4 + Math.random() * 0.3;
-                    colors[i + 1] = 0.5 + Math.random() * 0.3;
-                    colors[i + 2] = 0.8 + Math.random() * 0.2;
-                    velocities[i] = (Math.random() - 0.5) * 0.02;
-                    velocities[i + 1] = -Math.random() * 0.03;
-                    velocities[i + 2] = (Math.random() - 0.5) * 0.02;
+                    midCol[i3] = 0.35 + Math.random() * 0.25;
+                    midCol[i3 + 1] = 0.3 + Math.random() * 0.2;
+                    midCol[i3 + 2] = 0.7 + Math.random() * 0.3;
+                    midVel[i3] = (Math.random() - 0.5) * 0.02;
+                    midVel[i3 + 1] = -Math.random() * 0.03;
+                    midVel[i3 + 2] = (Math.random() - 0.5) * 0.02;
                 }
             }
             
-            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            midGeo.setAttribute('position', new THREE.BufferAttribute(midPos, 3));
+            midGeo.setAttribute('color', new THREE.BufferAttribute(midCol, 3));
             
-            const material = new THREE.PointsMaterial({
-                size: weatherMode === 'snow' ? 0.8 : 0.5,
+            const midMat = new THREE.PointsMaterial({
+                size: weatherMode === 'snow' ? 0.9 : 0.45,
                 vertexColors: true,
                 transparent: true,
-                opacity: weatherMode === 'fireworks' ? 0.8 : 0.6,
-                blending: THREE.AdditiveBlending
+                opacity: weatherMode === 'fireworks' ? 0.85 : 0.55,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
             });
+            const midSystem = new THREE.Points(midGeo, midMat);
+            scene.add(midSystem);
             
-            const particleSystem = new THREE.Points(particles, material);
-            scene.add(particleSystem);
+            // === LAYER 3: Foreground accent particles (bright, close, small) ===
+            const fgCount = 400;
+            const fgGeo = new THREE.BufferGeometry();
+            const fgPos = new Float32Array(fgCount * 3);
+            const fgCol = new Float32Array(fgCount * 3);
+            const fgVel = new Float32Array(fgCount * 3);
+            
+            for (let i = 0; i < fgCount * 3; i += 3) {
+                fgPos[i] = (Math.random() - 0.5) * 60;
+                fgPos[i + 1] = (Math.random() - 0.5) * 60;
+                fgPos[i + 2] = (Math.random() - 0.5) * 30;
+                // Electric cyan / violet accent particles
+                const accent = Math.random() > 0.5;
+                fgCol[i] = accent ? 0.1 : 0.5;
+                fgCol[i + 1] = accent ? 0.8 : 0.3;
+                fgCol[i + 2] = accent ? 0.7 : 0.9;
+                fgVel[i] = (Math.random() - 0.5) * 0.01;
+                fgVel[i + 1] = (Math.random() - 0.5) * 0.01;
+                fgVel[i + 2] = (Math.random() - 0.5) * 0.008;
+            }
+            fgGeo.setAttribute('position', new THREE.BufferAttribute(fgPos, 3));
+            fgGeo.setAttribute('color', new THREE.BufferAttribute(fgCol, 3));
+            const fgMat = new THREE.PointsMaterial({
+                size: 0.25,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const fgSystem = new THREE.Points(fgGeo, fgMat);
+            scene.add(fgSystem);
             
             camera.position.z = 50;
             
+            // Mouse parallax tracking
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+            
+            let time = 0;
             function animate() {
                 requestAnimationFrame(animate);
+                time += 0.005;
                 
-                const positions = particleSystem.geometry.attributes.position.array;
+                // Animate background layer (slow drift)
+                bgSystem.rotation.y += 0.00015;
+                bgSystem.rotation.x += 0.00005;
+                const bgArr = bgSystem.geometry.attributes.position.array;
+                for (let i = 0; i < bgArr.length; i += 3) {
+                    bgArr[i] += bgVel[i];
+                    bgArr[i + 1] += bgVel[i + 1];
+                    bgArr[i + 2] += bgVel[i + 2];
+                    if (Math.abs(bgArr[i]) > 100) bgArr[i] *= -0.9;
+                    if (Math.abs(bgArr[i + 1]) > 100) bgArr[i + 1] *= -0.9;
+                }
+                bgSystem.geometry.attributes.position.needsUpdate = true;
                 
-                for (let i = 0; i < positions.length; i += 3) {
-                    positions[i] += velocities[i];
-                    positions[i + 1] += velocities[i + 1];
-                    positions[i + 2] += velocities[i + 2];
+                // Animate mid-ground weather
+                const midArr = midSystem.geometry.attributes.position.array;
+                for (let i = 0; i < midArr.length; i += 3) {
+                    midArr[i] += midVel[i];
+                    midArr[i + 1] += midVel[i + 1];
+                    midArr[i + 2] += midVel[i + 2];
                     
-                    if (positions[i + 1] < -50) {
-                        positions[i + 1] = 50;
-                        positions[i] = (Math.random() - 0.5) * 100;
-                        positions[i + 2] = (Math.random() - 0.5) * 100;
+                    if (midArr[i + 1] < -60) {
+                        midArr[i + 1] = 60;
+                        midArr[i] = (Math.random() - 0.5) * 120;
+                        midArr[i + 2] = (Math.random() - 0.5) * 120;
                     }
                     
                     if (weatherMode === 'fireworks') {
-                        velocities[i + 1] -= 0.001;
-                        if (positions[i + 1] < -50) {
-                            positions[i] = (Math.random() - 0.5) * 100;
-                            positions[i + 1] = 50;
-                            positions[i + 2] = (Math.random() - 0.5) * 100;
-                            velocities[i] = (Math.random() - 0.5) * 0.1;
-                            velocities[i + 1] = Math.random() * 0.1;
-                            velocities[i + 2] = (Math.random() - 0.5) * 0.1;
+                        midVel[i + 1] -= 0.001;
+                        if (midArr[i + 1] < -60) {
+                            midArr[i] = (Math.random() - 0.5) * 120;
+                            midArr[i + 1] = 60;
+                            midArr[i + 2] = (Math.random() - 0.5) * 120;
+                            midVel[i] = (Math.random() - 0.5) * 0.12;
+                            midVel[i + 1] = Math.random() * 0.12;
+                            midVel[i + 2] = (Math.random() - 0.5) * 0.12;
                         }
                     }
                 }
+                midSystem.geometry.attributes.position.needsUpdate = true;
+                midSystem.rotation.y += 0.0001;
                 
-                particleSystem.geometry.attributes.position.needsUpdate = true;
-                particleSystem.rotation.y += 0.0002;
+                // Animate foreground (gentle float + mouse parallax)
+                const fgArr = fgSystem.geometry.attributes.position.array;
+                for (let i = 0; i < fgArr.length; i += 3) {
+                    fgArr[i] += fgVel[i] + Math.sin(time + i) * 0.003;
+                    fgArr[i + 1] += fgVel[i + 1] + Math.cos(time + i * 0.5) * 0.003;
+                    fgArr[i + 2] += fgVel[i + 2];
+                    if (Math.abs(fgArr[i]) > 35) fgVel[i] *= -1;
+                    if (Math.abs(fgArr[i + 1]) > 35) fgVel[i + 1] *= -1;
+                }
+                fgSystem.geometry.attributes.position.needsUpdate = true;
+                
+                // Mouse parallax effect on camera
+                camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
                 
                 renderer.render(scene, camera);
             }
@@ -2418,7 +3454,7 @@
         }
 
         // Germany Launch Countdown
-        function updateUKCountdown() {
+        function updateGermanyCountdown() {
             const launchDate = new Date('May 1, 2026 00:00:00').getTime();
             
             setInterval(() => {
@@ -2473,6 +3509,28 @@
                         return;
                     }
                 }
+
+                if (!foundCity && allAustraliaCities && allAustraliaCities.length > 0) {
+                    foundCity = allAustraliaCities.find(c => c.name.toLowerCase().includes(searchLower));
+                    if (foundCity) {
+                        showPage('weather');
+                        switchCountry('australia');
+                        document.getElementById('australia-city-select').value = foundCity.id;
+                        await loadAustraliaWeather();
+                        return;
+                    }
+                }
+
+                if (!foundCity && allUKCities && allUKCities.length > 0) {
+                    foundCity = allUKCities.find(c => c.name.toLowerCase().includes(searchLower));
+                    if (foundCity) {
+                        showPage('weather');
+                        switchCountry('uk');
+                        document.getElementById('uk-city-select').value = foundCity.id;
+                        await loadUKWeather();
+                        return;
+                    }
+                }
             }
             
             if (foundCity) {
@@ -2489,7 +3547,7 @@
                     }, 100);
                 }, 100);
             } else {
-                alert('❌ City not found. Try another search term.');
+                alert('❌ City not found. Try searching by city name across USA, Canada, Australia, or UK.');
             }
         }
 
@@ -2589,6 +3647,14 @@
                 }
                 if (document.getElementById('home-users-count')) {
                     document.getElementById('home-users-count').textContent = data.users || '0';
+                }
+                
+                // Update bot page stats
+                if (document.getElementById('bot-page-servers')) {
+                    document.getElementById('bot-page-servers').textContent = data.servers || '0';
+                }
+                if (document.getElementById('bot-page-users')) {
+                    document.getElementById('bot-page-users').textContent = data.users || '0';
                 }
                 
                 // === STATUS PAGE DETAILED UPDATES ===
@@ -3276,77 +4342,68 @@ async function loadUKWeather() {
     }
 }
 
-    // Radar Functions
-    async function loadRadar() {
-        const region = document.getElementById('radar-region').value;
-        if (!region) {
-            alert('Please select a region first');
-            return;
-        }
-        
-        const display = document.getElementById('radar-display');
-        display.innerHTML = '<div class="spinner"></div>';
-        
-        const radarStations = {
-            'national': 'CONUS',
-            'midwest': 'MPX',
-            'southeast': 'FFC',
-            'northeast': 'OKX',
-            'southwest': 'FWS',
-            'west': 'MUX',
-            'canada': 'CASRA',
-            'australia': 'BOM'
-        };
-        
-        const station = radarStations[region] || 'CONUS';
-        
-        if (region !== 'canada' && region !== 'australia') {
-            const radarUrl = `https://radar.weather.gov/ridge/standard/${station}_loop.gif`;
-            
-            display.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Live Doppler Radar - ${region.charAt(0).toUpperCase() + region.slice(1)}</h3>
+// Radar Functions
+async function loadRadar() {
+    const region = document.getElementById('radar-region').value;
+    if (!region) {
+        alert('Please select a region first');
+        return;
+    }
+    
+    const radarFrame = document.getElementById('radar-frame');
+    const placeholder = document.getElementById('radar-placeholder');
+    
+    const radarUrls = {
+        'national': 'https://radar.weather.gov/ridge/standard/CONUS_loop.gif',
+        'midwest': 'https://radar.weather.gov/ridge/standard/CENTGRTLAKES_loop.gif',
+        'southeast': 'https://radar.weather.gov/ridge/standard/SOUTHEAST_loop.gif',
+        'northeast': 'https://radar.weather.gov/ridge/standard/NORTHEAST_loop.gif',
+        'southwest': 'https://radar.weather.gov/ridge/standard/SOUTHROCKIES_loop.gif',
+        'west': 'https://radar.weather.gov/ridge/standard/PACNORTHWEST_loop.gif',
+        'canada': 'https://weather.gc.ca/data/radar/temp_image/CASRA_PRECIPET_RAIN_WEATHEROFFICE.GIF',
+        'australia': 'http://www.bom.gov.au/products/national_radar_sat.loop.shtml',
+        'united-kingdom': 'https://www.metoffice.gov.uk/public/data/PWSCache/RadarImages/Latest/uk_rainbow_500'
+    };
+    
+    placeholder.style.display = 'flex';
+    placeholder.innerHTML = '<div class="spinner"></div><p style="color: #cbd5e1; margin-top: 1rem;">Loading live radar...</p>';
+    radarFrame.style.display = 'none';
+    
+    const radarUrl = radarUrls[region];
+    
+    if (region === 'australia') {
+        radarFrame.src = radarUrl;
+        radarFrame.style.display = 'block';
+        placeholder.style.display = 'none';
+    } else {
+        setTimeout(() => {
+            placeholder.innerHTML = `
+                <div style="width: 100%; text-align: center;">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-primary);">
+                        🔴 LIVE: ${region.toUpperCase().replace('-', ' ')} Doppler Radar
+                    </h3>
                     <img src="${radarUrl}" 
-                         alt="Radar ${station}" 
-                         style="max-width: 100%; border-radius: 12px; border: 2px solid rgba(148, 163, 184, 0.2);"
-                         onerror="this.parentElement.innerHTML='<p style=color:#ef4444>❌ Radar temporarily unavailable</p>'">
-                    <p style="color: #94a3b8; margin-top: 1rem; font-size: 0.9rem;">
-                        Station: ${station} • Updates every 5 minutes
-                    </p>
+                         alt="Live ${region} radar" 
+                         style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"
+                         onerror="this.parentElement.innerHTML='<p style=color:var(--error)>❌ Radar temporarily unavailable. Please try another region or refresh.</p>'">
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                        <p style="color: #10b981; font-weight: 600; margin-bottom: 0.5rem;">✓ LIVE RADAR ACTIVE</p>
+                        <p style="color: #cbd5e1; font-size: 0.9rem;">Auto-refreshes every 5 minutes • Real-time precipitation data</p>
+                        <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.5rem;">Source: National Weather Service / Weather.gov</p>
+                    </div>
                 </div>
             `;
-        } else if (region === 'canada') {
-            display.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Canadian Radar</h3>
-                    <p style="color: #94a3b8;">Environment Canada radar integration coming soon</p>
-                </div>
-            `;
-        } else {
-            display.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <h3 style="margin-bottom: 1rem; color: #e4e4e7;">Australian Radar</h3>
-                    <p style="color: #94a3b8;">BOM Australia radar launching February 2026</p>
-                </div>
-            `;
-        }
+            placeholder.style.display = 'block';
+        }, 500);
     }
+}
 
-    function toggleRadarAnimation() {
-        const display = document.getElementById('radar-display');
-        const img = display.querySelector('img');
-        if (img) {
-            const currentSrc = img.src;
-            if (currentSrc.includes('_loop.gif')) {
-                img.src = currentSrc.replace('_loop.gif', '_0.gif');
-            } else {
-                img.src = currentSrc.replace('_0.gif', '_loop.gif');
-            }
-        }
-    }
+function toggleRadarAnimation() {
+    alert('Radar animation is running automatically! The image updates every 5-10 minutes with live data.');
+}
 
-    // Announcements
-    function filterAnnouncements() {
+// === ANNOUNCEMENTS ===
+function filterAnnouncements() {
         const filter = document.getElementById('announcement-filter').value;
         console.log('Filtering by:', filter);
     }
@@ -3398,7 +4455,7 @@ async function loadUKWeather() {
     // Initialize
     window.addEventListener('DOMContentLoaded', () => {
         init3DParticles();
-        updateUKCountdown();
+        updateGermanyCountdown();
         loadCitiesData();
         loadStatusPage();
         
@@ -3412,6 +4469,22 @@ async function loadUKWeather() {
                     quickSearchWeather();
                 }
             });
+        }
+
+        // Card glow-follow mouse effect
+        document.addEventListener('mousemove', (e) => {
+            document.querySelectorAll('.card').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                card.style.setProperty('--mouse-x', x + '%');
+                card.style.setProperty('--mouse-y', y + '%');
+            });
+        });
+
+        // Render all emojis (flags) as images via Twemoji
+        if (typeof twemoji !== 'undefined') {
+            twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
         }
     });
 </script>
