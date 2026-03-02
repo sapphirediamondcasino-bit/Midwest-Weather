@@ -4255,33 +4255,35 @@ if (weather.forecast && weather.forecast.length > 0) {
     }
         // UK Weather Functions
 function handleUKRegionChange() {
-    loadUKStates();
+    loadUKCountries();
 }
 
-function loadUKStates() {
+function loadUKCountries() {
     const region = document.getElementById('uk-region-select').value;
-    const stateSelect = document.getElementById('uk-state-select');
+    const countrySelect = document.getElementById('uk-state-select'); // Keep same ID for compatibility
     const citySelect = document.getElementById('uk-city-select');
-
-    stateSelect.innerHTML = '<option value="">Select County/Area</option>';
+    
+    countrySelect.innerHTML = '<option value="">Select Country/Area</option>';
     citySelect.innerHTML = '<option value="">Select City</option>';
     citySelect.disabled = true;
     document.getElementById('uk-weather-result').innerHTML = '';
-
+    
     if (!region || allUKCities.length === 0) {
-        stateSelect.disabled = true;
+        countrySelect.disabled = true;
         return;
     }
-
-    const states = [...new Set(allUKCities.filter(c => c.region === region).map(c => c.state))].sort();
-    states.forEach(state => {
+    
+    // Get unique countries for selected region
+    const countries = [...new Set(allUKCities.filter(c => c.region === region).map(c => c.country))].sort();
+    
+    countries.forEach(country => {
         const option = document.createElement('option');
-        option.value = state;
-        option.textContent = state;
-        stateSelect.appendChild(option);
+        option.value = country;
+        option.textContent = country;
+        countrySelect.appendChild(option);
     });
-
-    stateSelect.disabled = false;
+    
+    countrySelect.disabled = false;
 }
 
 function handleUKStateChange() {
@@ -4290,28 +4292,29 @@ function handleUKStateChange() {
 
 function loadUKCities() {
     const region = document.getElementById('uk-region-select').value;
-    const state = document.getElementById('uk-state-select').value;
+    const country = document.getElementById('uk-state-select').value; // This is actually country
     const citySelect = document.getElementById('uk-city-select');
-
+    
     citySelect.innerHTML = '<option value="">Select City</option>';
     document.getElementById('uk-weather-result').innerHTML = '';
-
-    if (!state) {
+    
+    if (!country) {
         citySelect.disabled = true;
         return;
     }
-
+    
+    // Filter by region AND country
     const cities = allUKCities
-        .filter(c => c.region === region && c.state === state)
+        .filter(c => c.region === region && c.country === country)
         .sort((a, b) => a.name.localeCompare(b.name));
-
+    
     cities.forEach(city => {
         const option = document.createElement('option');
         option.value = city.id;
         option.textContent = `${city.name}${city.postcode ? ' (' + city.postcode + ')' : ''}`;
         citySelect.appendChild(option);
     });
-
+    
     citySelect.disabled = false;
 }
 
@@ -4322,21 +4325,74 @@ function handleUKCityChange() {
 async function loadUKWeather() {
     const cityId = document.getElementById('uk-city-select').value;
     if (!cityId) return;
-
+    
     const resultDiv = document.getElementById('uk-weather-result');
     resultDiv.innerHTML = '<div class="spinner"></div>';
-
+    
     try {
         const response = await fetch(`${API_URL}/api/weather-uk/${cityId}`);
         if (!response.ok) throw new Error('Failed to fetch weather');
-
+        
         const data = await response.json();
-        resultDiv.innerHTML = `<div class="card"><h2>${data.city.name}, ${data.city.state}</h2></div>`;
+        const weather = data.weather;
+        const current = weather.current;
+        
+        // Weather code emoji
+        function getWeatherEmoji(code) {
+            const emojis = {
+                0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
+                45: '🌫️', 48: '🌫️',
+                51: '🌦️', 53: '🌧️', 55: '🌧️',
+                61: '🌧️', 63: '🌧️', 65: '🌧️',
+                71: '🌨️', 73: '🌨️', 75: '🌨️',
+                80: '🌦️', 81: '🌧️', 82: '⛈️',
+                85: '🌨️', 86: '🌨️',
+                95: '⛈️', 96: '⛈️', 99: '⛈️'
+            };
+            return emojis[code] || '🌡️';
+        }
+        
+        const weatherEmoji = getWeatherEmoji(current.weather_code);
+        
+        resultDiv.innerHTML = `
+            <div class="card">
+                <h2>${weatherEmoji} ${data.city.name}, ${data.city.country}</h2>
+                <p style="color: #94a3b8; margin-top: 0.5rem;">${data.city.region} • Postcode: ${data.city.postcode}</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-label">Temperature</div>
+                        <div class="stat-value">${current.temperature_2m}°C</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Feels Like</div>
+                        <div class="stat-value">${current.apparent_temperature}°C</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Humidity</div>
+                        <div class="stat-value">${current.relative_humidity_2m}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Wind Speed</div>
+                        <div class="stat-value">${current.wind_speed_10m} km/h</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Cloud Cover</div>
+                        <div class="stat-value">${current.cloud_cover}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Visibility</div>
+                        <div class="stat-value">${(current.visibility / 1000).toFixed(1)} km</div>
+                    </div>
+                </div>
+            </div>
+        `;
     } catch (error) {
+        console.error('UK Weather Error:', error);
         resultDiv.innerHTML = `
             <div class="card" style="text-align: center; margin-top: 2rem;">
                 <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
-                <p style="color: #94a3b8; margin-top: 1rem;">UK weather not yet available</p>
+                <p style="color: #94a3b8; margin-top: 1rem;">Please try again or check console for errors</p>
             </div>
         `;
     }
