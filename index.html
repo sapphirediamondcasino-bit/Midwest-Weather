@@ -4260,10 +4260,10 @@ function handleUKRegionChange() {
 
 function loadUKCountries() {
     const region = document.getElementById('uk-region-select').value;
-    const countrySelect = document.getElementById('uk-state-select'); // Keep same ID for compatibility
+    const countrySelect = document.getElementById('uk-county-select'); // CHANGED: match HTML id
     const citySelect = document.getElementById('uk-city-select');
     
-    countrySelect.innerHTML = '<option value="">Select Country/Area</option>';
+    countrySelect.innerHTML = '<option value="">Select County</option>';
     citySelect.innerHTML = '<option value="">Select City</option>';
     citySelect.disabled = true;
     document.getElementById('uk-weather-result').innerHTML = '';
@@ -4286,13 +4286,13 @@ function loadUKCountries() {
     countrySelect.disabled = false;
 }
 
-function handleUKStateChange() {
+function handleUKCountyChange() { // CHANGED: match HTML onchange
     loadUKCities();
 }
 
 function loadUKCities() {
     const region = document.getElementById('uk-region-select').value;
-    const country = document.getElementById('uk-state-select').value; // This is actually country
+    const country = document.getElementById('uk-county-select').value; // CHANGED: match HTML id
     const citySelect = document.getElementById('uk-city-select');
     
     citySelect.innerHTML = '<option value="">Select City</option>';
@@ -4392,7 +4392,8 @@ async function loadUKWeather() {
         resultDiv.innerHTML = `
             <div class="card" style="text-align: center; margin-top: 2rem;">
                 <p style="color: #ef4444; font-size: 1.2rem;">❌ Failed to load weather data</p>
-                <p style="color: #94a3b8; margin-top: 1rem;">Please try again or check console for errors</p>
+                <p style="color: #94a3b8; margin-top: 1rem;">Error: ${error.message}</p>
+                <p style="color: #64748b; margin-top: 0.5rem; font-size: 0.9rem;">Check browser console for details</p>
             </div>
         `;
     }
