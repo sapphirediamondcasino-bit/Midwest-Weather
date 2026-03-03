@@ -3601,22 +3601,19 @@
                 console.log('⚠️ Australian cities not yet available');
             }
             try {
-                const ukResponse = await fetch(`${API_URL}/api/cities-uk`);
-                if (!ukResponse.ok) throw new Error('API offline');
-                const ukData = await ukResponse.json();
-                 allUKCities = ukData.cities;
-
-                if (document.getElementById('home-uk-cities-count')) {
-                document.getElementById('home-uk-cities-count').textContent = allUKCities.length.toLocaleString();
-               }
-
-               console.log(`🇬🇧 Loaded ${allUKCities.length} UK cities`);
-              } catch (error) {
-             if (document.getElementById('home-uk-cities-count')) {
-              document.getElementById('home-uk-cities-count').textContent = '0';
-              }
-
-             console.log('⚠️ UK cities not yet available');
+    const ukResponse = await fetch(`${API_URL}/api/cities-uk`);
+    if (!ukResponse.ok) throw new Error('API offline');
+    const ukData = await ukResponse.json();
+    allUKCities = ukData.cities;
+    if (document.getElementById('home-united-kingdom-cities-count')) {
+        document.getElementById('home-united-kingdom-cities-count').textContent = allUKCities.length.toLocaleString();
+    }
+    console.log(`🇬🇧 Loaded ${allUKCities.length} UK cities`);
+} catch (error) {
+    if (document.getElementById('home-united-kingdom-cities-count')) {
+        document.getElementById('home-united-kingdom-cities-count').textContent = '0';
+    }
+    console.log('⚠️ UK cities not yet available');
 }
         }
 
