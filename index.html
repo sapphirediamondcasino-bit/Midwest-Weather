@@ -15,10 +15,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.0.3/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#7c3aed;--pl:#a78bfa;--secondary:#8b5cf6;--accent:#06d6a0;--tp:#f1f5f9;--ts:#94a3b8;--tm:#64748b;--border:rgba(148,163,184,.12);--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;--card:rgba(10,15,35,.6)}
+html{scrollbar-gutter:stable;overflow-y:scroll}
+:root{--primary:#7c3aed;--pl:#a78bfa;--secondary:#8b5cf6;--accent:#06d6a0;--tp:#f1f5f9;--ts:#94a3b8;--tm:#64748b;--border:rgba(148,163,184,.12);--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;--card:rgba(10,15,35,.84)}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;background:#020617;color:var(--tp);line-height:1.6;overflow-x:hidden}
-body::before{content:'';position:fixed;width:600px;height:600px;top:-10%;left:-5%;border-radius:50%;filter:blur(120px);background:radial-gradient(circle,rgba(124,58,237,.14),transparent 70%);pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;width:500px;height:500px;bottom:10%;right:-5%;border-radius:50%;filter:blur(120px);background:radial-gradient(circle,rgba(6,214,160,.09),transparent 70%);pointer-events:none;z-index:0}
+body::before{content:'';position:fixed;width:600px;height:600px;top:-10%;left:-5%;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.14),transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;width:500px;height:500px;bottom:10%;right:-5%;border-radius:50%;background:radial-gradient(circle,rgba(6,214,160,.09),transparent 70%);pointer-events:none;z-index:0}
 body.ovm::before,body.ovm::after{display:none}
 #weather-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 .skip{position:absolute;top:-40px;left:0;background:var(--primary);color:#fff;padding:8px;z-index:10000}.skip:focus{top:0}
@@ -26,7 +27,7 @@ body.ovm::before,body.ovm::after{display:none}
 @media(prefers-contrast:high){:root{--ts:#fff;--border:rgba(255,255,255,.3)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .content{position:relative;z-index:1}
-nav{background:rgba(10,15,30,.7);backdrop-filter:blur(30px);border-bottom:1px solid rgba(124,58,237,.15);padding:.8rem 0;position:sticky;top:0;z-index:1000}
+nav{background:rgba(10,15,30,.94);border-bottom:1px solid rgba(124,58,237,.15);padding:.8rem 0;position:sticky;top:0;z-index:1000}
 nav .in{max-width:1500px;margin:0 auto;padding:0 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem}
 .brand{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#a78bfa,#7c3aed,#06d6a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer}
 .links{display:flex;gap:.2rem;flex-wrap:wrap}
@@ -37,19 +38,19 @@ nav .in{max-width:1500px;margin:0 auto;padding:0 1.5rem;display:flex;justify-con
 h1.t{font-size:2.8rem;text-align:center;margin-bottom:.5rem}p.sub{text-align:center;color:var(--ts);margin-bottom:2rem}
 h2.ct{font-size:2rem;margin:2.5rem 0 1rem;text-align:center}
 .hero{text-align:center;padding:6rem 1.5rem 3rem;position:relative}
-.hero h1{font-size:4.8rem;font-weight:900;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(135deg,#a78bfa,#7c3aed,#06d6a0,#22d3ee,#a78bfa);background-size:300% 300%;animation:gr 6s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1{font-size:4.8rem;font-weight:900;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(135deg,#a78bfa,#7c3aed,#06d6a0,#22d3ee,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 @keyframes gr{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
 .hero p{color:var(--ts);font-size:1.15rem;margin:.75rem 0}.hero .hs{font-size:1.5rem;font-weight:500}
 .btn-group{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
 .btn{padding:.75rem 1.5rem;border:1px solid transparent;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;color:#fff;transition:transform .2s,box-shadow .2s}
-.btn:hover{transform:translateY(-2px)}
+.btn:hover{filter:brightness(1.15)}
 .btn-primary{background:linear-gradient(135deg,#7c3aed,#a78bfa);box-shadow:0 4px 20px rgba(124,58,237,.35)}
 .btn-secondary{background:rgba(124,58,237,.1);color:var(--pl);border-color:rgba(124,58,237,.4)}
 .btn.sm{padding:.3rem .8rem;font-size:.9rem;border-radius:9px}
-.card{background:var(--card);backdrop-filter:blur(20px);border:1px solid rgba(124,58,237,.14);border-radius:18px;padding:1.5rem;margin-bottom:1.5rem;transition:transform .3s,box-shadow .3s,border-color .3s}
+.card{background:var(--card);border:1px solid rgba(124,58,237,.14);border-radius:18px;padding:1.5rem;margin-bottom:1.5rem;transition:transform .3s,box-shadow .3s,border-color .3s}
 .card:hover{border-color:rgba(124,58,237,.35);box-shadow:0 0 50px rgba(124,58,237,.18)}
 .grid{display:grid;gap:1.25rem;margin:1rem 0}.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
-.stat{background:linear-gradient(145deg,rgba(124,58,237,.09),rgba(6,214,160,.04));border:1px solid rgba(124,58,237,.16);border-radius:16px;padding:1.1rem;text-align:center;transition:transform .3s}.stat:hover{transform:translateY(-5px)}
+.stat{background:linear-gradient(145deg,rgba(124,58,237,.09),rgba(6,214,160,.04));border:1px solid rgba(124,58,237,.16);border-radius:16px;padding:1.1rem;text-align:center;transition:transform .3s}.stat:hover{border-color:rgba(124,58,237,.5);box-shadow:0 0 28px rgba(124,58,237,.2)}
 .sv{font-size:1.9rem;font-weight:800;background:linear-gradient(135deg,#a78bfa,#06d6a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .sl{color:var(--ts);font-size:.9rem}
 label{display:block;font-weight:600;margin-bottom:.35rem;font-size:.95rem}
@@ -74,7 +75,7 @@ pre{background:rgba(2,6,23,.8);border:1px solid var(--border);border-radius:10px
 .hbar{display:flex;align-items:flex-end;gap:3px;height:90px}.hbar div{flex:1;background:linear-gradient(#22d3ee,#7c3aed);border-radius:3px 3px 0 0;min-height:2px}
 .hscroll{display:flex;gap:.6rem;overflow-x:auto;padding-bottom:.5rem}.hscroll>div{min-width:78px;text-align:center;background:rgba(124,58,237,.08);border-radius:12px;padding:.6rem .3rem}
 .tw{overflow-x:auto}table{border-collapse:collapse;width:100%}td,th{padding:.4rem .6rem;border-bottom:1px solid var(--border);text-align:left}
-.cmdcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.3rem;transition:.3s}.cmdcard:hover{border-color:var(--primary);transform:translateY(-2px)}
+.cmdcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.3rem;transition:.3s}.cmdcard:hover{border-color:var(--primary)}
 .cmdcard ul{margin:.5rem 0 0 1.4rem;color:#cbd5e1}
 .svc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.4rem;margin:1rem 0}
 .svch{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:1rem;flex-wrap:wrap}.svcn{font-size:1.2rem;font-weight:600}
@@ -87,7 +88,7 @@ pre{background:rgba(2,6,23,.8);border:1px solid var(--border);border-radius:10px
 .rbar input[type=range]{flex:1;min-width:150px}
 .legend{height:12px;border-radius:6px;background:linear-gradient(90deg,#9bd7ff,#3b82f6,#22c55e,#facc15,#f97316,#ef4444,#a21caf)}
 .pr{max-height:260px;overflow:auto}.pr button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--border);color:var(--tp);padding:.55rem;cursor:pointer;font-size:.95rem}.pr button:hover{background:rgba(124,58,237,.15)}
-.cc{cursor:pointer;text-align:center}.cc:hover{transform:translateY(-6px)}
+.cc{cursor:pointer;text-align:center}.cc:hover{border-color:var(--primary);box-shadow:0 0 36px rgba(124,58,237,.3)}
 footer{background:rgba(5,8,20,.85);border-top:1px solid rgba(124,58,237,.14);padding:2.5rem 0 1.2rem;margin-top:3rem}
 footer .in{max-width:1400px;margin:0 auto;padding:0 1.5rem}footer h3{color:var(--primary);margin-bottom:.6rem}footer a{color:var(--ts);cursor:pointer;display:block;margin-bottom:.4rem}footer a:hover{color:var(--tp)}
 img.emoji{height:1.15em;width:1.15em;vertical-align:-.15em;margin:0 .08em}
@@ -97,12 +98,13 @@ img.emoji{height:1.15em;width:1.15em;vertical-align:-.15em;margin:0 .08em}
 #ail{flex:1;overflow:auto;padding:.8rem}.m{margin:.4rem 0;padding:.55rem .8rem;border-radius:12px;max-width:92%;font-size:.93rem;word-wrap:break-word}.m.u{background:rgba(124,58,237,.4);margin-left:auto}.m.b{background:rgba(148,163,184,.13)}
 #aic{display:flex;gap:.3rem;flex-wrap:wrap;padding:0 .8rem .4rem}#aic button{font-size:.78rem;padding:.25rem .6rem;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.35);color:var(--pl);cursor:pointer}
 #aif{display:flex;gap:.4rem;padding:.6rem;border-top:1px solid var(--border)}
+#flash{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 20%,#e8eeff,#7c8cff 60%,transparent);opacity:0;transition:opacity .12s;pointer-events:none;z-index:1}
 @media(max-width:768px){.hero h1{font-size:2.6rem}#rmap{height:440px}.cn{font-size:2rem}.cb{min-width:76px}}
 </style>
 </head>
 <body>
 <a href="#main" class="skip">Skip to main content</a>
-<div id="weather-canvas"></div>
+<div id="weather-canvas"></div><div id="flash" aria-hidden="true"></div>
 <div class="content">
 <nav role="navigation" aria-label="Main navigation"><div class="in"><div class="brand" onclick="showPage('home')">🌪️ Midwest Weather</div><div class="links" id="navl"></div></div></nav>
 <main id="main">
@@ -110,12 +112,12 @@ img.emoji{height:1.15em;width:1.15em;vertical-align:-.15em;margin:0 .08em}
 <!-- HOME -->
 <section id="home" class="page on">
  <div class="hero"><h1>Midwest Weather</h1><p class="hs">Weather Intelligence</p>
-  <p>🇺🇸 U.S. Coverage • All 50 States • 🇨🇦 Canadian Coverage • 🇦🇺 Australian Coverage • 🇬🇧 UK Coverage • 🇩🇪 Germany • 100% Free</p>
+  <p>🇺🇸 U.S. Coverage • All 50 States • 🇨🇦 Canadian Coverage • 🇦🇺 Australian Coverage • 🇬🇧 UK Coverage • 🇩🇪 Germany • 🇮🇪 Ireland coming soon • 100% Free</p>
   <div class="btn-group"><button class="btn btn-primary" onclick="showPage('weather')">📍 Check Weather</button><button class="btn btn-secondary" onclick="showPage('bot')">🤖 Get Bot</button></div></div>
  <div class="container">
   <h2 class="ct" style="margin-top:0">Get your weather</h2>
   <div class="grid g4" id="home-countries"></div>
-  <div class="card"><h3 style="margin-bottom:.8rem">Quick weather</h3><div id="home-pick"></div><div id="home-wx"></div></div>
+  
   <div class="stats-row grid g4" id="home-stats"></div>
   <div class="card" style="text-align:center"><h2 style="margin-bottom:1rem">🔴 System Status</h2><div id="home-badge" class="badge unk"><span class="dot"></span><span>Checking…</span></div><p class="small muted" style="margin-top:.6rem">Live checks from your browser • <a style="color:var(--pl);cursor:pointer" onclick="showPage('status')">full status</a></p></div>
   <div class="countdown" id="germany-box"></div>
@@ -146,13 +148,13 @@ img.emoji{height:1.15em;width:1.15em;vertical-align:-.15em;margin:0 .08em}
 
 <!-- RADAR -->
 <section id="radar" class="page"><div class="container">
- <h1 class="t">📡 Live Doppler Radar</h1><p class="sub">Real radar frames with their actual timestamps — never shown as current when they are not</p>
+ <h1 class="t">📡 Live Doppler Radar</h1><p class="sub">Free national radar sources that load instantly: NOAA/NWS NEXRAD (US), Environment Canada, DWD (Germany) and RainViewer elsewhere — never shown as current when it is not</p>
  <div class="card"><h2 style="margin-bottom:1rem">Regional Radar Selection</h2><div class="grid g3" style="margin:0">
   <div><label for="rreg">Region</label><select id="rreg" onchange="radarRegion()"></select></div>
-  <div><label for="rlayer">Data layer</label><select id="rlayer" onchange="loadRadar()"><option value="radar">Radar reflectivity (rain)</option><option value="snow">Radar – snow colors</option><option value="sat">Satellite infrared</option></select></div>
+  <div><label for="rlayer">Data layer</label><select id="rlayer" onchange="loadRadar()"><option value="radar">Radar reflectivity (rain)</option><option value="snow">Snow colors (Canada: ECCC snow layer)</option><option value="sat">Satellite infrared (RainViewer)</option></select></div>
   <div><label for="rbase">Base map</label><select id="rbase" onchange="radarBase()"><option value="dark">Dark (labels)</option><option value="street">Street</option></select></div>
   <div><label>Go to location</label><div id="rpick"></div></div>
-  <div><label for="rop">Opacity</label><input type="range" id="rop" min="20" max="100" value="75" oninput="radarOp()"><label style="margin-top:.5rem"><input type="checkbox" id="rsm" checked onchange="loadRadar()"> Smooth rendering</label></div>
+  <div><label for="rop">Opacity</label><input type="range" id="rop" min="20" max="100" value="75" oninput="radarOp()"><label style="margin-top:.5rem"><input type="checkbox" id="rsm" checked onchange="loadRadar()"> Smooth rendering (RainViewer only)</label></div>
   <div><label for="rsp">Playback speed</label><select id="rsp" onchange="radarSpeed()"><option value="1000">Slow</option><option value="600" selected>Normal</option><option value="300">Fast</option></select><label style="margin-top:.5rem"><input type="checkbox" id="rwarn" onchange="radarWarn()"> US warnings (NWS polygons)</label></div></div>
   <div class="btn-group" style="justify-content:flex-start"><button class="btn btn-primary" onclick="loadRadar()">Load Radar</button><button class="btn btn-secondary" onclick="radarLocate()">📍 My location</button></div></div>
  <div id="rwrap"><div id="rmap"></div>
@@ -194,7 +196,7 @@ img.emoji{height:1.15em;width:1.15em;vertical-align:-.15em;margin:0 .08em}
    <button class="btn btn-primary" onclick="addSub()">Subscribe to Alerts</button> <span class="small muted" id="al-msg"></span>
    <h3 style="margin:1.5rem 0 .5rem">Your subscriptions &amp; active alerts</h3><div id="al-subs"></div>
    <h3 style="margin:1.5rem 0 .5rem">Alert history</h3><div id="al-hist" class="muted small">No alert history has been recorded for your account yet.</div></div></div>
- <div class="card"><h2 style="margin-bottom:1rem">ℹ️ Important Information</h2><ul class="muted" style="line-height:2;margin-left:1.5rem"><li>Alerts are sourced from official weather services (NWS for live US warnings; other countries' feeds are being connected)</li><li>Notifications go out as soon as the alert job processes an official issuance</li><li>You can manage subscriptions anytime with <code>/alerts-manage</code> or on this page</li><li>DM alerts require allowing DMs from server members</li><li>Do not rely solely on these alerts for life-safety decisions</li></ul>
+ <div class="card"><h2 style="margin-bottom:1rem">ℹ️ Important Information</h2><ul class="muted" style="line-height:2;margin-left:1.5rem"><li>Alerts are sourced from official weather services (NWS for the US, DWD for Germany; Canada, Australia and UK feeds are not connected yet)</li><li>Notifications go out as soon as the alert job processes an official issuance</li><li>You can manage subscriptions anytime with <code>/alerts-manage</code> or on this page</li><li>DM alerts require allowing DMs from server members</li><li>Do not rely solely on these alerts for life-safety decisions</li></ul>
   <div class="notice small">Delivery to Discord, webhooks and email is performed by the Midwest Weather alert job reading these same subscriptions. Until that job is running against this database, subscriptions are saved and visible but not delivered.</div></div></div></section>
 
 <!-- BOT -->
@@ -245,7 +247,7 @@ Authorization: Bearer mw_your_key</pre><button class="btn btn-secondary" onclick
  <div><h3>Quick Links</h3><a onclick="showPage('home')">Home</a><a onclick="showPage('weather')">Weather Center</a><a onclick="showPage('radar')">Live Radar</a><a onclick="showPage('bot')">Discord Bot</a><a onclick="showPage('status')">System Status</a></div>
  <div><h3>Resources</h3><a onclick="showPage('docs')">Documentation</a><a onclick="showPage('commands')">Bot Commands</a><a onclick="showPage('alerts')">Weather Alerts</a><a onclick="showPage('broadcast')">Broadcast Center</a><a onclick="showPage('developers')">Developers</a><a onclick="showPage('news')">Announcements</a></div>
  <div><h3>Legal</h3><a onclick="showPage('terms')">Terms of Service</a><a onclick="showPage('privacy')">Privacy Policy</a><a onclick="showPage('copyright')">Copyright Notice</a></div></div>
- <p class="small muted" style="text-align:center;border-top:1px solid var(--border);padding-top:1rem">© 2026 Midwest Weather | Kurrasch Gaming Merch Store LLC<br>Midwest Weather - Weather Intelligence<br>Weather data: <a style="display:inline" target="_blank" rel="noopener" href="https://open-meteo.com">Open-Meteo.com</a> • Radar: <a style="display:inline" target="_blank" rel="noopener" href="https://www.rainviewer.com">RainViewer</a> • US warnings: National Weather Service • Maps © <a style="display:inline" target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © CARTO</p></div></footer>
+ <p class="small muted" style="text-align:center;border-top:1px solid var(--border);padding-top:1rem">© 2026 Midwest Weather | Kurrasch Gaming Merch Store LLC<br>Midwest Weather - Weather Intelligence<br>Weather: National Weather Service (US), DWD via Bright Sky (Germany), Open-Meteo • Radar: NOAA/NWS NEXRAD via Iowa Environmental Mesonet, Environment Canada, DWD, RainViewer • Warnings: NWS, DWD • Maps © <a style="display:inline" target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © CARTO</p></div></footer>
 </div>
 
 <button id="aibtn" onclick="aiToggle()" aria-label="Open Nimbus help chat" title="Need help finding something?">💬</button>
@@ -255,6 +257,9 @@ Authorization: Bearer mw_your_key</pre><button class="btn btn-secondary" onclick
 /* ====== CONFIG ====== (publishable key is public by design and protected by RLS. NEVER put the DB password or service_role key in this file.) */
 const CFG={SB_URL:'https://mobtedouyuuugugsgygn.supabase.co',SB_KEY:'sb_publishable_t1_uyLxKc1xy6f-UVTA4QA_U7Q9RIsX'};
 const FN=CFG.SB_URL+'/functions/v1';
+const NEXT_LAUNCH={cc:'IE',date:'2027-03-16T00:00:00',note:'Ireland coverage is on the way — weather, forecasts and alerts for Irish cities and towns.'}; // owner's plan: about 4 months from Nov 2026. An approved row in the database (Account → Admin) overrides this.
+const COMING={IE:{n:'Ireland',f:'🇮🇪'}};
+const cname=cc=>C[cc]?C[cc].f+' '+C[cc].n:COMING[cc]?COMING[cc].f+' '+COMING[cc].n:cc;
 const C={
  US:{n:'United States',f:'🇺🇸',s:'',a:'U.S.',o:'city',reg:['Midwest','Southeast','Northeast','Southwest','West'],lvl:'State',city:'City',u:'USA'},
  CA:{n:'Canada',f:'🇨🇦',s:'-ca',a:'Canadian',o:'municipality',reg:['West Coast','Central Canada','Prairie Provinces','Atlantic Canada','Northern Canada'],lvl:'Province/Territory',city:'Municipality',u:'Canada'},
@@ -290,27 +295,62 @@ function showPage(id){
  emo();
 }
 
-/* ====== BACKGROUND PARTICLES (original effect) ====== */
+/* ====== BACKGROUND SKY (realistic; reacts to the weather of the place you look up) ====== */
+const SKY={set(){}};
 function init3D(){
  if(!window.THREE||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
  try{
- const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000),r=new THREE.WebGLRenderer({alpha:true,antialias:true});
- r.setSize(innerWidth,innerHeight);r.setPixelRatio(Math.min(devicePixelRatio,2));$('weather-canvas').appendChild(r.domElement);sc.fog=new THREE.FogExp2(0x020617,.008);
- const d=new Date(),m=d.getMonth()+1,dy=d.getDate(),mode=(m===12&&dy===31)||(m===7&&(dy===4||dy===1))?'fw':(m===12||(m===1&&dy<=5))?'snow':'rain';
- const N=2200,g=new THREE.BufferGeometry(),pos=new Float32Array(N*3),cl=new Float32Array(N*3),vel=new Float32Array(N*3);
- for(let i=0;i<N;i++){const k=i*3;pos[k]=(Math.random()-.5)*120;pos[k+1]=Math.random()*120-60;pos[k+2]=(Math.random()-.5)*120;
-  if(mode==='snow'){cl[k]=.9;cl[k+1]=.93;cl[k+2]=1;vel[k]=(Math.random()-.5)*.025;vel[k+1]=-Math.random()*.06-.02}
-  else if(mode==='fw'){cl[k]=Math.random();cl[k+1]=Math.random();cl[k+2]=Math.random();vel[k]=(Math.random()-.5)*.12;vel[k+1]=Math.random()*.12}
-  else{cl[k]=.4;cl[k+1]=.5;cl[k+2]=.9;vel[k]=(Math.random()-.5)*.008;vel[k+1]=Math.random()>.7?-Math.random()*.3-.15:-Math.random()*.12-.06}
-  vel[k+2]=(Math.random()-.5)*.01}
- g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(cl,3));
- sc.add(new THREE.Points(g,new THREE.PointsMaterial({size:mode==='snow'?.9:.45,vertexColors:true,transparent:true,opacity:.55,blending:THREE.AdditiveBlending,depthWrite:false})));
- cam.position.z=50;let mx=0;addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*2});
- (function an(){requestAnimationFrame(an);for(let i=0;i<N*3;i+=3){pos[i]+=vel[i];pos[i+1]+=vel[i+1];pos[i+2]+=vel[i+2];if(mode==='fw')vel[i+1]-=.001;if(pos[i+1]<-60){pos[i+1]=60;pos[i]=(Math.random()-.5)*120;if(mode==='fw'){vel[i+1]=Math.random()*.12}}}
-  g.attributes.position.needsUpdate=true;cam.position.x+=(mx*3-cam.position.x)*.02;cam.lookAt(sc.position);r.render(sc,cam)})();
+ const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,500),r=new THREE.WebGLRenderer({alpha:true,antialias:true});
+ r.setSize(innerWidth,innerHeight);r.setPixelRatio(Math.min(devicePixelRatio,1.5));$('weather-canvas').appendChild(r.domElement);cam.position.set(0,0,40);
+ const tex=(draw,s)=>{const c=document.createElement('canvas');c.width=c.height=s;draw(c.getContext('2d'),s);return new THREE.CanvasTexture(c)};
+ const dotT=tex((g,s)=>{const q=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);q.addColorStop(0,'rgba(255,255,255,1)');q.addColorStop(.35,'rgba(255,255,255,.55)');q.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=q;g.fillRect(0,0,s,s)},64);
+ const cloudT=tex((g,s)=>{for(let i=0;i<34;i++){const x=s*(.18+Math.random()*.64),y=s*(.3+Math.random()*.4),rd=s*(.1+Math.random()*.2),q=g.createRadialGradient(x,y,0,x,y,rd);q.addColorStop(0,'rgba(255,255,255,.3)');q.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=q;g.fillRect(0,0,s,s)}},256);
+ const rnd=(a,b)=>a+Math.random()*(b-a);
+ // clouds: layered soft sprites that drift with the wind
+ const clouds=[];for(let i=0;i<16;i++){const m=new THREE.SpriteMaterial({map:cloudT,transparent:true,opacity:.14,depthWrite:false,color:0x9fb0d8}),sp=new THREE.Sprite(m);sp.position.set(rnd(-90,90),rnd(10,34),rnd(-60,5));const s=rnd(45,95);sp.scale.set(s,s*.5,1);sp.userData.sp=rnd(.4,1.2);sc.add(sp);clouds.push(sp)}
+ // rain: slanted streaks with per-drop speed and length
+ const RN=2600,rp=new Float32Array(RN*6),rs=new Float32Array(RN),rl=new Float32Array(RN),rg=new THREE.BufferGeometry();
+ for(let i=0;i<RN;i++){rp[i*6]=rnd(-70,70);rp[i*6+1]=rnd(-40,50);rp[i*6+2]=rnd(-40,25);rs[i]=rnd(.9,1.8);rl[i]=rnd(.8,2.2)}
+ rg.setAttribute('position',new THREE.BufferAttribute(rp,3));
+ const rain=new THREE.LineSegments(rg,new THREE.LineBasicMaterial({color:0xaec4ff,transparent:true,opacity:.38,blending:THREE.AdditiveBlending,depthWrite:false}));sc.add(rain);
+ // snow: round flakes with different sizes, flutter and drift
+ const SN=1800,sp2=new Float32Array(SN*3),sph=new Float32Array(SN),ssp=new Float32Array(SN),sg=new THREE.BufferGeometry();
+ for(let i=0;i<SN;i++){sp2[i*3]=rnd(-70,70);sp2[i*3+1]=rnd(-40,50);sp2[i*3+2]=rnd(-40,25);sph[i]=rnd(0,6.28);ssp[i]=rnd(.08,.22)}
+ sg.setAttribute('position',new THREE.BufferAttribute(sp2,3));
+ const snow=new THREE.Points(sg,new THREE.PointsMaterial({map:dotT,size:1.5,transparent:true,opacity:.85,depthWrite:false,blending:THREE.AdditiveBlending,color:0xffffff}));sc.add(snow);
+ // stars for clear skies
+ const ST=380,stp=new Float32Array(ST*3),stg=new THREE.BufferGeometry();for(let i=0;i<ST;i++){stp[i*3]=rnd(-120,120);stp[i*3+1]=rnd(-60,70);stp[i*3+2]=rnd(-100,-40)}
+ stg.setAttribute('position',new THREE.BufferAttribute(stp,3));const stars=new THREE.Points(stg,new THREE.PointsMaterial({map:dotT,size:1.1,transparent:true,opacity:.7,depthWrite:false,blending:THREE.AdditiveBlending}));sc.add(stars);
+ // fireworks (holidays)
+ const FN2=900,fp=new Float32Array(FN2*3),fc=new Float32Array(FN2*3),fv=new Float32Array(FN2*3),fl=new Float32Array(FN2),fg=new THREE.BufferGeometry();
+ fg.setAttribute('position',new THREE.BufferAttribute(fp,3));fg.setAttribute('color',new THREE.BufferAttribute(fc,3));
+ const fw=new THREE.Points(fg,new THREE.PointsMaterial({map:dotT,size:1.6,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));sc.add(fw);let fi=0;
+ const burst=()=>{const cx=rnd(-45,45),cy=rnd(5,30),c=new THREE.Color().setHSL(Math.random(),1,.6);for(let k=0;k<90;k++){const i=(fi++)%FN2,a=Math.random()*6.283,b=Math.acos(rnd(-1,1)),sp=rnd(.25,.7);fp[i*3]=cx;fp[i*3+1]=cy;fp[i*3+2]=rnd(-10,10);fv[i*3]=Math.sin(b)*Math.cos(a)*sp;fv[i*3+1]=Math.cos(b)*sp;fv[i*3+2]=Math.sin(b)*Math.sin(a)*sp*.5;fl[i]=1;fc[i*3]=c.r;fc[i*3+1]=c.g;fc[i*3+2]=c.b}};
+ const d=new Date(),mo=d.getMonth()+1,dy=d.getDate(),holiday=(mo===12&&dy===31)||(mo===7&&(dy===4||dy===1));
+ let mode=holiday?'fw':(mo===12||(mo===1&&dy<=5))?'snow':'rain',intensity=.35,wind=.15,sticky=holiday,flashT=0;
+ const fl2=$('flash');
+ SKY.set=(m,windKmh,dirDeg)=>{if(sticky)return;mode=m;wind=Math.sin(((dirDeg||270)+180)*Math.PI/180)*Math.min((windKmh||0)/35,1)*.6||0;intensity={rain:.45,heavy:1,storm:1,snow:.7}[m]||0;
+  const dark=m==='storm'||m==='heavy'?0x56627f:m==='fog'?0xb8c2d8:0x9fb0d8;clouds.forEach(c=>{c.material.color.setHex(dark);c.material.opacity=m==='cloudy'||m==='fog'?.2:m==='storm'||m==='heavy'?.24:m==='clear'?.06:.15})};
+ SKY.set(mode,0,270);
+ const flash=()=>{if(!fl2)return;fl2.style.opacity=.55;setTimeout(()=>fl2.style.opacity=0,70);setTimeout(()=>{fl2.style.opacity=.4},170);setTimeout(()=>fl2.style.opacity=0,260)};
+ let mx=0,my=0,t=0,last=performance.now(),alive=true;addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2});
+ (function an(now){if(!alive)return;requestAnimationFrame(an);if(document.hidden)return;
+  try{const dt=Math.min((now-last)/16.7,3)||1;last=now;t+=.01*dt;
+   rain.visible=mode==='rain'||mode==='heavy'||mode==='storm';snow.visible=mode==='snow';stars.visible=mode==='clear';fw.visible=mode==='fw';
+   if(rain.visible){rg.setDrawRange(0,Math.floor(RN*intensity)*2);const sl=wind*1.2;for(let i=0;i<RN;i++){const o=i*6,v=rs[i]*(mode==='heavy'||mode==='storm'?1.5:1)*dt;rp[o+1]-=v;rp[o]+=sl*v*.6;if(rp[o+1]<-40){rp[o+1]=50;rp[o]=rnd(-70,70)}rp[o+3]=rp[o]-sl*rl[i];rp[o+4]=rp[o+1]+rl[i];rp[o+5]=rp[o+2]}rg.attributes.position.needsUpdate=true;
+    if(mode==='storm'){flashT-=dt;if(flashT<=0){flash();flashT=rnd(180,520)}}}
+   if(snow.visible){sg.setDrawRange(0,Math.floor(SN*Math.max(intensity,.5)));for(let i=0;i<SN;i++){sph[i]+=.015*dt;sp2[i*3+1]-=ssp[i]*dt;sp2[i*3]+=(Math.sin(sph[i])*.05+wind*.1)*dt;if(sp2[i*3+1]<-40){sp2[i*3+1]=50;sp2[i*3]=rnd(-70,70)}}sg.attributes.position.needsUpdate=true}
+   if(mode==='fw'){if(Math.random()<.02*dt)burst();for(let i=0;i<FN2;i++){if(fl[i]>0){fv[i*3+1]-=.004*dt;fp[i*3]+=fv[i*3]*dt;fp[i*3+1]+=fv[i*3+1]*dt;fp[i*3+2]+=fv[i*3+2]*dt;fl[i]-=.012*dt;const k=Math.max(fl[i],0);fc[i*3]*=.985;fc[i*3+1]*=.985;fc[i*3+2]*=.985}else{fp[i*3+1]=-999}}fg.attributes.position.needsUpdate=true;fg.attributes.color.needsUpdate=true}
+   stars.material.opacity=.5+Math.sin(t*3)*.2;
+   clouds.forEach(c=>{c.position.x+=(.02+wind*.05)*c.userData.sp*dt;if(c.position.x>175)c.position.x=-175;if(c.position.x<-175)c.position.x=175});
+   cam.position.x+=(mx*1.2-cam.position.x)*.02;cam.position.y+=(-my*.8-cam.position.y)*.02;cam.lookAt(0,0,0);r.render(sc,cam)}catch(e){alive=false}
+ })(performance.now());
  addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)});
  }catch(e){}
 }
+function skyFromWx(l,c){const k=c.weather_code,kmh=U(l.cc).imp?c.wind_speed_10m*1.609:c.wind_speed_10m;
+ const m=k<=1?'clear':k<=3?'cloudy':k<=48?'fog':k===65||k===82?'heavy':k<=67||(k>=80&&k<=81)||k<=57?'rain':k<=77||(k>=85&&k<=86)?'snow':'storm';
+ SKY.set(m,kmh,c.wind_direction_10m)}
 
 /* ====== SUPABASE ====== */
 function initSb(){
@@ -389,8 +429,8 @@ const i0=f=>Math.max(0,f.hourly.time.findIndex(t=>t.slice(0,13)>=f.current.time.
 async function loadWx(){
  const l=S.loc;if(!l)return;const out=$('wx-out');out.innerHTML='<div class="spinner"></div>';
  try{
-  const[f,aq,al]=await Promise.all([fj(fUrl(l)),fj(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${l.lat}&longitude=${l.lon}&current=us_aqi,european_aqi,pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide,carbon_monoxide&timezone=auto`).catch(()=>null),l.cc==='US'?fj(`https://api.weather.gov/alerts/active?point=${(+l.lat).toFixed(4)},${(+l.lon).toFixed(4)}`).catch(()=>null):Promise.resolve(undefined)]);
-  S.wx={f,aq,al,at:new Date()};renderWx();
+  const[f,aq,al]=await Promise.all([fj(fUrl(l)),fj(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${l.lat}&longitude=${l.lon}&current=us_aqi,european_aqi,pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide,carbon_monoxide&timezone=auto`).catch(()=>null),getAlerts(l)]);
+  await natOverlay(l,f);S.wx={f,aq,al,at:new Date()};skyFromWx(l,f.current);renderWx();
  }catch(e){out.innerHTML=`<div class="card" style="text-align:center"><p style="color:#ef4444;font-size:1.1rem">Weather provider unavailable (${esc(e.message)})</p><p class="muted">No data is shown rather than guessing.</p><button class="btn btn-primary" onclick="loadWx()">Retry</button></div>`}
 }
 const TABS=[['overview','Overview'],['hourly','Hourly'],['daily','7-Day'],['air','Air Quality'],['history','History'],['sun','Sunrise & Sunset'],['clouds','Clouds'],['feels','Feels Like'],['wind','Wind'],['humidity','Humidity'],['rain','Rain Check'],['storm','Storm Path'],['report','Report']];
@@ -400,17 +440,29 @@ function lineSvg(v,lab,suf){const w=700,h=170,mn=Math.min(...v),mx=Math.max(...v
 const aqCat=(v,us)=>us?(v<=50?'Good':v<=100?'Moderate':v<=150?'Unhealthy for sensitive groups':v<=200?'Unhealthy':v<=300?'Very unhealthy':'Hazardous'):(v<=20?'Good':v<=40?'Fair':v<=60?'Moderate':v<=80?'Poor':v<=100?'Very poor':'Extremely poor');
 const BEAU=['Calm','Light air','Light breeze','Gentle breeze','Moderate breeze','Fresh breeze','Strong breeze','Near gale','Gale','Severe gale','Storm','Violent storm','Hurricane force'];
 const beau=(s,u)=>{const k=u.imp?s*1.609:s,t=[1,6,12,20,29,39,50,62,75,89,103,118];let i=0;while(i<12&&k>=t[i])i++;return BEAU[i]};
+const cap=s=>s?String(s)[0].toUpperCase()+String(s).slice(1):'';
+const ALERT_SRC={US:'National Weather Service',DE:'Deutscher Wetterdienst (DWD, via Bright Sky)'};
+const ACAT_RX={tornado:/tornado/i,flood:/flood|hochwasser/i,winter_storm:/winter|snow|ice|frost|schnee|glatteis|blizzard/i,heat:/heat|hitze/i,severe_thunderstorm:/thunderstorm|gewitter/i,hurricane:/hurricane|tropical|orkan|typhoon/i};
+const sevPass=(min,s)=>min==='extreme'?s==='Extreme':min==='severe'?s==='Severe'||s==='Extreme':true;
+/* returns an array of {event,severity,headline,expires}, null if the feed did not respond, undefined if this country has no feed connected */
+async function getAlerts(l){
+ try{
+  if(l.cc==='US'){const j=await fj(`https://api.weather.gov/alerts/active?point=${(+l.lat).toFixed(4)},${(+l.lon).toFixed(4)}`);return(j.features||[]).map(f=>({event:f.properties.event,severity:f.properties.severity,headline:f.properties.headline,expires:f.properties.expires||f.properties.ends}))}
+  if(l.cc==='DE'){const j=await fj(`https://api.brightsky.dev/alerts?lat=${(+l.lat).toFixed(4)}&lon=${(+l.lon).toFixed(4)}`);return(j.alerts||[]).map(a=>({event:a.event_en||a.event_de||'Warning',severity:cap(a.severity),headline:a.headline_en||a.headline_de||'',expires:a.expires}))}
+ }catch(e){return null}
+ return undefined}
 function alertsHtml(al,l){
- if(l.cc!=='US')return `<div class="notice small">Official warning feeds for ${esc(C[l.cc].n)} are not connected to this page yet. Check your national weather service for warnings.</div>`;
- if(al===null)return `<div class="notice small">NWS alert service did not respond. Absence of alerts does not mean none are active.</div>`;
- const fs=al.features||[];if(!fs.length)return `<div class="good small">✅ No active NWS alerts for this point (checked just now).</div>`;
- return fs.map(a=>{const p=a.properties;return `<div class="alertbox"><strong>⚠️ ${esc(p.event)}</strong> <span class="small muted">${esc(p.severity)} • until ${esc(new Date(p.expires||p.ends||Date.now()).toLocaleString())}</span><div class="small">${esc(p.headline||'')}</div></div>`}).join('');
+ if(al===undefined)return `<div class="notice small">Official warning feeds for ${esc(C[l.cc].n)} are not connected to this page yet. Check your national weather service for warnings.</div>`;
+ const src=ALERT_SRC[l.cc];
+ if(al===null)return `<div class="notice small">The ${esc(src)} alert service did not respond. Absence of alerts below does not mean none are active.</div>`;
+ if(!al.length)return `<div class="good small">✅ No active ${esc(src)} alerts for this point (checked just now).</div>`;
+ return al.map(p=>`<div class="alertbox"><strong>⚠️ ${esc(p.event)}</strong> <span class="small muted">${esc(p.severity)} • until ${esc(new Date(p.expires||Date.now()).toLocaleString())}</span><div class="small">${esc(p.headline||'')}</div><div class="small muted">Source: ${esc(src)}</div></div>`).join('');
 }
 const TB={
  overview(w,l,u){const f=w.f,c=f.current,[ic,tx]=wx(c.weather_code),T=tpl(),d=f.daily,k=i0(f);
   if(T==='compact')return `<p style="font-size:1.4rem;text-align:center">${ic} ${Math.round(c.temperature_2m)}${u.ts} • ${tx} • feels ${Math.round(c.apparent_temperature)}${u.ts} • wind ${dir(c.wind_direction_10m)} ${Math.round(c.wind_speed_10m)} ${u.ws} • ${c.relative_humidity_2m}%</p>`;
-  if(T==='radar')return `<p style="font-size:1.4rem;text-align:center">${ic} ${Math.round(c.temperature_2m)}${u.ts} • ${tx}</p><div style="text-align:center"><button class="btn btn-primary" onclick="radarTo(${l.lat},${l.lon})">📡 Open Live Doppler at this location</button></div>`;
-  let h=`<div style="text-align:center"><div style="font-size:4rem">${ic}</div><div style="font-size:3.2rem;font-weight:800">${Math.round(c.temperature_2m)}${u.ts}</div><p style="font-size:1.3rem" class="muted">${tx} • H ${Math.round(d.temperature_2m_max[0])}° / L ${Math.round(d.temperature_2m_min[0])}°</p></div>`;
+  if(T==='radar')return `<p style="font-size:1.4rem;text-align:center">${ic} ${Math.round(c.temperature_2m)}${u.ts} • ${tx}</p><div style="text-align:center"><button class="btn btn-primary" onclick="radarTo(${l.lat},${l.lon},'${l.cc}')">📡 Open Live Doppler at this location</button></div>`;
+  let h=`<div style="text-align:center"><div style="font-size:4rem">${ic}</div><div style="font-size:3.2rem;font-weight:800">${Math.round(c.temperature_2m)}${u.ts}</div><p style="font-size:1.3rem" class="muted">${esc((f.nat&&f.nat.text)||tx)} • H ${Math.round(d.temperature_2m_max[0])}° / L ${Math.round(d.temperature_2m_min[0])}°</p></div>`;
   h+=`<div class="grid g4">${stat('🌡️',Math.round(c.apparent_temperature)+u.ts,'Feels like')}${stat('💧',c.relative_humidity_2m+'%','Humidity')}${stat('💨',dir(c.wind_direction_10m)+' '+Math.round(c.wind_speed_10m)+' '+u.ws,'Wind (gusts '+Math.round(c.wind_gusts_10m)+')')}${stat('☁️',c.cloud_cover+'%','Cloud cover')}</div>`;
   if(T==='full'){h+=`<div class="grid g4">${stat('🧭',Math.round(c.pressure_msl)+' hPa','Pressure')}${stat('🌧️',c.precipitation+' '+u.ps,'Precip now')}${stat('👁️',u.vis(f.hourly.visibility[k]),'Visibility')}${stat('🕶️',d.uv_index_max[0],'Max UV today')}</div>
    <div class="card"><h3>⏱️ Next 24 hours</h3>${lineSvg(f.hourly.temperature_2m.slice(k,k+24),f.hourly.time.slice(k,k+24).map(t=>t.slice(11,16)),'°')}</div>${TB.rain(w,l,u)}${TB.daily(w,l,u)}`}
@@ -434,8 +486,8 @@ const TB={
 function renderWx(){
  const w=S.wx,l=S.loc,out=$('wx-out');if(!w||!l)return;$('tpl').value=tpl();$('unitsel').value=UM;
  const u=U(l.cc),fav=(window.FV||[]).some(x=>x.lat===l.lat&&x.lon===l.lon);
- let h=`<div class="card"><div class="row" style="border:0;padding:0"><h2>${esc(l.name)}${l.area?', '+esc(l.area):''} <span class="muted small">(${esc(l.cc)})</span></h2><span><button class="btn btn-secondary sm" onclick="toggleFav()">${fav?'⭐ Saved':'☆ Save'}</button> <button class="btn btn-secondary sm" onclick="loadWx()">🔄 Refresh</button> <button class="btn btn-secondary sm" onclick="radarTo(${l.lat},${l.lon})">📡 Radar</button></span></div>
- <p class="small muted">Weather: Open-Meteo • observation ${esc(w.f.current.time.replace('T',' '))} (local) • fetched ${w.at.toLocaleTimeString()}</p></div>${alertsHtml(w.al,l)}
+ let h=`<div class="card"><div class="row" style="border:0;padding:0"><h2>${esc(l.name)}${l.area?', '+esc(l.area):''} <span class="muted small">(${esc(l.cc)})</span></h2><span><button class="btn btn-secondary sm" onclick="toggleFav()">${fav?'⭐ Saved':'☆ Save'}</button> <button class="btn btn-secondary sm" onclick="loadWx()">🔄 Refresh</button> <button class="btn btn-secondary sm" onclick="radarTo(${l.lat},${l.lon},'${l.cc}')">📡 Radar</button></span></div>
+ <p class="small muted">${w.f.nat?`Weather source: <strong>${esc(w.f.nat.src)}</strong>${w.f.nat.obs?' • observed '+esc(new Date(w.f.nat.obs).toLocaleString()):''} • forecast timeline from the same service • air quality, sun times, cloud layers and history: Open-Meteo`:`Weather source: <strong>Open-Meteo model data</strong> — the national weather service feed for ${esc(C[l.cc].n)} is not connected to the website yet`} • fetched ${w.at.toLocaleTimeString()}</p></div>${alertsHtml(w.al,l)}
  <div class="tabs">${TABS.map(([k,n])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';renderWx()">${n}</button>`).join('')}</div><div id="tabc"></div>`;
  out.innerHTML=h;const t=$('tabc');
  if(TB[S.tab])t.innerHTML=TB[S.tab](w,l,u);else if(S.tab==='history')histTab(t,l,u);else if(S.tab==='storm')stormTab(t,l);else if(S.tab==='report')reportTab(t,l);
@@ -455,19 +507,75 @@ function reportTab(t,l){
  t.innerHTML=`<div class="card"><h3>📝 Submit a weather report</h3><p class="muted small">Local reports (hail, wind damage, flooding, snow…) for ${esc(l.name)}. Reports are reviewed before being used anywhere and are not official warnings.</p>${user?`<div class="grid g2"><div><label for="rp-k">What are you seeing?</label><select id="rp-k"><option>Hail</option><option>Heavy rain</option><option>Flooding</option><option>Snow / ice</option><option>Wind damage</option><option>Tornado / funnel cloud</option><option>Lightning</option><option>Other</option></select></div><div><label for="rp-d">Details</label><input id="rp-d" maxlength="400" placeholder="Size, depth, time, what happened"></div></div><button class="btn btn-primary" onclick="sendReport()">Submit report</button> <span class="small muted" id="rp-m"></span>`:`<div class="notice">Sign in to submit reports. <button class="btn btn-primary sm" onclick="showPage('account')">Sign in</button></div>`}<div class="alertbox small"><strong>In an emergency call your local emergency number.</strong> Do not use this form to report life-threatening events.</div></div>`}
 async function sendReport(){const l=S.loc;const{error}=await sb.from('weather_reports').insert({country_code:l.cc,location_name:l.name,lat:l.lat,lon:l.lon,kind:$('rp-k').value,description:$('rp-d').value.slice(0,400)});$('rp-m').textContent=error?error.message:'Report submitted. Thank you.'}
 
-/* ====== LIVE DOPPLER ====== */
-const R={map:null,fr:[],ly:[],i:0,t:null,host:'',upd:null,mk:null,base:null,warn:null,sp:600,info:null};
-const REG={'US-n':['United States (national)',[39,-98,4]],'US-mw':['US Midwest',[41.5,-90,6]],'US-se':['US Southeast',[32.5,-85,6]],'US-ne':['US Northeast',[42.5,-74,6]],'US-sw':['US Southwest',[34,-108,6]],'US-w':['US West',[41,-120,5]],'CA':['Canada',[56,-96,3]],'AU':['Australia',[-26,134,4]],'GB':['United Kingdom',[54.5,-3,5]],'DE':['Germany',[51.2,10.4,6]]};
-$('rreg').innerHTML='<option value="">Select Region</option>'+Object.entries(REG).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
+/* ====== NATIONAL WEATHER SERVICE DATA (US: NWS, Germany: DWD) layered over the model baseline ====== */
+const f2c=v=>(v-32)*5/9,c2f=v=>v*9/5+32,kmh2mph=v=>v/1.609344,mph2kmh=v=>v*1.609344;
+const COMPASS={N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,S:180,SSW:202.5,SW:225,WSW:247.5,W:270,WNW:292.5,NW:315,NNW:337.5};
+const num2=v=>typeof v==='number'&&isFinite(v);
+async function natOverlay(l,f){
+ const u=U(l.cc),T=c=>u.imp?c2f(c):c,Wd=k=>u.imp?kmh2mph(k):k,c=f.current,h=f.hourly,d=f.daily,nat={};
+ try{
+  if(l.cc==='US'){
+   const pr=(await fj(`https://api.weather.gov/points/${(+l.lat).toFixed(4)},${(+l.lon).toFixed(4)}`,10000)).properties;
+   const[hr,fc,st]=await Promise.all([fj(pr.forecastHourly,12000).catch(()=>null),fj(pr.forecast,12000).catch(()=>null),fj(pr.observationStations,10000).catch(()=>null)]);
+   let obs=null,sid='';
+   if(st&&st.features){for(const s of st.features.slice(0,3)){try{const o=await fj(`${s.id}/observations/latest`,8000),p=o.properties;if(p&&p.temperature&&num2(p.temperature.value)){obs=p;sid=s.properties.stationIdentifier;break}}catch(e){}}}
+   if(obs){const v=x=>x&&num2(x.value)?x.value:null;c.temperature_2m=T(obs.temperature.value);
+    if(v(obs.relativeHumidity)!=null)c.relative_humidity_2m=Math.round(v(obs.relativeHumidity));
+    const ap=v(obs.heatIndex)!=null?v(obs.heatIndex):v(obs.windChill)!=null?v(obs.windChill):null;c.apparent_temperature=ap!=null?T(ap):c.temperature_2m;
+    if(v(obs.windSpeed)!=null)c.wind_speed_10m=Wd(v(obs.windSpeed));if(v(obs.windGust)!=null)c.wind_gusts_10m=Wd(v(obs.windGust));if(v(obs.windDirection)!=null)c.wind_direction_10m=v(obs.windDirection);
+    if(v(obs.barometricPressure)!=null)c.pressure_msl=v(obs.barometricPressure)/100;
+    nat.text=obs.textDescription;nat.obs=obs.timestamp;nat.station=sid}
+   let got=!!obs;
+   if(hr&&hr.properties&&hr.properties.periods){const m={};hr.properties.periods.forEach(p=>m[p.startTime.slice(0,13)]=p);
+    h.time.forEach((t,i)=>{const p=m[t.slice(0,13)];if(!p)return;got=true;if(num2(p.temperature))h.temperature_2m[i]=p.temperatureUnit==='C'?T(p.temperature):(u.imp?p.temperature:f2c(p.temperature));
+     if(p.probabilityOfPrecipitation&&num2(p.probabilityOfPrecipitation.value))h.precipitation_probability[i]=p.probabilityOfPrecipitation.value;
+     if(p.relativeHumidity&&num2(p.relativeHumidity.value))h.relative_humidity_2m[i]=p.relativeHumidity.value;
+     if(p.dewpoint&&num2(p.dewpoint.value))h.dew_point_2m[i]=T(p.dewpoint.value);
+     const w=String(p.windSpeed||'').match(/(\d+)(?:\s*to\s*(\d+))?\s*mph/);if(w){const mph=+(w[2]||w[1]);h.wind_speed_10m[i]=u.imp?mph:mph2kmh(mph)}
+     if(COMPASS[p.windDirection]!=null)h.wind_direction_10m[i]=COMPASS[p.windDirection]})}
+   if(fc&&fc.properties&&fc.properties.periods){const ps=fc.properties.periods,cv=p=>p.temperatureUnit==='C'?T(p.temperature):(u.imp?p.temperature:f2c(p.temperature));
+    d.time.forEach((day,k)=>{const dp=ps.find(p=>p.isDaytime&&p.startTime.slice(0,10)===day),np=ps.find(p=>!p.isDaytime&&p.startTime.slice(0,10)===day);
+     if(dp&&num2(dp.temperature))d.temperature_2m_max[k]=cv(dp);if(np&&num2(np.temperature))d.temperature_2m_min[k]=cv(np);
+     const pops=[dp,np].filter(Boolean).map(p=>p.probabilityOfPrecipitation&&p.probabilityOfPrecipitation.value).filter(num2);if(pops.length)d.precipitation_probability_max[k]=Math.max(...pops)});got=true}
+   if(!got)throw new Error('no NWS data');
+   nat.src=`National Weather Service${sid?' (station '+sid+')':''}`;f.nat=nat;
+  }else if(l.cc==='DE'){
+   const tz=encodeURIComponent(f.timezone||'Europe/Berlin'),d0=h.time[0].slice(0,10),d6=h.time[h.time.length-1].slice(0,10);
+   const[cw,wt]=await Promise.all([fj(`https://api.brightsky.dev/current_weather?lat=${(+l.lat).toFixed(4)}&lon=${(+l.lon).toFixed(4)}&tz=${tz}`,10000).catch(()=>null),fj(`https://api.brightsky.dev/weather?lat=${(+l.lat).toFixed(4)}&lon=${(+l.lon).toFixed(4)}&date=${d0}&last_date=${d6}&tz=${tz}`,12000).catch(()=>null)]);
+   let got=false;const w=cw&&cw.weather;
+   if(w&&num2(w.temperature)){got=true;c.temperature_2m=T(w.temperature);c.apparent_temperature=c.temperature_2m;if(num2(w.relative_humidity))c.relative_humidity_2m=Math.round(w.relative_humidity);
+    const ws=num2(w.wind_speed_10)?w.wind_speed_10:num2(w.wind_speed)?w.wind_speed:null;if(ws!=null)c.wind_speed_10m=Wd(ws);const wg=num2(w.wind_gust_speed_10)?w.wind_gust_speed_10:num2(w.wind_gust_speed)?w.wind_gust_speed:null;if(wg!=null)c.wind_gusts_10m=Wd(wg);
+    const wdr=num2(w.wind_direction_10)?w.wind_direction_10:num2(w.wind_direction)?w.wind_direction:null;if(wdr!=null)c.wind_direction_10m=wdr;
+    if(num2(w.pressure_msl))c.pressure_msl=w.pressure_msl;if(num2(w.cloud_cover))c.cloud_cover=Math.round(w.cloud_cover);
+    nat.obs=w.timestamp;nat.station=(cw.sources&&cw.sources[0]&&cw.sources[0].station_name)||''}
+   if(wt&&wt.weather){const m={};wt.weather.forEach(r=>m[String(r.timestamp).slice(0,13)]=r);const byDay={};
+    wt.weather.forEach(r=>{if(num2(r.temperature)){const k=String(r.timestamp).slice(0,10);(byDay[k]=byDay[k]||[]).push(r.temperature)}});
+    h.time.forEach((t,i)=>{const r=m[t.slice(0,13)];if(!r)return;got=true;if(num2(r.temperature))h.temperature_2m[i]=T(r.temperature);if(num2(r.relative_humidity))h.relative_humidity_2m[i]=r.relative_humidity;if(num2(r.precipitation_probability))h.precipitation_probability[i]=r.precipitation_probability;
+     if(num2(r.dew_point))h.dew_point_2m[i]=T(r.dew_point);if(num2(r.wind_speed))h.wind_speed_10m[i]=Wd(r.wind_speed);if(num2(r.wind_direction))h.wind_direction_10m[i]=r.wind_direction;if(num2(r.cloud_cover))h.cloud_cover[i]=r.cloud_cover});
+    d.time.forEach((day,k)=>{const a=byDay[day];if(a&&a.length>=12){d.temperature_2m_max[k]=T(Math.max(...a));d.temperature_2m_min[k]=T(Math.min(...a))}})}
+   if(!got)throw new Error('no DWD data');
+   nat.src=`Deutscher Wetterdienst (DWD) via Bright Sky${nat.station?' (station '+nat.station+')':''}`;f.nat=nat;
+  }
+ }catch(e){f.nat=undefined}
+}
+
+/* ====== LIVE DOPPLER (free national radar sources; loads on open) ====== */
+const R={map:null,fr:[],ly:[],i:0,t:null,upd:null,mk:null,base:null,warn:null,sp:600,info:null,prov:'',busy:0,want:''};
+const PN={us:'NOAA / National Weather Service NEXRAD mosaic (tiles via Iowa Environmental Mesonet)',ca:'Environment and Climate Change Canada (MSC GeoMet)',de:'Deutscher Wetterdienst (DWD)',rv:'RainViewer (aggregated national radar networks)'};
+const REG={'US-n':['United States (national)',[39,-98,4],'us'],'US-mw':['US Midwest',[41.5,-90,6],'us'],'US-se':['US Southeast',[32.5,-85,6],'us'],'US-ne':['US Northeast',[42.5,-74,6],'us'],'US-sw':['US Southwest',[34,-108,6],'us'],'US-w':['US West',[41,-120,5],'us'],'CA':['Canada',[56,-96,3],'ca'],'AU':['Australia',[-26,134,4],'rv'],'GB':['United Kingdom',[54.5,-3,5],'rv'],'DE':['Germany',[51.2,10.4,6],'de']};
+const CC2REG={US:'US-n',CA:'CA',AU:'AU',GB:'GB',DE:'DE'};
+$('rreg').innerHTML=Object.entries(REG).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
+const ftxt=async(u,ms)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);try{const r=await fetch(u,{signal:c.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.text()}finally{clearTimeout(t)}};
 function radarInit(){
- if(!R.map){R.map=L.map('rmap',{worldCopyJump:true}).setView([39,-98],4);radarBase();picker('rpick',l=>radarTo(l.lat,l.lon),{wide:1});loadRadar();setInterval(()=>{if($('radar').classList.contains('on'))loadRadar()},300000)}
+ if(!R.map){R.map=L.map('rmap',{worldCopyJump:true,preferCanvas:true});radarBase();picker('rpick',l=>radarTo(l.lat,l.lon,l.cc),{wide:1});
+  const r0=CC2REG[(rec()[0]||{}).cc]||'US-n';$('rreg').value=r0;radarRegion();setInterval(()=>{if($('radar').classList.contains('on'))loadRadar()},300000)}
  setTimeout(()=>R.map.invalidateSize(),60);
 }
 function radarBase(){if(!R.map)return;if(R.base)R.base.remove();const d=$('rbase').value==='dark';R.base=L.tileLayer(d?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:12,subdomains:'abcd',attribution:'© OpenStreetMap contributors © CARTO'}).addTo(R.map);R.base.setZIndex(1)}
-function radarRegion(){const v=$('rreg').value;if(!v)return;const[a,b,z]=REG[v][1];R.map.setView([a,b],z)}
-function radarTo(a,b){showPage('radar');setTimeout(()=>{R.map.setView([a,b],8);if(R.mk)R.mk.remove();R.mk=L.marker([a,b]).addTo(R.map)},120)}
+function radarRegion(){const v=$('rreg').value;if(!v||!R.map)return;const[,[a,b,z]]=REG[v];R.map.setView([a,b],z);loadRadar()}
+function radarTo(a,b,cc){showPage('radar');setTimeout(()=>{if(cc&&CC2REG[cc]&&REG[$('rreg').value][2]!==REG[CC2REG[cc]][2]){$('rreg').value=CC2REG[cc]}R.map.setView([a,b],8);if(R.mk)R.mk.remove();R.mk=L.marker([a,b]).addTo(R.map);loadRadar()},120)}
 function radarLocate(){if(!navigator.geolocation)return;navigator.geolocation.getCurrentPosition(p=>radarTo(p.coords.latitude,p.coords.longitude),()=>{$('rstat').textContent='Location permission denied or unavailable.'})}
-function radarOp(){const o=$('rop').value/100;R.ly.forEach((x,k)=>x.setOpacity(k===R.i?o:0))}
+function radarOp(){const o=$('rop').value/100;R.ly.forEach((x,k)=>x&&x.setOpacity(k===R.i?o:0))}
 function radarSpeed(){R.sp=+$('rsp').value;if(R.t){radarPause();radarPlay()}}
 async function radarWarn(){
  if(R.warn){R.warn.remove();R.warn=null}if(!$('rwarn').checked){$('rwn').textContent='';return}
@@ -475,23 +583,38 @@ async function radarWarn(){
   R.warn=L.geoJSON({type:'FeatureCollection',features:fs},{style:f=>({color:/Tornado/.test(f.properties.event)?'#ef4444':/Severe/.test(f.properties.event)?'#f59e0b':'#22c55e',weight:2,fillOpacity:.15}),onEachFeature:(f,ly)=>ly.bindPopup(`<strong>${esc(f.properties.event)}</strong><br>${esc(f.properties.headline||'')}`)}).addTo(R.map);
   $('rwn').textContent=`NWS warnings with polygons shown: ${fs.length} (US only, updated ${new Date().toLocaleTimeString()}). Red = tornado, amber = severe thunderstorm, green = flood.`}
  catch(e){$('rwn').innerHTML='<span style="color:#ef4444">NWS warnings are unavailable right now.</span>'}}
+/* ---- frame providers: each returns [{t:ms,fc:0|1,mk:()=>leafletLayer}] ---- */
+async function fUS(){
+ const mk=off=>()=>L.tileLayer(`https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913${off?'-m'+String(off).padStart(2,'0')+'m':''}/{z}/{x}/{y}.png`,{opacity:0,zIndex:5,maxNativeZoom:10,maxZoom:12,attribution:'NEXRAD © NOAA/NWS • tiles: Iowa Environmental Mesonet'});
+ const base=Math.floor(Date.now()/3e5)*3e5,fr=[];for(let off=50;off>=0;off-=5)fr.push({t:base-off*6e4,fc:0,approx:1,mk:mk(off)});
+ fj('https://mesonet.agron.iastate.edu/data/gis/images/4326/USCOMP/n0q_0.json',4000).then(j=>{const v=Date.parse(j&&j.meta&&j.meta.valid);if(isFinite(v)){fr.forEach((f,i)=>{f.t=v-(10-i)*3e5;f.approx=0});if(R.fr===fr)radarShow(R.i)}}).catch(()=>{});
+ return fr}
+function expandTimes(s){const out=[];for(const part of s.split(',')){const p=part.trim().split('/');if(p.length>=3){const a=Date.parse(p[0]),b=Date.parse(p[1]),m=p[2].match(/PT(?:(\d+)H)?(?:(\d+)M)?/),st=m?((+m[1]||0)*60+(+m[2]||0))*6e4:0;if(isFinite(a)&&isFinite(b)&&st>0){for(let t=b,n=0;t>=a&&n<12;t-=st,n++)out.push(t)}}else if(isFinite(Date.parse(p[0])))out.push(Date.parse(p[0]))}return[...new Set(out)].sort((x,y)=>x-y)}
+async function fWMS(capsUrl,url,layers,attr){const x=await ftxt(capsUrl,7000),m=x.match(/<Dimension[^>]*name="time"[^>]*>([^<]+)</);if(!m)throw new Error('no time dimension');const ts=expandTimes(m[1]).slice(-10);if(!ts.length)throw new Error('no frames');
+ return ts.map(t=>({t,fc:0,mk:()=>L.tileLayer.wms(url,{layers,format:'image/png',transparent:true,version:'1.3.0',time:new Date(t).toISOString().replace('.000Z','Z'),opacity:0,zIndex:5,attribution:attr})}))}
+const fCA=k=>{const ly=k==='snow'?'RADAR_1KM_RSNO':'RADAR_1KM_RRAI';return fWMS(`https://geo.weather.gc.ca/geomet?service=WMS&version=1.3.0&request=GetCapabilities&layer=${ly}`,'https://geo.weather.gc.ca/geomet',ly,'Radar © Environment and Climate Change Canada')};
+const fDE=()=>fWMS('https://maps.dwd.de/geoserver/dwd/Niederschlagsradar/ows?service=WMS&version=1.3.0&request=GetCapabilities','https://maps.dwd.de/geoserver/dwd/wms','dwd:Niederschlagsradar','Radar © Deutscher Wetterdienst');
+async function fRV(k){const j=await fj('https://api.rainviewer.com/public/weather-maps.json',8000),host=j.host,sm=$('rsm').checked?1:0,sn=k==='snow'?1:0;
+ const fr=k==='sat'?((j.satellite&&j.satellite.infrared)||[]).map(f=>({...f,fc:0})):[...(j.radar.past||[]).map(f=>({...f,fc:0})),...(j.radar.nowcast||[]).map(f=>({...f,fc:1}))];
+ if(!fr.length)throw new Error('provider returned no frames');
+ return fr.map(f=>({t:f.time*1000,fc:f.fc,mk:()=>L.tileLayer(k==='sat'?`${host}${f.path}/256/{z}/{x}/{y}/0/0_0.png`:`${host}${f.path}/256/{z}/{x}/{y}/2/${sm}_${sn}.png`,{opacity:0,zIndex:5,maxNativeZoom:7,maxZoom:12,attribution:'Radar © RainViewer'})}))}
 async function loadRadar(){
- const st=$('rstat');st.textContent='Loading radar index…';
- try{
-  const j=await fj('https://api.rainviewer.com/public/weather-maps.json'),k=$('rlayer').value;R.host=j.host;R.ly.forEach(x=>x.remove());
-  const fr=k==='sat'?((j.satellite&&j.satellite.infrared)||[]).map(f=>({...f,fc:0})):[...(j.radar.past||[]).map(f=>({...f,fc:0})),...(j.radar.nowcast||[]).map(f=>({...f,fc:1}))];
-  if(!fr.length)throw new Error('provider returned no frames');
-  const sm=$('rsm').checked?1:0,sn=k==='snow'?1:0;
-  R.fr=fr;R.ly=fr.map(f=>L.tileLayer(k==='sat'?`${R.host}${f.path}/256/{z}/{x}/{y}/0/0_0.png`:`${R.host}${f.path}/256/{z}/{x}/{y}/2/${sm}_${sn}.png`,{opacity:0,zIndex:5,maxNativeZoom:7,maxZoom:12}).addTo(R.map));
-  R.upd=new Date();$('rslide').max=fr.length-1;radarShow(fr.reduce((m,f,i)=>!f.fc?i:m,0),true);
- }catch(e){R.fr=[];R.info={ok:0};$('rtime').textContent='—';st.innerHTML=`<span style="color:#ef4444">Radar provider unavailable (${esc(e.message)}). No imagery is shown.</span>`}
+ if(!R.map)return;const my=++R.busy,k=$('rlayer').value,p0=(REG[$('rreg').value]||[])[2]||'rv',st=$('rstat');st.textContent='Loading radar…';
+ let fr=null,prov=p0;
+ try{fr=k==='sat'?null:p0==='us'?await fUS():p0==='ca'?await fCA(k):p0==='de'&&k==='radar'?await fDE():null}catch(e){fr=null}
+ if(!fr){prov='rv';try{fr=await fRV(k)}catch(e){if(my===R.busy){R.fr=[];R.info={ok:0};$('rtime').textContent='—';st.innerHTML=`<span style="color:#ef4444">Radar provider unavailable (${esc(e.message)}). No imagery is shown.</span>`}return}}
+ if(my!==R.busy)return;
+ const old=R.ly;R.ly=[];R.fr=fr;R.prov=prov;R.want=p0;R.upd=new Date();$('rslide').max=fr.length-1;
+ const lastI=fr.reduce((m,f,i)=>!f.fc?i:m,0);radarShow(lastI,true);const lyr=R.ly[lastI],drop=()=>old.forEach(x=>x&&x.remove());if(lyr&&lyr.once){lyr.once('load',drop);setTimeout(drop,2500)}else drop();
+ setTimeout(()=>{if(R.fr===fr)fr.forEach((f,i)=>radarLayer(i))},200);
 }
+function radarLayer(i){if(!R.ly[i])R.ly[i]=R.fr[i].mk().addTo(R.map);return R.ly[i]}
 function radarShow(i,stop){
- if(!R.fr.length)return;if(stop)radarPause();R.i=(i+R.fr.length)%R.fr.length;R.ly.forEach((x,k)=>x.setOpacity(k===R.i?$('rop').value/100:0));$('rslide').value=R.i;
- const f=R.fr[R.i],age=Math.round((Date.now()-f.time*1000)/60000),np=R.fr.filter(x=>!x.fc),newest=Math.max(...np.map(x=>x.time)),stale=(Date.now()/1000-newest)>1800;
- R.info={ok:1,upd:R.upd,frames:R.fr.length,newestAge:Math.round((Date.now()/1000-newest)/60)};
- $('rtime').textContent=new Date(f.time*1000).toLocaleString()+(f.fc?' (forecast)':'');
- $('rstat').innerHTML=`Provider: RainViewer • last successful update: ${R.upd.toLocaleTimeString()} • this frame: ${f.fc?'forecast':age+' min old'} • newest observed frame: ${R.info.newestAge} min old • ${R.fr.length} frames${stale?' <strong style="color:#f59e0b">• Newest frame is over 30 minutes old — imagery may be stale.</strong>':''}<br>Coverage depends on each country's radar network; gaps are possible. Wind, temperature and lightning layers are not connected yet.`;
+ if(!R.fr.length)return;if(stop)radarPause();R.i=(i+R.fr.length)%R.fr.length;radarLayer(R.i);const op=$('rop').value/100;R.ly.forEach((x,k)=>x&&x.setOpacity(k===R.i?op:0));$('rslide').value=R.i;
+ const f=R.fr[R.i],age=Math.round((Date.now()-f.t)/6e4),np=R.fr.filter(x=>!x.fc),newest=Math.max(...np.map(x=>x.t)),na=Math.round((Date.now()-newest)/6e4),stale=na>30;
+ R.info={ok:1,upd:R.upd,frames:R.fr.length,newestAge:na};
+ $('rtime').textContent=new Date(f.t).toLocaleString()+(f.fc?' (forecast)':'');
+ $('rstat').innerHTML=`Provider: ${esc(PN[R.prov])}${R.prov!==R.want?' <strong style="color:#f59e0b">(primary national source unavailable — using fallback)</strong>':''} • last successful update: ${R.upd.toLocaleTimeString()} • this frame: ${f.fc?'forecast':age+' min old'}${f.approx?' (≈ time)':''} • newest observed frame: ${na} min old • ${R.fr.length} frames${stale?' <strong style="color:#f59e0b">• Newest frame is over 30 minutes old — imagery may be stale.</strong>':''}<br>Coverage depends on each country's radar network; gaps are possible. Wind, temperature and lightning layers are not connected yet.`;
 }
 const radarStep=d=>radarShow(R.i+d,true);
 function radarPause(){clearInterval(R.t);R.t=null;$('rplay').textContent='▶ Play'}
@@ -508,7 +631,7 @@ const BOTURL='https://discord.com/oauth2/authorize?client_id=1337840899773829180
 
 /* ====== HOME ====== */
 function buildHome(){
- $('home-countries').innerHTML=Object.entries(C).map(([k,v])=>`<div class="card cc" onclick="goC('${k}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')goC('${k}')"><div style="font-size:2.6rem">${v.f}</div><h3>${v.n}</h3><p class="muted small">${v.reg.join(' • ')}</p><p style="color:var(--pl);font-weight:600;margin-top:.5rem">Get weather →</p></div>`).join('');
+ $('home-countries').innerHTML=Object.entries(COMING).map(([k,v])=>`<div class="card cc" onclick="document.getElementById('germany-box').scrollIntoView({behavior:'smooth'})" role="button" tabindex="0" style="order:9"><div style="font-size:2.6rem">${v.f}</div><h3>${v.n}</h3><p class="muted small">Coming ${new Date(NEXT_LAUNCH.date).toLocaleDateString(undefined,{month:'long',year:'numeric'})}</p><p style="color:var(--pl);font-weight:600;margin-top:.5rem">See the countdown ↓</p></div>`).join('')+Object.entries(C).map(([k,v])=>`<div class="card cc" onclick="goC('${k}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')goC('${k}')"><div style="font-size:2.6rem">${v.f}</div><h3>${v.n}</h3><p class="muted small">${v.reg.join(' • ')}</p><p style="color:var(--pl);font-weight:600;margin-top:.5rem">Get weather →</p></div>`).join('');
  const F=[['🌤️','Real-Time Data','Live weather for five countries'],['📊','7-Day Forecast','Plan ahead with predictions'],['📡','Live Doppler Radar','Real-time storm tracking'],['🤖','Discord Bot','Commands in your server'],['🔔','Alert Center','Website + Discord alerts'],['🎙️','Broadcast Center','Podcast & stream tools'],['🔌','Developers','API keys & webhooks'],['🆓','100% Free','No subscriptions, ever']];
  $('home-features').innerHTML=F.map(([i,t,d])=>`<div class="card" style="text-align:center"><div style="font-size:3rem">${i}</div><h3 style="margin:1rem 0">${t}</h3><p class="muted">${d}</p></div>`).join('');
  const S1=[['US','U.S. Cities','US','U.S. States'],['CA','Canadian Municipalities','CA','Canadian Provinces/Territories'],['AU','Australian Cities','AU','Australian States/Territories'],['GB','United Kingdom Cities','GB','United Kingdom States/Territories'],['DE','German Cities & Municipalities','DE','German Federal States (Länder)']];
@@ -525,9 +648,11 @@ let deT;
 async function nextLaunch(){
  let rows=[];if(sb){const r=await sb.from('deployment_status').select('*');rows=r.data||[]}
  const b=$('germany-box'),w=(t,i)=>b.innerHTML=`<h2>${t}</h2>${i}`;clearInterval(deT);
- const now=Date.now(),up=rows.filter(d=>d.launch_approved&&d.launch_target&&new Date(d.launch_target)>now).sort((a,c)=>new Date(a.launch_target)-new Date(c.launch_target))[0];
- if(up){const v=C[up.country_code]||{f:'🌍',n:up.country_code},t=new Date(up.launch_target).getTime();
-  const draw=()=>{const s=Math.max(0,Math.floor((t-Date.now())/1000));w(`${v.f} ${esc(v.n)} Coverage Launch`,`<p style="font-size:1.2rem;opacity:.95">Going live ${esc(new Date(t).toLocaleString())}</p><div class="cd">${[['Days',s/86400],['Hours',s%86400/3600],['Minutes',s%3600/60],['Seconds',s%60]].map(([l,x])=>`<div class="cb"><div class="cn">${String(Math.floor(x)).padStart(2,'0')}</div><div class="cl">${l}</div></div>`).join('')}</div>${up.note?`<p>${esc(up.note)}</p>`:''}`);emo()};draw();deT=setInterval(draw,1000);return}
+ const now=Date.now();let up=rows.filter(d=>d.launch_approved&&d.launch_target&&new Date(d.launch_target)>now).sort((a,c)=>new Date(a.launch_target)-new Date(c.launch_target))[0];
+ if(!up&&new Date(NEXT_LAUNCH.date)>now)up={country_code:NEXT_LAUNCH.cc,launch_target:NEXT_LAUNCH.date,note:NEXT_LAUNCH.note};
+ if(up){const v=C[up.country_code]||COMING[up.country_code]||{f:'🌍',n:up.country_code},t=new Date(up.launch_target).getTime();
+  w(`${v.f} ${esc(v.n)} Coverage Launch`,`<p style="font-size:1.2rem;opacity:.95">Going live ${esc(new Date(t).toLocaleString())}</p><div class="cd">${['Days','Hours','Minutes','Seconds'].map((l,i)=>`<div class="cb"><div class="cn" id="cdn${i}">--</div><div class="cl">${l}</div></div>`).join('')}</div>${up.note?`<p>${esc(up.note)}</p>`:''}`);emo();
+  const tick=()=>{const q=Math.max(0,Math.floor((t-Date.now())/1000));[q/86400,q%86400/3600,q%3600/60,q%60].forEach((x,i)=>{const e=$('cdn'+i),tx=String(Math.floor(x)).padStart(2,'0');if(e&&e.textContent!==tx)e.textContent=tx})};tick();deT=setInterval(tick,1000);return}
  const de=rows.find(d=>d.country_code==='DE'),lb={operational:'Operational — coverage is live',deploying:'Deployment in progress',degraded:'Degraded',offline:'Offline',planned:'Planned',unverified:'Status not yet verified'};
  if(!de)return w('🇩🇪 Germany Coverage',`<p>${sb?'Deployment status has not been published yet.':'Launch schedule is unavailable until the backend is connected.'}</p><p class="small" style="opacity:.85">Next country launch: not scheduled yet.</p>`),emo();
  w('🇩🇪 Germany Coverage',`<p style="font-size:1.5rem;font-weight:700">${lb[de.status]||esc(de.status)}</p>${de.progress_pct!=null?`<p>Progress: ${de.progress_pct}%</p>`:''}${de.note?`<p>${esc(de.note)}</p>`:''}<button class="btn btn-secondary" style="margin-top:.8rem" onclick="goC('DE')">Try Germany weather</button><p class="small" style="opacity:.85;margin-top:1rem">Next country launch: not scheduled yet — the countdown appears here as soon as an approved date is set.</p>`);emo();
@@ -551,7 +676,7 @@ function botHtml(){
  const road=[['🇩🇪','Germany commands','/weather-de, /forecast-de, /dashboard-de and the rest of the set'],['📡','/radar command','Timestamped radar frames straight in Discord'],['🔗','Account linking','Link Discord to your website account so alerts and favorites match'],['⏰','Scheduled forecasts','Daily or weekly forecasts posted to a channel automatically'],['📍','Saved default location','Set your city once, skip typing it every time'],['🎙️','Podcast mode','Briefings and multi-location lookups for show hosts'],['🌪️','More storm coverage','Storm paths beyond the US/Atlantic'],['🔔','All-country alerts','Warning feeds for Canada, Australia, UK and Germany']];
  const uc=[['🎮','Gaming Communities','Check weather before outdoor events, plan game sessions around storms'],['🎓','School & University Servers','Get campus weather updates, plan study groups, monitor conditions'],['🏢','Work Teams','Coordinate remote work schedules, plan team meetups safely'],['✈️','Travel Groups','Monitor conditions at destinations, get alerts for trip locations'],['🏃','Sports & Outdoor','Plan activities, get real-time updates during events'],['👨‍👩‍👧‍👦','Family Servers','Keep everyone informed about local weather conditions'],['🎙️','Podcasters & Streamers','Pull briefings and overlays from the Broadcast Center']];
  const adv=[['📍 Location-Based Alerts',['Set up multiple alert zones per server','Choose alert severity levels','Notifications as soon as official alerts are processed','Works for all covered countries as feeds are connected']],['🎨 Customizable Display',['4 different template styles','Embed colors match your server','Interactive buttons for more data','Mobile-friendly displays']],['⚡ Built for Speed',['Fast responses — measured on the Status page','Handles many servers at once','Cached lookups for common requests','Live status you can verify']],['🔐 Safe & Secure',['Minimal permissions required','Your website account is protected by row-level security','Privacy-first design','Read the Privacy Policy for exactly what we store']]];
- const faq=[['How many commands can I use?','There are no strict limits for normal use. Please don’t spam commands or abuse the bot.'],['Do I need to pay for premium features?','Never! Every feature is 100% free forever. No premium tiers, no paid subscriptions, no hidden costs.'],['How accurate is the weather data?','We use official and model-based sources (NWS for live US warnings; forecast models for the rest). See Docs → Data Sources for details.'],['Can I use the bot in multiple servers?','Yes! Add the bot to as many servers as you like. Each server can have its own custom alert configurations.'],['What if my city isn’t listed?','Contact us through our support Discord. We’re constantly expanding coverage and can prioritize requested locations.'],['Is the bot available 24/7?','The bot is designed to run around the clock. If you ever experience issues, check our Status page.']];
+ const faq=[['How many commands can I use?','There are no strict limits for normal use. Please don’t spam commands or abuse the bot.'],['Do I need to pay for premium features?','Never! Every feature is 100% free forever. No premium tiers, no paid subscriptions, no hidden costs.'],['How accurate is the weather data?','Weather comes from national services where connected — the National Weather Service for the US and the German Weather Service (DWD) for Germany — and from clearly labeled model data elsewhere. See Docs → Data Sources.'],['Can I use the bot in multiple servers?','Yes! Add the bot to as many servers as you like. Each server can have its own custom alert configurations.'],['What if my city isn’t listed?','Contact us through our support Discord. We’re constantly expanding coverage and can prioritize requested locations.'],['Is the bot available 24/7?','The bot is designed to run around the clock. If you ever experience issues, check our Status page.']];
  $('bot-body').innerHTML=`<div class="hero" style="padding:3rem 1rem"><h1 style="font-size:3.5rem">🤖 Midwest Weather Bot</h1><p class="hs">Powerful weather intelligence for your Discord server</p><div class="btn-group" style="margin-top:1.5rem"><a class="btn btn-primary" target="_blank" rel="noopener" href="${BOTURL}">Add to Discord</a><button class="btn btn-secondary" onclick="showPage('commands')">Full Command List</button></div></div>`+
  sec('✨ Bot Features',`<div class="grid g2">${feat.map(([i,t,d])=>`<div><h3 style="color:var(--primary);margin-bottom:.6rem">${i} ${t}</h3><p class="muted">${d}</p></div>`).join('')}</div>`)+
  sec('🆕 Coming Soon — Roadmap',`<p class="muted" style="margin-bottom:1rem">What we’re building next for the bot. These are planned features — dates are not confirmed.</p><div class="grid g3">${road.map(([i,t,d])=>`<div class="stat" style="text-align:left"><div style="font-size:1.8rem">${i}</div><strong>${t}</strong><div class="sl">${d}</div><span class="nb update" style="margin-top:.5rem;display:inline-block">Planned</span></div>`).join('')}</div><p class="small muted">Have a feature request? Tell us in the support Discord.</p>`)+
@@ -569,7 +694,7 @@ function botHtml(){
 /* ====== STATUS ====== */
 const SVC=[['bot','🤖 Discord Bot v2.5',[['Uptime','bot-uptime'],['Connected Servers','bot-servers'],['Total Users','bot-users'],['Version','bot-version']]],['api','🌐 API Server',[['Response Time','api-response'],['Database','api-database'],['Last Updated','api-last-update']]],['weather','🌤️ Weather Data Sources',[['NWS (US Data)','nws-status'],['Environment Canada','ec-status'],['BOM Australia','bom-status'],['DWD Germany','dwd-status'],['Open-Meteo (forecast models)','om-status'],['Data Refresh Rate','refresh-rate']]],['radar','📡 Live Radar System',[['Provider','radar-provider'],['Newest Frame Age','radar-frames'],['Update Frequency','radar-frequency'],['Coverage','radar-coverage']]],['alert','🔔 Alert System',[['Active Subscriptions','alert-subscriptions'],['Alerts Sent Today','alerts-today'],['Avg Delivery Time','alert-delivery']]],['website','🌐 Website',[['Load Time','website-load'],['Daily Visitors','daily-visitors'],['CDN Status','cdn-status']]],['database','💾 Database',[['Response Time','db-response'],['Storage Used','db-storage'],['Backup Status','db-backup']]],['command','⚡ Command Processing',[['Commands Today','commands-today'],['Avg Response Time','command-response'],['Success Rate','command-success']]]];
 $('svc').innerHTML=SVC.map(([k,t,r])=>`<div class="svc"><div class="svch"><div class="svcn">${t}</div><div id="b-${k}" class="badge unk"><span class="dot"></span><span>Checking...</span></div></div><div class="svcd">${r.map(([l,id])=>`<div><span class="l">${l}</span><span class="v" id="${id}">--</span></div>`).join('')}</div></div>`).join('');
-const setB=(k,s,t)=>{const b=$('b-'+k);if(b){b.className='badge '+s;b.innerHTML=`<span class="dot"></span><span>${esc(t)}</span>`}};
+const setB=(k,s,t)=>{const b=$('b-'+k);if(b&&!(b.className==='badge '+s&&b.textContent===t)){b.className='badge '+s;b.innerHTML=`<span class="dot"></span><span>${esc(t)}</span>`}};
 const setV=(id,v)=>{const e=$(id);if(e)e.textContent=v==null||v===''?'—':v};
 let SYS={};
 async function timed(u,ms=8000){const t0=performance.now();try{await fj(u,ms);return{ok:1,ms:Math.round(performance.now()-t0)}}catch(e){return{ok:0,err:e.message}}}
@@ -577,7 +702,7 @@ async function dbCheck(){if(!sb)return{ok:null};const t0=performance.now();try{c
 const rpt=k=>{const x=SYS[k];if(!x)return['unk','No report yet'];if(Date.now()-new Date(x.last_checked_at)>6e5)return['unk','No recent report'];return x.status==='operational'?['ok','Operational']:x.status==='degraded'?['unk','Degraded']:['bad','Outage']};
 const fmtUp=ms=>{const m=Math.floor(ms/6e4);return `${Math.floor(m/60)}h ${m%60}m`};
 async function runChecks(){
- const[om,rv,nws,ec,db]=await Promise.all([timed('https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m'),timed('https://api.rainviewer.com/public/weather-maps.json'),timed('https://api.weather.gov/'),timed('https://api.weather.gc.ca/collections?f=json'),dbCheck()]);
+ const[om,rv,nws,ec,dw,db]=await Promise.all([timed('https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m'),timed('https://api.rainviewer.com/public/weather-maps.json'),timed('https://api.weather.gov/'),timed('https://api.weather.gc.ca/collections?f=json'),timed('https://api.brightsky.dev/alerts?lat=52.52&lon=13.4'),dbCheck()]);
  SYS={};if(sb){try{const{data}=await sb.from('system_status').select('*');(data||[]).forEach(x=>SYS[x.service]=x)}catch(e){}}
  const lbl=r=>r.ok?`Online (${r.ms} ms)`:'No response from browser',d=k=>(SYS[k]&&SYS[k].details)||{};
  // bot
@@ -586,23 +711,23 @@ async function runChecks(){
  setB('api',db.ok?'ok':db.ok===0?'bad':'unk',db.ok?'Operational':db.ok===0?'Not responding':'Not configured');setV('api-response',db.ok?db.ms+' ms':null);setV('api-database',db.ok?'Connected':db.ok===0?'Unreachable':'Not configured');setV('api-last-update',new Date().toLocaleTimeString());
  setB('database',db.ok?'ok':db.ok===0?'bad':'unk',db.ok?'Operational':db.ok===0?'Not responding':'Not configured');setV('db-response',db.ok?db.ms+' ms':null);const dd=d('database');setV('db-storage',dd.storage);setV('db-backup',dd.backup);
  // weather sources
- setV('nws-status',lbl(nws));setV('ec-status',lbl(ec));setV('bom-status','Not monitored from browser');setV('dwd-status','Via Open-Meteo (ICON); not monitored directly');setV('om-status',lbl(om));setV('refresh-rate','Fetched live on every request');
+ setV('nws-status',lbl(nws));setV('ec-status',lbl(ec));setV('bom-status','Not monitored from browser');setV('dwd-status',lbl(dw)+' — warnings via Bright Sky');setV('om-status',lbl(om));setV('refresh-rate','Fetched live on every request');
  setB('weather',om.ok&&nws.ok?'ok':om.ok||nws.ok?'unk':'bad',om.ok&&nws.ok?'Operational':om.ok||nws.ok?'Partial':'Not responding');
  // radar
- const ri=R.info;setB('radar',rv.ok?(ri&&ri.newestAge>30?'unk':'ok'):'bad',rv.ok?(ri&&ri.newestAge>30?'Stale frames':'Operational'):'Not responding');setV('radar-provider','RainViewer'+(rv.ok?` (${rv.ms} ms)`:''));setV('radar-frames',ri&&ri.ok?ri.newestAge+' min':'Load the radar page to measure');setV('radar-frequency','Refreshed every 5 minutes');setV('radar-coverage','Five countries (network-dependent, gaps possible)');
+ const ri=R.info;setB('radar',ri?(ri.ok?(ri.newestAge>30?'unk':'ok'):'bad'):'unk',ri?(ri.ok?(ri.newestAge>30?'Stale frames':'Operational'):'Not responding'):'Open Live Radar to measure');setV('radar-provider',R.prov?PN[R.prov]:'Open the Live Radar page to measure');setV('radar-frames',ri&&ri.ok?ri.newestAge+' min':'Load the radar page to measure');setV('radar-frequency','Refreshed every 5 minutes');setV('radar-coverage','Five countries (network-dependent, gaps possible)');
  // alerts / website / commands from backend reports
  const[as,at]=rpt('alerts'),ad=d('alerts');setB('alert',as,at);setV('alert-subscriptions',ad.subscriptions);setV('alerts-today',ad.sent_today);setV('alert-delivery',ad.avg_delivery_ms!=null?ad.avg_delivery_ms+' ms':null);
  const nav=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0],wd=d('website');setB('website','ok','Operational');setV('website-load',nav?Math.round(nav.duration)+' ms (this visit)':null);setV('daily-visitors',wd.visitors_today);setV('cdn-status',wd.cdn);
  const[cs,ct]=rpt('commands'),cd=d('commands');setB('command',cs,ct);setV('commands-today',cd.today);setV('command-response',cd.avg_ms!=null?cd.avg_ms+' ms':null);setV('command-success',cd.success_rate!=null?cd.success_rate+'%':null);
  // overall
- const core=[om.ok,rv.ok,db.ok===null?1:db.ok],bad=core.filter(x=>x===0).length,ov=$('status-overall'),hb=$('home-badge');
+ const core=[om.ok,db.ok===null?1:db.ok],bad=core.filter(x=>x===0).length,ov=$('status-overall'),hb=$('home-badge');
  const txt=bad?'Some services are not responding':'All checked services responding';
- ov.className='badge '+(bad?'bad':'ok');ov.innerHTML=`<span class="dot"></span><span>${txt}</span>`;hb.className='badge '+(bad?'bad':'ok');hb.innerHTML=`<span class="dot"></span><span>${txt}</span>`;
+ [ov,hb].forEach(e=>{const c='badge '+(bad?'bad':'ok');if(!(e.className===c&&e.textContent===txt)){e.className=c;e.innerHTML=`<span class="dot"></span><span>${txt}</span>`}});
  $('st-time').textContent='Measured from your browser at '+new Date().toLocaleTimeString()+' — live checks, not historical uptime. Bot, alert and command figures come from reports the bot writes to the database.';
  botStats();const bps=$('bot-page-status');if(bps)bps.textContent=bt;
  if(sb){
   const{data:dep}=await sb.from('deployment_status').select('*').order('country_code');
-  $('st-dep').innerHTML=(dep||[]).map(x=>`<div class="svc"><div class="svch"><div class="svcn">${C[x.country_code]?C[x.country_code].f+' '+C[x.country_code].n:esc(x.country_code)}</div><span class="badge ${x.status==='operational'?'ok':['unverified','planned','deploying'].includes(x.status)?'unk':'bad'}"><span class="dot"></span>${esc(x.status)}</span></div><div class="svcd">${[['Geographic registry',x.geo_registry_status],['Weather provider',x.weather_status],['Forecast',x.forecast_status],['Radar',x.radar_status],['Alerts',x.alert_status],['API',x.api_status],['Last successful update',x.last_success_at?new Date(x.last_success_at).toLocaleString():'—']].map(([l,v])=>`<div><span class="l">${l}</span><span class="v">${esc(v)}</span></div>`).join('')}</div></div>`).join('')||'<p class="muted">No country status rows yet.</p>';
+  $('st-dep').innerHTML=(dep||[]).map(x=>`<div class="svc"><div class="svch"><div class="svcn">${esc(cname(x.country_code))}</div><span class="badge ${x.status==='operational'?'ok':['unverified','planned','deploying'].includes(x.status)?'unk':'bad'}"><span class="dot"></span>${esc(x.status)}</span></div><div class="svcd">${[['Geographic registry',x.geo_registry_status],['Weather provider',x.weather_status],['Forecast',x.forecast_status],['Radar',x.radar_status],['Alerts',x.alert_status],['API',x.api_status],['Last successful update',x.last_success_at?new Date(x.last_success_at).toLocaleString():'—']].map(([l,v])=>`<div><span class="l">${l}</span><span class="v">${esc(v)}</span></div>`).join('')}</div></div>`).join('')||'<p class="muted">No country status rows yet.</p>';
   const{data:inc}=await sb.from('announcements').select('*').in('type',['alert','maintenance']).order('created_at',{ascending:false}).limit(5);
   $('st-inc').innerHTML=(inc||[]).map(x=>`<div class="card"><span class="nb ${esc(x.type)}">${esc(x.type)}</span> <strong>${esc(x.title)}</strong> <span class="muted small">${esc(new Date(x.created_at).toLocaleString())}</span><p class="muted small" style="margin-top:.4rem">${esc(x.message)}</p></div>`).join('')||'<p class="muted">No incidents recorded.</p>';
   loadServers();
@@ -632,10 +757,13 @@ async function loadSubs(){
  if(!sb||!user)return;loadHist();
  const{data}=await sb.from('alert_subscriptions').select('id,min_severity,categories,channels,enabled,locations(name,country_code,lat,lon)').order('created_at',{ascending:false});
  const box=$('al-subs');if(!data||!data.length){box.innerHTML='<p class="muted">No subscriptions yet.</p>';return}
- box.innerHTML=data.map(s=>`<div class="row" style="align-items:flex-start"><div><strong>${esc(s.locations?.name)}</strong> (${esc(s.locations?.country_code)}) <span class="muted small">• ${esc(s.min_severity)} • ${esc((s.channels||[]).join(', '))} • ${s.enabled?'on':'off'}</span><div id="sa-${s.id}" class="small muted">${s.locations?.country_code==='US'?'Checking NWS…':'Live warnings for this country are not connected yet.'}</div></div><button class="btn btn-secondary sm" onclick="delRow('alert_subscriptions',${s.id})">Remove</button></div>`).join('');
- data.filter(s=>s.locations?.country_code==='US').forEach(async s=>{const el=$('sa-'+s.id);if(!el)return;try{const j=await fj(`https://api.weather.gov/alerts/active?point=${(+s.locations.lat).toFixed(4)},${(+s.locations.lon).toFixed(4)}`);
-  const ok=(j.features||[]).filter(a=>{const p=a.properties,sv=s.min_severity==='extreme'?['Extreme']:s.min_severity==='severe'?['Severe','Extreme']:null;return(!sv||sv.includes(p.severity))&&s.categories.some(c=>ACATS[c]&&p.event.includes(ACATS[c][1]))});
-  el.innerHTML=ok.length?ok.map(a=>`<div class="alertbox"><strong>${esc(a.properties.event)}</strong> • ${esc(a.properties.severity)}<div>${esc(a.properties.headline||'')}</div></div>`).join(''):'✅ No matching active NWS alerts right now.'}catch(e){el.textContent='NWS did not respond; cannot confirm whether alerts are active.'}});
+ box.innerHTML=data.map(s=>`<div class="row" style="align-items:flex-start"><div><strong>${esc(s.locations?.name)}</strong> (${esc(s.locations?.country_code)}) <span class="muted small">• ${esc(s.min_severity)} • ${esc((s.channels||[]).join(', '))} • ${s.enabled?'on':'off'}</span><div id="sa-${s.id}" class="small muted">${['US','DE'].includes(s.locations?.country_code)?'Checking alerts…':'Live warnings for this country are not connected yet.'}</div></div><button class="btn btn-secondary sm" onclick="delRow('alert_subscriptions',${s.id})">Remove</button></div>`).join('');
+ data.filter(s=>['US','DE'].includes(s.locations?.country_code)).forEach(async s=>{const el=$('sa-'+s.id);if(!el)return;
+  const al=await getAlerts({cc:s.locations.country_code,lat:s.locations.lat,lon:s.locations.lon});
+  if(al===null){el.textContent='The alert service did not respond; cannot confirm whether alerts are active.';return}
+  const ok=(al||[]).filter(a=>sevPass(s.min_severity,a.severity)&&s.categories.some(c=>ACAT_RX[c]&&ACAT_RX[c].test(a.event)));
+  el.innerHTML=ok.length?ok.map(a=>`<div class="alertbox"><strong>${esc(a.event)}</strong> • ${esc(a.severity)}<div>${esc(a.headline||'')}</div></div>`).join(''):'✅ No matching active alerts right now ('+esc(ALERT_SRC[s.locations.country_code])+').';
+ });
 }
 
 /* ====== ACCOUNT ====== */
@@ -685,7 +813,7 @@ async function loadDelReq(){const{data}=await sb.from('account_deletion_requests
 
 /* ====== DEVELOPERS (login required for keys & webhooks) ====== */
 const W={edit:null,locs:[],hooks:[]};
-const EP=[['GET','/v1/status','API health (no key needed)'],['GET','/v1/search?q=&country=','Geographic search from the location registry'],['GET','/v1/current?lat=&lon=','Current conditions'],['GET','/v1/forecast?lat=&lon=&days=7','Hourly + daily forecast'],['GET','/v1/air?lat=&lon=','Air quality'],['GET','/v1/history?lat=&lon=&start=&end=','Historical daily weather'],['GET','/v1/sun?lat=&lon=','Sunrise, sunset, daylight'],['GET','/v1/alerts?lat=&lon=','Active warnings (US via NWS)'],['GET','/v1/briefing?lat=&lon=&name=','Plain-text weather briefing for shows'],['GET','/v1/countries','Countries and deployment status']];
+const EP=[['GET','/v1/status','API health (no key needed)'],['GET','/v1/search?q=&country=','Geographic search from the location registry'],['GET','/v1/current?lat=&lon=','Current conditions'],['GET','/v1/forecast?lat=&lon=&days=7','Hourly + daily forecast'],['GET','/v1/air?lat=&lon=','Air quality'],['GET','/v1/history?lat=&lon=&start=&end=','Historical daily weather'],['GET','/v1/sun?lat=&lon=','Sunrise, sunset, daylight'],['GET','/v1/alerts?lat=&lon=','Active warnings: US via NWS; add &amp;country=DE for Germany (DWD)'],['GET','/v1/briefing?lat=&lon=&name=','Plain-text weather briefing for shows'],['GET','/v1/countries','Countries and deployment status']];
 function devUI(){
  const b=$('dev-body');if(!b)return;
  const docs=`<div class="card"><h2 style="margin-bottom:1rem">📚 API documentation</h2>${pp('Base URL: <code>'+esc(FN)+'/weather-api</code> — send your key as <code>Authorization: Bearer mw_…</code> (or <code>x-api-key</code>). Responses are JSON.')}<div class="tw"><table><tr><th>Method</th><th>Path</th><th>Description</th></tr>${EP.map(e=>`<tr><td><code>${e[0]}</code></td><td><code>${esc(e[1])}</code></td><td class="muted">${esc(e[2])}</td></tr>`).join('')}</table></div>
@@ -745,7 +873,7 @@ async function bcBrief(){
  for(const l of locs){try{const u=U(l.cc),f=await fj(fUrl(l)),c=f.current,d=f.daily,hr=f.hourly,k=i0(f),mx=Math.max(0,...hr.precipitation_probability.slice(k,k+12));let t='';
   if(bcType==='current')t=`${l.name} (data time ${c.time.replace('T',' ')} local): ${Math.round(c.temperature_2m)}${u.ts} and ${wx(c.weather_code)[1].toLowerCase()}, feeling like ${Math.round(c.apparent_temperature)}${u.ts}. Winds from the ${dir(c.wind_direction_10m)} at ${Math.round(c.wind_speed_10m)} ${u.ws}, gusting ${Math.round(c.wind_gusts_10m)}. Humidity ${c.relative_humidity_2m}%. Today's high ${Math.round(d.temperature_2m_max[0])}${u.ts}, low ${Math.round(d.temperature_2m_min[0])}${u.ts}. Sunrise ${d.sunrise[0].slice(11,16)}, sunset ${d.sunset[0].slice(11,16)}.`;
   else if(bcType==='forecast')t=`${l.name} outlook: `+d.time.slice(0,4).map((x,i)=>`${i?new Date(x+'T12:00').toLocaleDateString(undefined,{weekday:'long'}):'Today'} ${wx(d.weather_code[i])[1].toLowerCase()}, high ${Math.round(d.temperature_2m_max[i])}${u.ts}, low ${Math.round(d.temperature_2m_min[i])}${u.ts}, ${d.precipitation_probability_max[i]??0}% chance of precipitation`).join('. ')+`. Peak rain chance over the next 12 hours: ${mx}%.`;
-  else if(bcType==='severe'){if(l.cc==='US'){const a=await fj(`https://api.weather.gov/alerts/active?point=${(+l.lat).toFixed(4)},${(+l.lon).toFixed(4)}`).catch(()=>null);t=a===null?`${l.name}: the National Weather Service alert feed did not respond — check weather.gov before airing.`:(a.features||[]).length?`${l.name} active alerts: `+a.features.map(x=>`${x.properties.event} (${x.properties.severity}) until ${new Date(x.properties.expires||Date.now()).toLocaleString()}`).join('; ')+'. Source: National Weather Service.':`${l.name}: no active National Weather Service alerts at the time of checking.`}else t=`${l.name}: official warning feeds for ${C[l.cc].n} are not connected here yet — read warnings from your national weather service before airing. Peak rain chance next 12 hours ${mx}%, gusts ${Math.round(c.wind_gusts_10m)} ${u.ws}.`}
+  else if(bcType==='severe'){const a=await getAlerts(l);t=a===undefined?`${l.name}: official warning feeds for ${C[l.cc].n} are not connected here yet — read warnings from your national weather service before airing. Peak rain chance next 12 hours ${mx}%, gusts ${Math.round(c.wind_gusts_10m)} ${u.ws}.`:a===null?`${l.name}: the ${ALERT_SRC[l.cc]} alert feed did not respond — check the official source before airing.`:a.length?`${l.name} active alerts: `+a.map(x=>`${x.event} (${x.severity}) until ${new Date(x.expires||Date.now()).toLocaleString()}`).join('; ')+'. Source: '+ALERT_SRC[l.cc]+'.':`${l.name}: no active ${ALERT_SRC[l.cc]} alerts at the time of checking.`}
   else if(bcType==='history'){const z=n=>new Date(Date.now()-n*864e5).toISOString().slice(0,10),j=await fj(`https://archive-api.open-meteo.com/v1/archive?latitude=${l.lat}&longitude=${l.lon}&start_date=${z(8)}&end_date=${z(2)}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto&temperature_unit=${u.t}&precipitation_unit=${u.p}`);t=`${l.name} last week: highs ${Math.round(Math.min(...j.daily.temperature_2m_max))}–${Math.round(Math.max(...j.daily.temperature_2m_max))}${u.ts}, lows down to ${Math.round(Math.min(...j.daily.temperature_2m_min))}${u.ts}, total precipitation ${j.daily.precipitation_sum.reduce((a,b)=>a+b,0).toFixed(2)} ${u.ps}.`}
   else t=`[Edit me] ${l.name}: ${Math.round(c.temperature_2m)}${u.ts}, ${wx(c.weather_code)[1].toLowerCase()}. Add your own talking points here.`;
   parts.push(t)}catch(e){parts.push(`${l.name}: data unavailable.`)}}
@@ -756,7 +884,7 @@ function ovHTML(p,rows,u0){const f=(p.fields||'temp,cond,wind').split(','),bg=co
   return lay==='mini'?`<span style="margin:0 .6rem">${ic} ${esc(r.name)} ${esc(l1)}</span>`:`<div style="display:inline-flex;gap:.9rem;align-items:center;padding:.8rem 1.2rem;border-radius:14px;background:${bg};color:${fg};font:600 22px system-ui;margin:.2rem"><span style="font-size:2.4rem">${ic}</span><div><div style="font-size:.75em;opacity:.8">${esc(r.name)}${p.brand!=='0'?' • Midwest Weather':''}</div><div>${esc(l1)}</div><div style="font-size:.7em;opacity:.9">${esc(l2)}</div></div></div>`};
  const inner=rows.map(cell).join('');return lay==='mini'?`<div style="display:inline-block;padding:.5rem 1rem;border-radius:10px;background:${bg};color:${fg};font:600 20px system-ui">${inner}</div>`:inner}
 async function ovRows(p){const arr=p.locs?String(p.locs).split(';').slice(0,8).map(s=>{const[n,la,lo,cc]=s.split('|');return{name:n,lat:parseFloat(la),lon:parseFloat(lo),cc:C[cc]?cc:'US'}}):[{name:(p.name||'').slice(0,60),lat:parseFloat(p.lat),lon:parseFloat(p.lon),cc:C[p.cc]?p.cc:'US'}];
- const out=[];for(const l of arr){if(!isFinite(l.lat)||!isFinite(l.lon))continue;try{const f=await fj(fUrl(l,true));let al=null;if((p.fields||'').includes('alert')&&l.cc==='US'){const a=await fj(`https://api.weather.gov/alerts/active?point=${l.lat.toFixed(4)},${l.lon.toFixed(4)}`).catch(()=>null);al=a?(a.features||[]).length:null}out.push({...l,c:f.current,al})}catch(e){}}return out}
+ const out=[];for(const l of arr){if(!isFinite(l.lat)||!isFinite(l.lon))continue;try{const f=await fj(fUrl(l,true));let al=null;if((p.fields||'').includes('alert')){const a=await getAlerts(l);al=Array.isArray(a)?a.length:null}out.push({...l,c:f.current,al})}catch(e){}}return out}
 async function bcBuild(){
  const lay=$('bc-lay').value,locs=lay==='ticker'?(window.BCL||[]):(bcLoc?[bcLoc]:[]);if(!locs.length)return $('bc-url').innerHTML='<div class="notice">Pick a location (or add some to your list for the ticker layout) first.</div>';
  const q=new URLSearchParams({overlay:1,layout:lay,fields:[...document.querySelectorAll('.bf:checked')].map(x=>x.value).join(','),bg:$('bc-bg').value,fg:$('bc-fg').value,refresh:$('bc-ref').value,brand:$('bc-brand').checked?1:0});
@@ -771,14 +899,14 @@ async function runOverlay(){
 
 /* ====== DOCS & LEGAL ====== */
 function docsHtml(){
- const cov=[['US',['3,187+ cities','All 50 states','5 regional divisions','Live NWS warnings']],['CA',['820+ municipalities','13 provinces/territories','5 regional divisions','Environment Canada alerts planned']],['AU',['Major cities','8 states/territories','4 regional divisions','BOM alerts planned']],['GB',['Major cities','4 regions','England, Scotland, Wales, N. Ireland','Met Office alerts planned']],['DE',['16 federal states (Länder)','Cities & municipalities','Nord / Ost / West / Süd groupings','DWD warnings planned']]];
+ const cov=[['US',['3,187+ cities','All 50 states','5 regional divisions','Live NWS warnings']],['CA',['820+ municipalities','13 provinces/territories','5 regional divisions','Environment Canada alerts planned']],['AU',['Major cities','8 states/territories','4 regional divisions','BOM alerts planned']],['GB',['Major cities','4 regions','England, Scotland, Wales, N. Ireland','Met Office alerts planned']],['DE',['16 federal states (Länder)','Cities & municipalities','Nord / Ost / West / Süd groupings','DWD warnings (via Bright Sky)']]];
  return sec('🌟 What is Midwest Weather?',pp('Midwest Weather is a comprehensive weather intelligence platform providing forecasts, live radar and severe weather alerts for the United States, Canada, Australia, the United Kingdom and Germany. Built from scratch with a focus on accuracy, speed, and ease of use.'))+
- sec('🗺️ Coverage Areas',`<div class="grid g4">${cov.map(([k,l])=>`<div><h3 style="color:var(--primary);margin-bottom:.6rem">${C[k].f} ${C[k].n}</h3>${ul(l)}</div>`).join('')}</div>`)+
+ sec('🗺️ Coverage Areas',`<div class="grid g4">${cov.map(([k,l])=>`<div><h3 style="color:var(--primary);margin-bottom:.6rem">${C[k].f} ${C[k].n}</h3>${ul(l)}</div><p class="muted" style="margin-top:1rem">🇮🇪 <strong>Ireland</strong> is next — see the launch countdown on the homepage.</p>`).join('')}</div>`)+
  sec('🌐 Using the Website',`${h3('Weather Center')}${ol(['Open the Weather page','Pick your country tab (USA, Canada, Australia, UK or Germany)','Choose your Region, then State/Province/County, then City','…or just type a city or postal code in Quick Search','Use the tabs: Overview, Hourly, 7-Day, Air Quality, History, Sunrise &amp; Sunset, Clouds, Feels Like, Wind, Humidity, Rain Check, Storm Path, Report','Switch the display template (Compact, Weather Card, Full, Radar) and units'])}${h3('Quick Search')}${pp('Use the Quick Search bar to find any city, town or postal code. Results come from the Midwest Weather location registry, with a geocoder fallback.')}`)+
  sec('🤖 Using the Discord Bot',`${h3('Installation')}${ol(['Visit the Bot page or click "Add to Discord"','Select your server from the dropdown','Authorize the requested permissions','Bot is ready to use immediately'])}${h3('Basic Commands')}${ul(['<code>/weather city:[name]</code> - Get U.S. weather','<code>/weather-ca municipality:[name]</code> - Get Canadian weather','<code>/weather-au city:[name]</code> - Get Australian weather','<code>/weather-uk city:[name]</code> - Get UK weather','<code>/forecast city:[name]</code> - Get 7-day forecast','<code>/dashboard city:[name]</code> - Interactive dashboard'])}${h3('Country-Specific Commands')}${pp('All commands are available with country suffixes: <code>-ca</code> (Canada), <code>-au</code> (Australia), <code>-uk</code> (United Kingdom). Germany bot commands are planned.')}`)+
  sec('📡 Live Radar',`${pp('Real radar frames with real timestamps:')}${ol(['Go to the Live Radar page','Select a region, or search a place, or tap My location','Pick the data layer (rain, snow colors, satellite)','Use Play/Pause, previous/next and the timeline slider','Optionally turn on US warning polygons','Use Fullscreen for a broadcast-style view'])}${pp('The page shows the provider, last update and frame age, and warns if imagery is stale.')}`)+
  sec('🔔 Setting Up Alerts',`${h3('Server Alerts')}${pp('Configure automated alerts for your Discord server:')}${ol(['Use command: <code>/setup-alerts region:[USA/Canada/Australia/UK]</code>','Select your specific regions','Choose severity level (All/Severe/Extreme)','Set the notification channel'])}${h3('Personal DM Alerts')}${ol(['Use command: <code>/alerts-subscribe</code>','Enter your location','Select alert severity','Confirm subscription'])}${h3('Website Alerts')}${pp('Sign in, open the Alerts page, pick a registry location, categories, level and delivery channels. The bot and website share the same subscriptions.')}`)+
- sec('🔧 Data Sources & Accuracy',`${pp('Midwest Weather combines several sources:')}${ul(['<strong>Forecasts, air quality, history:</strong> Open-Meteo (blends national weather models, including DWD ICON for Germany/Europe)','<strong>United States warnings:</strong> National Weather Service (NWS)','<strong>Radar &amp; satellite:</strong> RainViewer','<strong>Canada / Australia / UK / Germany warnings:</strong> official feeds are being connected; until then the site tells you when a feed is not available'])}${pp('Forecast data is fetched live on every request and timestamped on screen.')}`)+
+ sec('🔧 Data Sources & Accuracy',`${pp('Midwest Weather combines several sources:')}${ul(['<strong>United States weather:</strong> National Weather Service (api.weather.gov) — station observations and gridpoint forecasts','<strong>Germany weather:</strong> Deutscher Wetterdienst (DWD) via the Bright Sky API — station observations and forecasts','<strong>Canada, Australia, UK weather:</strong> national feeds are not connected to the website yet — Open-Meteo model data is shown and clearly labeled','<strong>Air quality, sun times, cloud layers, history:</strong> Open-Meteo','<strong>United States warnings:</strong> National Weather Service (NWS)','<strong>Germany warnings:</strong> Deutscher Wetterdienst (DWD) via the Bright Sky API','<strong>Radar:</strong> NOAA/NWS NEXRAD (US, tiles via Iowa Environmental Mesonet), Environment and Climate Change Canada, DWD (Germany), RainViewer for Australia and the UK; <strong>satellite:</strong> RainViewer','<strong>Canada / Australia / UK warnings:</strong> official feeds are not connected yet; the site tells you when a feed is not available'])}${pp('Forecast data is fetched live on every request and timestamped on screen.')}`)+
  sec('❓ FAQ',`${h3('Is Midwest Weather really free?')}${pp('Yes! 100% free with no premium tiers, ads, or subscriptions. Ever.')}${h3('How accurate is the weather data?')}${pp('Forecasts come from established weather models; warnings come from official services where connected. Always confirm life-safety information with your national weather service.')}${h3('Can I use this for commercial purposes?')}${pp('Contact us first — you must comply with the Terms of Service and provide attribution, and upstream data providers have their own terms.')}${h3('What if my city isn’t listed?')}${pp('Contact us through Discord. We’re constantly expanding coverage.')}`)+
  sec('🎙️ Podcast Integration',`<div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:1.2rem;margin-bottom:1rem"><h3 style="color:#fbbf24;margin-bottom:.5rem">Status update</h3>${pp('The Summer 2026 target has passed. The Broadcast Center is available now: saved broadcast locations, live board, briefings and scripts, stream overlays, embeds and API feeds for your podcast or stream.')}${pp('Live audio/video broadcasting is not offered — your show runs on your own software and pulls weather from Midwest Weather.')}</div>${h3('What you can do today')}${ul(['Live weather lookup for multiple saved locations','Current, forecast, severe-weather, historical and custom briefings','Broadcast-friendly overlays (card, ticker, minimal) for OBS/Twitch','Embeds and API access for your show tools'])}<button class="btn btn-primary" onclick="showPage('broadcast')">Open Broadcast Center</button>`)+
  sec('🎯 Advanced Usage Tips',`${h3('Combining Commands')}${ul(['Start with <code>/weather</code> for current conditions','Follow with <code>/forecast</code> to see upcoming changes','Check <code>/raincheck</code> for the next few hours','Use the website radar for precipitation patterns'])}${h3('Setting Up Multiple Locations')}${ol(['Create dedicated weather channels for different regions','Set up alerts for each region separately','Use pinned messages to display frequently checked locations','Use webhooks from your account for automated posts'])}${h3('Interpreting Weather Data')}${ul(['<strong>Temperature:</strong> Actual air temperature','<strong>Feels Like:</strong> Accounts for wind chill or heat index','<strong>Humidity / Dew point:</strong> Moisture in the air and how muggy it feels','<strong>Wind Speed:</strong> Sustained winds, with gusts when significant','<strong>Visibility:</strong> How far you can see (important for travel)','<strong>Pressure:</strong> Falling pressure often means storms approaching'])}`)+
@@ -794,7 +922,7 @@ function legalHtml(){
  sec('2. How We Use Your Information',`${pp('We use collected information to:')}${ul(['Provide weather data for requested locations','Run your account, alerts, webhooks and API keys','Monitor bot and platform performance and uptime','Troubleshoot technical issues and prevent abuse (rate limiting, audit logging)','Generate anonymous usage statistics','Comply with Discord’s Terms of Service'])}`)+
  sec('3. Data Retention',pp('<strong>Command Logs:</strong> Stored for up to 90 days<br><strong>Weather lookups:</strong> Fetched live; not stored on our servers<br><strong>Account data:</strong> Kept until you delete your account<br><strong>API usage and delivery logs:</strong> Kept for a limited period for rate limiting and troubleshooting<br><strong>Device data:</strong> Stays in your browser until you clear it'))+
  sec('4. Data Sharing',pp('We <strong>DO NOT</strong> sell, trade, or share your personal information with third parties for their marketing. Weather data is sourced from public weather services and providers. Your searched coordinates are sent to those providers to fetch results.'))+
- sec('5. Third-Party Services',`${pp('Midwest Weather integrates with:')}${ul(['<strong>Discord:</strong> Subject to Discord’s Privacy Policy','<strong>Supabase:</strong> accounts and database hosting','<strong>Open-Meteo:</strong> forecasts, air quality, history, geocoding','<strong>National Weather Service (NWS):</strong> U.S. alerts and storm data','<strong>RainViewer:</strong> radar and satellite imagery','<strong>OpenStreetMap / CARTO:</strong> map tiles','<strong>Environment Canada, Bureau of Meteorology, UK Met Office, DWD:</strong> official sources, being connected for alerts'])}`)+
+ sec('5. Third-Party Services',`${pp('Midwest Weather integrates with:')}${ul(['<strong>Discord:</strong> Subject to Discord’s Privacy Policy','<strong>Supabase:</strong> accounts and database hosting','<strong>Open-Meteo:</strong> forecasts, air quality, history, geocoding','<strong>National Weather Service (NWS):</strong> U.S. alerts and storm data','<strong>Bright Sky / DWD:</strong> German weather warnings','<strong>Iowa Environmental Mesonet / NOAA, Environment Canada, DWD, RainViewer:</strong> radar and satellite imagery','<strong>OpenStreetMap / CARTO:</strong> map tiles','<strong>Environment Canada, Bureau of Meteorology, UK Met Office, DWD:</strong> official sources, being connected for alerts'])}`)+
  sec('6. Your Rights',`${pp('You have the right to:')}${ul(['Access and correct your account information','Request deletion of your account and data, or of your command logs','Stop using the service at any time','Remove the bot from your Discord server','Delete saved locations, webhooks and API keys yourself from your account'])}`)+
  sec('7. Contact',pp('For privacy-related questions or to request data deletion, please contact us through our Discord server.'));
  $('terms-body').innerHTML=`<p class="sub">${UPD}</p>`+sec('1. Acceptance of Terms',pp('By accessing and using Midwest Weather Bot and its associated website, you accept and agree to be bound by these Terms of Service.'))+sec('2. Description of Service',pp('Midwest Weather provides weather information through a Discord bot, a public website, optional user accounts, alert subscriptions, webhooks, broadcast tools and (when available) an API.'))+
@@ -810,7 +938,7 @@ const KB=[
 [['weather','forecast','temperature','city','lookup','search','postal','zip'],'The Weather Center is where you look up conditions. Pick a country tab, choose region → state → city, or type a city or postal code in Quick Search. Then use the tabs for hourly, 7-day, air quality, history and more.',[['weather','Weather Center']]],
 [['radar','doppler','storm','rain map','map','precipitation'],'Live Doppler has an interactive map with real, timestamped radar frames, play/pause, a timeline, satellite, snow colors, and US warning polygons. Pick a region or search a place.',[['radar','Live Radar']]],
 [['germany','german','deutschland','berlin','munich'],'Germany is a new deployment. Use the Germany tab in the Weather Center and the Germany region on Live Radar. The homepage box shows its deployment status and the next launch countdown.',[['weather','Weather Center'],['home','Homepage']]],
-[['countdown','timer','launch','next country','coming'],'The countdown box on the homepage shows the next approved country launch. If none is scheduled it shows Germany’s deployment status instead.',[['home','Homepage']]],
+[['countdown','timer','launch','next country','coming','ireland','irish','dublin'],'The countdown box on the homepage shows the next country launch — Ireland is next, planned for about four months from now. If no launch is scheduled it shows Germany’s deployment status instead.',[['home','Homepage']]],
 [['alert','warning','notification','notify','subscribe','tornado','flood'],'Alerts work for both the website and Discord. Sign in, open Alerts, pick a location, categories, level and where to deliver (website, Discord DM, webhooks).',[['alerts','Alert Center'],['account','Account']]],
 [['bot','discord','invite','add the bot','slash','command'],'The Bot page has features, a quick-start guide, the roadmap of upcoming features and a command reference. The Commands page lists every command.',[['bot','Bot page'],['commands','Commands']]],
 [['status','uptime','down','outage','working','online','offline'],'The Status page runs live checks from your browser (weather data, radar, database) and shows bot, alert and command reports plus each country’s deployment status.',[['status','Status']]],
@@ -844,12 +972,12 @@ async function aiReply(q){
 }
 
 /* ====== BOOT ====== */
+function stabilize(){['st-dep','st-inc','server-list-container'].forEach(id=>{const e=$(id);if(!e)return;let last=null;const d=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');Object.defineProperty(e,'innerHTML',{get(){return d.get.call(this)},set(v){if(v===last)return;last=v;d.set.call(this,v)},configurable:true})})}
 function boot(){
- initSb();init3D();buildHome();buildCountries();legalHtml();
+ stabilize();initSb();init3D();buildHome();buildCountries();legalHtml();
  $('cmds').innerHTML=cmdsHtml();$('bot-body')&&botHtml();$('docs-body').innerHTML=docsHtml();$('al-regions').innerHTML=alRegionCards();
  $('al-cats').innerHTML=Object.entries(ACATS).map(([k,v])=>`<label><input type="checkbox" class="ac" value="${k}" checked> ${v[0]}</label>`).join('');
  wxPicker=picker('wx-pick',selectLoc,{wide:1});
- picker('home-pick',l=>{(async()=>{$('home-wx').innerHTML='<div class="spinner"></div>';try{const f=await fj(fUrl(l,true)),c=f.current,u=U(l.cc),[ic,tx]=wx(c.weather_code);$('home-wx').innerHTML=`<p style="font-size:1.4rem;margin-top:.8rem">${ic} <strong>${esc(l.name)}</strong>: ${Math.round(c.temperature_2m)}${u.ts}, ${tx}, wind ${dir(c.wind_direction_10m)} ${Math.round(c.wind_speed_10m)} ${u.ws} <button class="btn btn-secondary sm" id="hw-full">Full report</button></p>`;$('hw-full').onclick=()=>{showPage('weather');selectLoc(l)};emo()}catch(e){$('home-wx').innerHTML='<p class="muted small">Weather unavailable right now.</p>'}})()},{wide:1});
  picker('al-pick',l=>{pickedSub=l;$('al-msg').textContent=l.id?'Selected: '+l.name:'That result is from the geocoder, not the registry — pick a registry result to subscribe.'},{wide:1});
  drawRecents();drawFavs();bcInit();nextLaunch();runChecks().then(()=>{loadStats();botStats()});
  setInterval(()=>{if($('status').classList.contains('on'))runChecks()},30000);setInterval(runChecks,120000);
