@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020617"><meta name="apple-mobile-web-app-capable" content="yes"><meta property="og:title" content="Midwest Weather"><meta property="og:description" content="Free weather, live radar and alerts for the USA, Canada, Australia, the UK and Germany."><meta property="og:type" content="website">
 <meta name="description" content="Midwest Weather - Free weather intelligence for USA, Canada, Australia, UK and Germany. Real-time forecasts, alerts, and live radar.">
 <link rel="icon" type="image/png" sizes="32x32" href="image/MidwestWeather2.0.png">
 <link rel="icon" type="image/png" sizes="16x16" href="image/MidwestWeather2.0.png">
@@ -103,6 +104,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif,'A
 @media(max-width:900px){nav{padding:.5rem 0}nav .in{flex-wrap:wrap;gap:.4rem}.brand{font-size:1.25rem}#navt{display:block}.links{display:none;width:100%;flex-direction:column;gap:0;max-height:70vh;overflow-y:auto}.links.open{display:flex}.links a{padding:.7rem .8rem;border-bottom:1px solid var(--border)}}
 @media(max-width:600px){.g4{grid-template-columns:repeat(2,1fr);gap:.8rem}.stat{padding:.8rem .4rem}.sv{font-size:1.4rem}.card{padding:1.1rem}.container{padding:1.2rem .9rem}.cd{gap:.4rem;flex-wrap:nowrap}.cb{min-width:0;flex:1;padding:.7rem .2rem}.cn{font-size:1.6rem}.countdown{padding:2rem 1rem;min-height:300px}.countdown h2{font-size:1.5rem}h1.t{font-size:2rem}.hero{padding:3.5rem 1rem 2rem}.cc p.muted{display:none}}
 .countdown{min-height:330px}
+
+html.lg{font-size:112%}html.xl{font-size:125%}
+html.hc{--ts:#fff;--tm:#e5e7eb;--border:rgba(255,255,255,.5)}html.hc .muted,html.hc .sl{color:#f1f5f9}html.hc .card{border-color:rgba(255,255,255,.7)}
+html.nomotion *,html.nomotion *::before,html.nomotion *::after{animation:none!important;transition:none!important}
+#setbtn{position:fixed;left:18px;bottom:18px;z-index:2000;width:52px;height:52px;border-radius:50%;border:1px solid rgba(124,58,237,.5);background:rgba(10,15,35,.95);color:#fff;font-size:1.4rem;cursor:pointer}
+#setp{position:fixed;top:0;right:0;height:100%;width:380px;max-width:100vw;z-index:3000;background:#0a0f23;border-left:1px solid rgba(124,58,237,.5);transform:translateX(105%);transition:transform .25s;overflow-y:auto;padding:1.2rem;visibility:hidden}
+#setp.on{transform:none;visibility:visible}
+#setp h3{margin:1.2rem 0 .5rem;color:var(--pl);font-size:1.05rem}
+#setp .seg{display:flex;gap:.3rem;flex-wrap:wrap}#setp .seg button{flex:1;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.35);color:var(--pl);border-radius:9px;padding:.4rem .5rem;cursor:pointer;font-weight:600}#setp .seg button.on{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff}
+#pal{position:fixed;inset:0;z-index:4000;background:rgba(2,6,23,.75);display:none;align-items:flex-start;justify-content:center;padding-top:12vh}#pal.on{display:flex}
+#palb{width:min(640px,94vw);background:#0a0f23;border:1px solid rgba(124,58,237,.6);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+#palq{border:0;border-bottom:1px solid var(--border);border-radius:0;padding:1rem 1.2rem;font-size:1.1rem}
+#pall{max-height:50vh;overflow:auto}#pall div{padding:.65rem 1.2rem;cursor:pointer;display:flex;gap:.7rem;align-items:center}#pall div.sel,#pall div:hover{background:rgba(124,58,237,.3)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1e1b4b;border:1px solid rgba(124,58,237,.6);color:#fff;padding:.6rem 1.2rem;border-radius:12px;z-index:5000;opacity:0;pointer-events:none;transition:opacity .2s}#toast.on{opacity:1}
+@media print{nav,footer,#weather-canvas,#flash,#aibtn,#aip,#setbtn,#setp,#pal,#toast,.tabs,.btn,#ctabs,#csecs,#wx-pick,#navt{display:none!important}body{background:#fff!important;color:#000!important}body::before,body::after{display:none}.card,.stat{background:#fff!important;color:#000!important;border:1px solid #999!important;box-shadow:none!important}.muted,.sl,.small{color:#333!important}.sv{-webkit-text-fill-color:#000!important;background:none!important}.page{display:none!important}.page.on{display:block!important}}
 @media(max-width:768px){.hero h1{font-size:2.6rem}#rmap{height:440px}.cn{font-size:2rem}.cb{min-width:76px}}
 </style>
 </head>
@@ -142,6 +158,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif,'A
  <h1 class="t">🌤️ Weather Center</h1><p class="sub">Forecasts, dashboards and weather tools for the USA, Canada, Australia, the UK and Germany</p>
  <div class="card"><h2 style="margin-bottom:1rem;font-size:1.3rem">Quick Search</h2><div id="wx-pick"></div>
   <div class="row" style="border:0"><div><strong class="muted small">Recent:</strong> <span id="recent"></span></div><div><strong class="muted small">Saved:</strong> <span id="favs"></span></div></div></div>
+ <div class="btn-group" style="justify-content:flex-start;margin-bottom:1rem"><button class="btn btn-secondary sm" onclick="useMyLocation()">📍 Use my location</button><button class="btn btn-secondary sm" onclick="compareFavs()">⚖️ Compare saved &amp; recent</button><button class="btn btn-secondary sm" onclick="palOpen()">⌨️ Quick actions (Ctrl+K)</button></div><div id="cmp"></div>
  <div style="text-align:center;margin-bottom:1.2rem"><div class="btn-group" id="ctabs"></div></div>
  <div id="csecs"></div>
  <div class="card" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:end">
@@ -256,6 +273,10 @@ Authorization: Bearer mw_your_key</pre><button class="btn btn-secondary" onclick
  <p class="small muted" style="text-align:center;border-top:1px solid var(--border);padding-top:1rem">© 2026 Midwest Weather | Kurrasch Gaming Merch Store LLC<br>Midwest Weather - Weather Intelligence<br>Weather: National Weather Service (US), DWD via Bright Sky (Germany), Open-Meteo • Radar: NOAA/NWS NEXRAD via Iowa Environmental Mesonet, Environment Canada, DWD, RainViewer • Warnings: NWS, DWD • Maps © <a style="display:inline" target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, © CARTO</p></div></footer>
 </div>
 
+<button id="setbtn" onclick="setToggle()" aria-label="Open site controls" aria-haspopup="dialog" title="Site controls (units, display, location, alerts)">⚙️</button>
+<aside id="setp" role="dialog" aria-modal="false" aria-label="Site controls"></aside>
+<div id="pal" role="dialog" aria-modal="true" aria-label="Command palette" onclick="if(event.target===this)palClose()"><div id="palb"><input id="palq" aria-label="Type a command or a place" placeholder="Jump to a page, run an action, or search a place…  (Esc to close)" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="pall"><div id="pall" role="listbox"></div></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
 <button id="aibtn" onclick="aiToggle()" aria-label="Open Nimbus help chat" title="Need help finding something?">💬</button>
 <div id="aip" role="dialog" aria-label="Nimbus help chat"><div id="aih"><span>🌩️ Nimbus — site help</span><button onclick="aiToggle()" style="background:none;border:0;color:#fff;cursor:pointer;font-size:1.2rem" aria-label="Close">✕</button></div><div id="ail"></div><div id="aic"></div><form id="aif" onsubmit="return aiSend(event)"><input id="aiq" placeholder="Ask where to find something…" autocomplete="off"><button class="btn btn-primary sm">Send</button></form></div>
 <script>
@@ -342,12 +363,12 @@ function init3D(){
  const d=new Date(),mo=d.getMonth()+1,dy=d.getDate(),holiday=(mo===12&&dy===31)||(mo===7&&(dy===4||dy===1));
  let mode=holiday?'fw':(mo===12||(mo===1&&dy<=5))?'snow':'rain',intensity=.35,wind=.15,sticky=holiday,flashT=0;
  const fl2=$('flash');
- SKY.set=(m,windKmh,dirDeg)=>{if(sticky)return;mode=m;wind=Math.sin(((dirDeg||270)+180)*Math.PI/180)*Math.min((windKmh||0)/35,1)*.6||0;intensity={rain:.45,heavy:1,storm:1,snow:.7}[m]||0;
+ SKY.set=(m,windKmh,dirDeg,force)=>{if(sticky&&!force)return;mode=m;wind=Math.sin(((dirDeg||270)+180)*Math.PI/180)*Math.min((windKmh||0)/35,1)*.6||0;intensity={rain:.45,heavy:1,storm:1,snow:.7}[m]||0;
   const dark=m==='storm'||m==='heavy'?0x56627f:m==='fog'?0xb8c2d8:0x9fb0d8;clouds.forEach(c=>{c.material.color.setHex(dark);c.material.opacity=m==='cloudy'||m==='fog'?.2:m==='storm'||m==='heavy'?.24:m==='clear'?.06:.15})};
  SKY.set(mode,0,270);
  const flash=()=>{if(!fl2)return;fl2.style.opacity=.55;setTimeout(()=>fl2.style.opacity=0,70);setTimeout(()=>{fl2.style.opacity=.4},170);setTimeout(()=>fl2.style.opacity=0,260)};
  let mx=0,my=0,t=0,last=performance.now(),alive=true;addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2});
- (function an(now){if(!alive)return;requestAnimationFrame(an);if(document.hidden)return;
+ (function an(now){if(!alive)return;requestAnimationFrame(an);if(document.hidden||SKY.paused)return;
   try{const dt=Math.min((now-last)/16.7,3)||1;last=now;t+=.01*dt;
    rain.visible=mode==='rain'||mode==='heavy'||mode==='storm';snow.visible=mode==='snow';stars.visible=mode==='clear';fw.visible=mode==='fw';
    if(rain.visible){rg.setDrawRange(0,Math.floor(RN*intensity)*2);const sl=wind*1.2;for(let i=0;i<RN;i++){const o=i*6,v=rs[i]*(mode==='heavy'||mode==='storm'?1.5:1)*dt;rp[o+1]-=v;rp[o]+=sl*v*.6;if(rp[o+1]<-40){rp[o+1]=50;rp[o]=rnd(-70,70)}rp[o+3]=rp[o]-sl*rl[i];rp[o+4]=rp[o+1]+rl[i];rp[o+5]=rp[o+2]}rg.attributes.position.needsUpdate=true;
@@ -361,7 +382,7 @@ function init3D(){
  addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)});
  }catch(e){}
 }
-function skyFromWx(l,c){const k=c.weather_code,kmh=U(l.cc).imp?c.wind_speed_10m*1.609:c.wind_speed_10m;
+function skyFromWx(l,c){if(window.PREFS&&PREFS.sky!=='auto')return;const k=c.weather_code,kmh=U(l.cc).imp?c.wind_speed_10m*1.609:c.wind_speed_10m;
  const m=k<=1?'clear':k<=3?'cloudy':k<=48?'fog':k===65||k===82?'heavy':k<=67||(k>=80&&k<=81)||k<=57?'rain':k<=77||(k>=85&&k<=86)?'snow':'storm';
  SKY.set(m,kmh,c.wind_direction_10m)}
 
@@ -444,8 +465,8 @@ async function loadWx(){
  const l=S.loc;if(!l)return;const out=$('wx-out');out.innerHTML='<div class="spinner"></div>';
  try{
   const[f,aq,al]=await Promise.all([fj(fUrl(l)),fj(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${l.lat}&longitude=${l.lon}&current=us_aqi,european_aqi,pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide,carbon_monoxide&timezone=auto`).catch(()=>null),getAlerts(l)]);
-  await natOverlay(l,f);S.wx={f,aq,al,at:new Date()};skyFromWx(l,f.current);renderWx();
- }catch(e){out.innerHTML=`<div class="card" style="text-align:center"><p style="color:#ef4444;font-size:1.1rem">Weather provider unavailable (${esc(e.message)})</p><p class="muted">No data is shown rather than guessing.</p><button class="btn btn-primary" onclick="loadWx()">Retry</button></div>`}
+  await natOverlay(l,f);S.wx={f,aq,al,at:new Date()};writeCache(l,S.wx);skyFromWx(l,f.current);renderWx();
+ }catch(e){const cw=readCache(l);if(cw){S.wx={...cw,at:new Date(cw.at),stale:true};renderWx();return}out.innerHTML=`<div class="card" style="text-align:center"><p style="color:#ef4444;font-size:1.1rem">Weather provider unavailable (${esc(e.message)})</p><p class="muted">No data is shown rather than guessing.</p><button class="btn btn-primary" onclick="loadWx()">Retry</button></div>`}
 }
 const TABS=[['overview','Overview'],['hourly','Hourly'],['daily','7-Day'],['air','Air Quality'],['history','History'],['sun','Sunrise & Sunset'],['clouds','Clouds'],['feels','Feels Like'],['wind','Wind'],['humidity','Humidity'],['rain','Rain Check'],['storm','Storm Path'],['report','Report']];
 const stat=(i,v,lb)=>`<div class="stat"><div style="font-size:1.4rem">${i}</div><div class="sv" style="font-size:1.3rem">${v}</div><div class="sl">${lb}</div></div>`;
@@ -500,9 +521,9 @@ const TB={
 function renderWx(){
  const w=S.wx,l=S.loc,out=$('wx-out');if(!w||!l)return;$('tpl').value=tpl();$('unitsel').value=UM;
  const u=U(l.cc),fav=(window.FV||[]).some(x=>x.lat===l.lat&&x.lon===l.lon);
- let h=`<div class="card"><div class="row" style="border:0;padding:0"><h2>${esc(l.name)}${l.area?', '+esc(l.area):''} <span class="muted small">(${esc(l.cc)})</span></h2><span><button class="btn btn-secondary sm" onclick="toggleFav()">${fav?'⭐ Saved':'☆ Save'}</button> <button class="btn btn-secondary sm" onclick="loadWx()">🔄 Refresh</button> <button class="btn btn-secondary sm" onclick="radarTo(${l.lat},${l.lon},'${l.cc}')">📡 Radar</button></span></div>
+ let h=`<div class="card"><div class="row" style="border:0;padding:0"><h2>${esc(l.name)}${l.area?', '+esc(l.area):''} <span class="muted small">(${esc(l.cc)})</span></h2><span><button class="btn btn-secondary sm" onclick="toggleFav()">${fav?'⭐ Saved':'☆ Save'}</button> <button class="btn btn-secondary sm" onclick="loadWx()">🔄 Refresh</button> <button class="btn btn-secondary sm" onclick="radarTo(${l.lat},${l.lon},'${l.cc}')">📡 Radar</button> <button class="btn btn-secondary sm" onclick="shareWx()">🔗 Share</button> <button class="btn btn-secondary sm" onclick="exportCsv()">⬇ CSV</button> <button class="btn btn-secondary sm" onclick="print()">🖨 Print</button></span></div>
  <p class="small muted">${w.f.nat?`Weather source: <strong>${esc(w.f.nat.src)}</strong>${w.f.nat.obs?' • observed '+esc(new Date(w.f.nat.obs).toLocaleString()):''} • forecast timeline from the same service • air quality, sun times, cloud layers and history: Open-Meteo`:`Weather source: <strong>Open-Meteo model data</strong> — the national weather service feed for ${esc(C[l.cc].n)} is not connected to the website yet`} • fetched ${w.at.toLocaleTimeString()}</p></div>${alertsHtml(w.al,l)}
- <div class="tabs">${TABS.map(([k,n])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';renderWx()">${n}</button>`).join('')}</div><div id="tabc"></div>`;
+ ${w.stale?`<div class="notice small">⚠️ You are offline or the weather service did not respond. Showing the last saved data from ${esc(w.at.toLocaleString())} — it may be out of date.</div>`:''}<div class="tabs">${TABS.map(([k,n])=>`<button class="${S.tab===k?'on':''}" onclick="S.tab='${k}';renderWx()">${n}</button>`).join('')}</div><div id="tabc"></div>`;
  out.innerHTML=h;const t=$('tabc');
  if(TB[S.tab])t.innerHTML=TB[S.tab](w,l,u);else if(S.tab==='history')histTab(t,l,u);else if(S.tab==='storm')stormTab(t,l);else if(S.tab==='report')reportTab(t,l);
  emo();
@@ -973,6 +994,8 @@ const KB=[
 [['units','fahrenheit','celsius','metric','imperial','mph','kmh'],'Change units in the Weather Center (Automatic, Metric or Imperial). Automatic uses °F/mph for the US and °C/km/h elsewhere.',[['weather','Weather Center']]],
 [['favorite','save','saved','recent'],'Tap ☆ Save on any location in the Weather Center. Signed-in users keep favorites in their account; otherwise they stay on this device.',[['weather','Weather Center']]],
 [['report','hail','damage','spotter'],'Submit a local weather report from the Report tab in the Weather Center (sign in required). Reports are not official warnings.',[['weather','Weather Center']]],
+[['settings','controls','preferences','text size','contrast','accessibility','dark','motion','shortcut','keyboard','palette','ctrl'],'Open the ⚙️ site controls (bottom-left, on every page) for units, text size, high contrast, animations, the sky background, your default location and browser alerts. Press Ctrl+K (or /) anywhere for quick actions and place search.',[['home','Homepage']]],
+[['share','link','export','csv','download','print','compare','offline','location','gps'],'In the Weather Center you can 🔗 share a link to a place, ⬇ download the forecast as CSV, 🖨 print a report, ⚖️ compare your saved and recent places, and 📍 use your current location. If you lose connection, the last saved report is shown with a clear warning.',[['weather','Weather Center']]],
 [['free','cost','price','pay'],'Midwest Weather is 100% free — no subscriptions or paywalls.',[['home','Homepage']]],
 [['mission','who','about','kurrasch'],'Our mission and who’s behind Midwest Weather are on the homepage, under the status and countdown boxes.',[['home','Homepage']]]];
 const aiAdd=(t,c,btns)=>{const l=$('ail'),d=document.createElement('div');d.className='m '+c;d.innerHTML=t;if(btns)btns.forEach(([p,n])=>{const b=document.createElement('button');b.className='btn btn-secondary sm';b.style.cssText='margin:.3rem .3rem 0 0';b.textContent='Go to '+n;b.onclick=()=>{showPage(p);aiToggle(false)};d.appendChild(document.createElement('br'));d.appendChild(b)});l.appendChild(d);l.scrollTop=l.scrollHeight};
@@ -990,6 +1013,100 @@ async function aiReply(q){
  if(best)aiAdd(best[1],'b',best[2]);else aiAdd('I’m not sure about that one. Here’s where most things live:','b',[['weather','Weather Center'],['radar','Live Radar'],['alerts','Alerts'],['bot','Bot'],['status','Status'],['developers','Developers'],['docs','Docs']]);
 }
 
+/* ====== SITE CONTROLS: usable from any page (⚙️ drawer, Ctrl+K palette, share, compare, export, accessibility, alerts) ====== */
+const PREF_DEF={sky:'auto',text:'md',contrast:false,motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,defLoc:null,startDef:false,notify:false};
+let PREFS={...PREF_DEF,...JSON.parse(localStorage.mw_prefs||'{}')};window.PREFS=PREFS;
+const savePrefs=()=>localStorage.mw_prefs=JSON.stringify(PREFS);
+let toastT;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),3200)}
+function applyPrefs(){const h=document.documentElement;h.classList.toggle('lg',PREFS.text==='lg');h.classList.toggle('xl',PREFS.text==='xl');h.classList.toggle('hc',!!PREFS.contrast);h.classList.toggle('nomotion',!PREFS.motion);
+ const off=PREFS.sky==='off'||!PREFS.motion;SKY.paused=off;const c=$('weather-canvas');if(c)c.style.display=off?'none':'block';
+ if(!off&&['rain','heavy','storm','snow','clear','cloudy','fog'].includes(PREFS.sky)&&SKY.set)SKY.set(PREFS.sky,14,270,true)}
+function setPref(k,v,focus){PREFS[k]=v;savePrefs();applyPrefs();if(k==='notify')notifySetup();drawSettings(focus||k+v)}
+/* --- drawer --- */
+let setPrev=null;
+function setToggle(v){const p=$('setp'),on=v===undefined?!p.classList.contains('on'):v;if(on){setPrev=document.activeElement;drawSettings();p.classList.add('on');setTimeout(()=>{const f=p.querySelector('button,select,input');f&&f.focus()},60)}else{p.classList.remove('on');setPrev&&setPrev.focus&&setPrev.focus()}}
+const seg=(k,opts)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button data-f="${k}${v}" class="${PREFS[k]===v?'on':''}" aria-pressed="${PREFS[k]===v}" onclick="setPref('${k}','${v}')">${l}</button>`).join('')}</div>`;
+const chk=(k,l,d)=>`<label style="font-weight:400"><input type="checkbox" data-f="${k}" ${PREFS[k]?'checked':''} onchange="setPref('${k}',this.checked,'${k}')"> ${l}</label>${d?`<p class="small muted" style="margin:0 0 .5rem 1.6rem">${d}</p>`:''}`;
+function drawSettings(focus){
+ const p=$('setp'),dfl=PREFS.defLoc;
+ p.innerHTML=`<div class="row" style="border:0;padding:0"><h2 style="font-size:1.4rem">⚙️ Site controls</h2><button class="btn btn-secondary sm" onclick="setToggle(false)" aria-label="Close site controls">✕</button></div><p class="small muted">Available on every page. Saved on this device.</p>
+ <h3>Units</h3><div class="seg" role="group">${[['auto','Automatic'],['metric','Metric'],['imperial','Imperial']].map(([v,l])=>`<button data-f="u${v}" class="${UM===v?'on':''}" aria-pressed="${UM===v}" onclick="setUnits('${v}');drawSettings('u${v}')">${l}</button>`).join('')}</div>
+ <h3>Text size</h3>${seg('text',[['md','Normal'],['lg','Large'],['xl','Extra large']])}
+ <h3>Display</h3>${chk('contrast','High contrast')}${chk('motion','Animations and motion','Turn off for a calmer, faster page')}
+ <h3>Sky background</h3><label for="skysel" class="small muted">Follows the weather you look up, or pick one.</label><select id="skysel" onchange="setPref('sky',this.value,'skysel')">${[['auto','Automatic (follows the weather)'],['off','Off'],['rain','Rain'],['heavy','Heavy rain'],['storm','Thunderstorm'],['snow','Snow'],['cloudy','Cloudy'],['clear','Clear night'],['fog','Fog']].map(([v,l])=>`<option value="${v}" ${PREFS.sky===v?'selected':''}>${l}</option>`).join('')}</select>
+ <h3>My default location</h3><p class="small muted">${dfl?`Default: <strong>${esc(dfl.name)}</strong> (${esc(dfl.cc)})`:'No default set.'}</p><div class="btn-group" style="justify-content:flex-start;gap:.4rem"><button class="btn btn-secondary sm" onclick="useMyLocation(true)">📍 Detect &amp; set</button><button class="btn btn-secondary sm" ${S.loc?'':'disabled'} onclick="PREFS.defLoc=S.loc;savePrefs();drawSettings();toast('Default location saved')">Use current</button>${dfl?`<button class="btn btn-secondary sm" onclick="PREFS.defLoc=null;PREFS.startDef=false;savePrefs();drawSettings()">Clear</button>`:''}</div>${chk('startDef','Load my default location when the site opens')}
+ <h3>Browser alerts</h3>${chk('notify','Notify me about warnings for my default and saved locations','Works while this site is open in a tab (US and Germany feeds). For alerts when the site is closed, use Discord or email alerts in your account.')}
+ <h3>Shortcuts</h3><p class="small muted" style="line-height:1.9"><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd> or <kbd>/</kbd> — quick actions &amp; search<br><kbd>Esc</kbd> — close panels</p>
+ <h3>Your data</h3><div class="btn-group" style="justify-content:flex-start;gap:.4rem"><button class="btn btn-secondary sm" onclick="exportPrefs()">Export settings</button><label class="btn btn-secondary sm" style="margin:0;cursor:pointer">Import<input type="file" accept="application/json" style="display:none" onchange="importPrefs(this)"></label><button class="btn btn-secondary sm" onclick="resetPrefs()">Reset all</button></div>`;
+ if(focus){const e=p.querySelector(`[data-f="${focus}"]`)||$(focus);e&&e.focus()}
+}
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function exportPrefs(){dl('midwest-weather-settings.json',JSON.stringify({prefs:PREFS,units:UM,recent:rec(),favorites:JSON.parse(localStorage.mw_fav||'[]'),broadcast:JSON.parse(localStorage.mw_bc||'[]')},null,2),'application/json')}
+function importPrefs(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(j.prefs)PREFS={...PREF_DEF,...j.prefs};window.PREFS=PREFS;savePrefs();if(j.units){UM=j.units;localStorage.mw_units=UM}if(Array.isArray(j.recent))localStorage.mw_recent=JSON.stringify(j.recent.slice(0,6));if(Array.isArray(j.favorites))localStorage.mw_fav=JSON.stringify(j.favorites.slice(0,50));if(Array.isArray(j.broadcast))localStorage.mw_bc=JSON.stringify(j.broadcast.slice(0,12));applyPrefs();drawSettings();drawRecents();drawFavs();toast('Settings imported')}catch(e){toast('That file is not a valid settings export')}};r.readAsText(f)}
+function resetPrefs(){if(!confirm('Reset all settings, recent and saved locations on this device?'))return;['mw_prefs','mw_units','mw_recent','mw_fav','mw_bc','mw_tpl','mw_seen'].forEach(k=>localStorage.removeItem(k));location.href=location.pathname}
+/* --- location helpers --- */
+const bboxCC=(a,o)=>a>=47.2&&a<=55.1&&o>=5.8&&o<=15.1?'DE':a>=-44&&a<=-10&&o>=112&&o<=154?'AU':a>=49.8&&a<=60.9&&o>=-8.7&&o<=1.8?'GB':a>=41&&a<=84&&o>=-141&&o<=-52?'CA':null;
+function useMyLocation(asDef){
+ if(!navigator.geolocation)return toast('Location is not available in this browser');toast('Finding your location…');
+ navigator.geolocation.getCurrentPosition(async p=>{const lat=p.coords.latitude,lon=p.coords.longitude;let l=null;
+  try{const j=await fj(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`,8000),r=j.properties.relativeLocation.properties;l={name:r.city,area:r.state,cc:'US',lat,lon,src:'geolocation'}}catch(e){}
+  if(!l){const cc=bboxCC(lat,lon);if(!cc)return toast('Your location is outside the countries Midwest Weather covers right now');l={name:'My location',cc,lat,lon,src:'geolocation'}}
+  if(asDef===true){PREFS.defLoc=l;savePrefs();if($('setp').classList.contains('on'))drawSettings()}
+  showPage('weather');selectLoc(l)},()=>toast('Location permission was denied'),{timeout:10000});
+}
+/* --- share, export, compare --- */
+function shareWx(){const l=S.loc;if(!l)return toast('Load a location first');const u=`${location.origin}${location.pathname}?loc=${(+l.lat).toFixed(4)},${(+l.lon).toFixed(4)}&n=${encodeURIComponent(l.name)}&c=${l.cc}#weather`;
+ if(navigator.share)navigator.share({title:'Weather for '+l.name,url:u}).catch(()=>{});else navigator.clipboard.writeText(u).then(()=>toast('Link copied'),()=>toast(u))}
+function exportCsv(){const w=S.wx,l=S.loc;if(!w||!l)return toast('Load a location first');const f=w.f,h=f.hourly,d=f.daily,u=U(l.cc);
+ const rows=[['Midwest Weather export',l.name,l.cc,'units',`${u.ts} / ${u.ws} / ${u.ps}`,'source',f.nat?f.nat.src:'Open-Meteo model data','exported',new Date().toISOString()],[],['HOURLY'],['time','temp','feels_like','humidity_pct','precip_prob_pct','wind','gust']];
+ h.time.forEach((t,i)=>rows.push([t,h.temperature_2m[i],h.apparent_temperature[i],h.relative_humidity_2m[i],h.precipitation_probability[i],h.wind_speed_10m[i],h.wind_gusts_10m[i]]));
+ rows.push([],['DAILY'],['date','high','low','precip_sum','precip_prob_max','sunrise','sunset']);d.time.forEach((t,i)=>rows.push([t,d.temperature_2m_max[i],d.temperature_2m_min[i],d.precipitation_sum[i],d.precipitation_probability_max[i],d.sunrise[i],d.sunset[i]]));
+ const cell=x=>{let t=String(x??'');if(/^[=+\-@]/.test(t)&&isNaN(+t))t="'"+t;return '"'+t.replace(/"/g,'""')+'"'};
+ dl(`weather-${l.name.replace(/[^\w]+/g,'-')}.csv`,rows.map(r=>r.map(cell).join(',')).join('\n'),'text/csv');toast('CSV downloaded')}
+async function compareFavs(){
+ const f=await getFavs(),all=[...f,...rec().filter(x=>!f.some(y=>y.lat===x.lat&&y.lon===x.lon))].slice(0,8),box=$('cmp');window.CMP=all;
+ if(!all.length){box.innerHTML='<div class="notice">Search or save a few locations first, then compare them here.</div>';return}
+ box.innerHTML='<div class="spinner"></div>';
+ const rows=await Promise.all(all.map(async(l,i)=>{try{const j=await fj(fUrl(l,true)),c=j.current,u=U(l.cc),[ic,tx]=wx(c.weather_code);return `<tr><td><button class="btn btn-secondary sm" onclick="document.getElementById('cmp').innerHTML='';selectLoc(CMP[${i}])">${esc(l.name)}</button> <span class="muted small">${esc(l.cc)}</span></td><td>${ic} ${esc(tx)}</td><td><strong>${Math.round(c.temperature_2m)}${u.ts}</strong></td><td>${Math.round(c.apparent_temperature)}${u.ts}</td><td>${dir(c.wind_direction_10m)} ${Math.round(c.wind_speed_10m)} ${u.ws}</td><td>${c.relative_humidity_2m}%</td></tr>`}catch(e){return `<tr><td>${esc(l.name)}</td><td colspan="5" class="muted">unavailable</td></tr>`}}));
+ box.innerHTML=`<div class="card"><div class="row" style="border:0;padding:0"><h2 style="font-size:1.3rem">⚖️ Compare locations</h2><button class="btn btn-secondary sm" onclick="document.getElementById('cmp').innerHTML=''">Close</button></div><div class="tw"><table><caption class="small muted" style="text-align:left;padding:.4rem 0">Current conditions, fetched ${new Date().toLocaleTimeString()} (model data; open a location for its national-service report)</caption><tr><th scope="col">Location</th><th scope="col">Conditions</th><th scope="col">Temp</th><th scope="col">Feels like</th><th scope="col">Wind</th><th scope="col">Humidity</th></tr>${rows.join('')}</table></div></div>`;emo();
+}
+/* --- offline cache: last good report per place --- */
+const ckey=l=>`mw_c_${(+l.lat).toFixed(2)}_${(+l.lon).toFixed(2)}`;
+function writeCache(l,w){try{const idx=JSON.parse(localStorage.mw_cidx||'[]').filter(k=>k!==ckey(l));idx.unshift(ckey(l));while(idx.length>5)localStorage.removeItem(idx.pop());localStorage.mw_cidx=JSON.stringify(idx);localStorage.setItem(ckey(l),JSON.stringify({f:w.f,aq:w.aq,al:w.al,at:w.at}))}catch(e){}}
+function readCache(l){try{const r=localStorage.getItem(ckey(l));return r?JSON.parse(r):null}catch(e){return null}}
+/* --- browser notifications (while the site is open) --- */
+let notifyT;
+async function notifySetup(){clearInterval(notifyT);if(!PREFS.notify)return;
+ if(!('Notification' in window)){PREFS.notify=false;savePrefs();toast('This browser does not support notifications');return}
+ if(Notification.permission!=='granted'){const r=await Notification.requestPermission();if(r!=='granted'){PREFS.notify=false;savePrefs();toast('Notification permission was not granted');if($('setp').classList.contains('on'))drawSettings();return}}
+ const run=async()=>{const seen=new Set(JSON.parse(localStorage.mw_seen||'[]')),locs=[PREFS.defLoc,...(await getFavs())].filter(Boolean).slice(0,5);
+  for(const l of locs){const a=await getAlerts(l);if(!Array.isArray(a))continue;for(const x of a){const k=`${l.name}|${x.event}|${x.expires}`;if(seen.has(k))continue;seen.add(k);try{new Notification('⚠️ '+x.event,{body:`${l.name}: ${x.headline||x.severity}`,tag:k})}catch(e){}}}
+  localStorage.mw_seen=JSON.stringify([...seen].slice(-100))};
+ run();notifyT=setInterval(run,300000);toast('Browser alerts are on while this site is open')}
+/* --- command palette --- */
+let palSel=0,palList=[],palT;
+function palActions(q){const ql=q.toLowerCase().trim(),imp=()=>U(S.loc?S.loc.cc:'US').imp;
+ const all=[...PAGES.map(([i,l])=>({t:'Go to '+l,i:'🧭',f:()=>showPage(i)})),
+ {t:'Toggle units (metric / imperial)',i:'🌡️',f:()=>setUnits(imp()?'metric':'imperial')},{t:'Open site controls',i:'⚙️',f:()=>setToggle(true)},{t:'Ask Nimbus (help chat)',i:'💬',f:()=>aiToggle(true)},
+ {t:'Use my location',i:'📍',f:()=>useMyLocation()},{t:'Compare my saved & recent locations',i:'⚖️',f:()=>{showPage('weather');compareFavs()}},
+ {t:'Share the current weather link',i:'🔗',f:shareWx},{t:'Download the current forecast (CSV)',i:'⬇️',f:exportCsv},{t:'Print this page',i:'🖨️',f:()=>print()},
+ {t:'Open radar at my default location',i:'📡',f:()=>PREFS.defLoc?radarTo(PREFS.defLoc.lat,PREFS.defLoc.lon,PREFS.defLoc.cc):showPage('radar')},
+ {t:'Turn animations on / off',i:'🎞️',f:()=>setPref('motion',!PREFS.motion)},{t:'High contrast on / off',i:'◐',f:()=>setPref('contrast',!PREFS.contrast)},{t:'Larger text',i:'🔠',f:()=>setPref('text',PREFS.text==='md'?'lg':PREFS.text==='lg'?'xl':'md')}];
+ return all.filter(a=>!ql||a.t.toLowerCase().includes(ql)).slice(0,12)}
+let palPlaces=[];
+function palRender(places){if(places!==undefined)palPlaces=places;const q=$('palq').value;palList=[...palActions(q),...palPlaces.map(l=>({t:`Weather in ${l.name}${l.area?', '+l.area:''} (${l.cc})`,i:C[l.cc]?C[l.cc].f:'📍',f:()=>{showPage('weather');selectLoc(l)}}))];palSel=Math.min(palSel,Math.max(palList.length-1,0));
+ $('pall').innerHTML=palList.map((a,i)=>`<div role="option" id="po${i}" aria-selected="${i===palSel}" class="${i===palSel?'sel':''}" onclick="palRun(${i})"><span aria-hidden="true">${a.i}</span><span>${esc(a.t)}</span></div>`).join('')||'<div class="muted">No matches</div>';emo();$('palq').setAttribute('aria-activedescendant','po'+palSel)}
+function palOpen(){$('pal').classList.add('on');$('palq').value='';palSel=0;palRender([]);setTimeout(()=>$('palq').focus(),30)}
+function palClose(){$('pal').classList.remove('on')}
+function palRun(i){const a=palList[i];palClose();a&&a.f&&a.f()}
+$('palq').addEventListener('input',()=>{palSel=0;palRender([]);clearTimeout(palT);const v=$('palq').value.trim();if(v.length<3)return;palT=setTimeout(async()=>{try{const r=await Promise.all(Object.keys(C).map(cc=>searchLoc(v,cc).then(x=>x.slice(0,2)).catch(()=>[])));if($('palq').value.trim()===v)palRender(r.flat())}catch(e){}},300)});
+$('palq').addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();palSel=(palSel+1)%Math.max(palList.length,1);palRender()}else if(e.key==='ArrowUp'){e.preventDefault();palSel=(palSel-1+palList.length)%Math.max(palList.length,1);palRender()}else if(e.key==='Enter'){e.preventDefault();palRun(palSel)}});
+document.addEventListener('keydown',e=>{const t=e.target,typing=t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable);
+ if((e.key==='k'||e.key==='K')&&(e.ctrlKey||e.metaKey)){e.preventDefault();$('pal').classList.contains('on')?palClose():palOpen()}
+ else if(e.key==='/'&&!typing&&!e.ctrlKey&&!e.metaKey){e.preventDefault();palOpen()}
+ else if(e.key==='Escape'){if($('pal').classList.contains('on'))palClose();else if($('setp').classList.contains('on'))setToggle(false);else if($('aip').classList.contains('on'))aiToggle(false)}});
+function deepLinks(){const loc=P.get('loc');if(loc){const[a,b]=loc.split(',').map(Number);if(isFinite(a)&&isFinite(b)&&Math.abs(a)<=90&&Math.abs(b)<=180){const c=C[P.get('c')]?P.get('c'):(bboxCC(a,b)||'US');showPage('weather');selectLoc({name:(P.get('n')||'Shared location').slice(0,60),cc:c,lat:a,lon:b,src:'link'});return true}}return false}
+
 /* ====== BOOT ====== */
 function stabilize(){['st-dep','st-inc','server-list-container'].forEach(id=>{const e=$(id);if(!e)return;let last=null;const d=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');Object.defineProperty(e,'innerHTML',{get(){return d.get.call(this)},set(v){if(v===last)return;last=v;d.set.call(this,v)},configurable:true})})}
 function boot(){
@@ -998,10 +1115,12 @@ function boot(){
  $('al-cats').innerHTML=Object.entries(ACATS).map(([k,v])=>`<label><input type="checkbox" class="ac" value="${k}" checked> ${v[0]}</label>`).join('');
  wxPicker=picker('wx-pick',selectLoc,{wide:1});
  picker('al-pick',l=>{pickedSub=l;$('al-msg').textContent=l.id?'Selected: '+l.name:'That result is from the geocoder, not the registry — pick a registry result to subscribe.'},{wide:1});
- drawRecents();drawFavs();bcInit();nextLaunch();runChecks().then(()=>{loadStats();botStats()});
+ applyPrefs();drawRecents();drawFavs();bcInit();nextLaunch();runChecks().then(()=>{loadStats();botStats()});
  setInterval(()=>{if($('status').classList.contains('on'))runChecks()},30000);setInterval(runChecks,120000);
- const h=location.hash.slice(1);if(h&&$(h)&&$(h).classList.contains('page'))showPage(h);else emo();
- if(!matchMedia('(prefers-reduced-motion: reduce)').matches){const idle=window.requestIdleCallback?f=>requestIdleCallback(f,{timeout:2500}):f=>setTimeout(f,400);idle(()=>loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js').then(init3D).catch(()=>{}))} // sky loads after the page is usable
+ const h=location.hash.slice(1);if(deepLinks()){}else if(h&&$(h)&&$(h).classList.contains('page'))showPage(h);else emo();
+ if(!P.has('loc')&&PREFS.startDef&&PREFS.defLoc)selectLoc(PREFS.defLoc);
+ if(PREFS.notify)notifySetup();
+ if(!matchMedia('(prefers-reduced-motion: reduce)').matches){const idle=window.requestIdleCallback?f=>requestIdleCallback(f,{timeout:2500}):f=>setTimeout(f,400);idle(()=>loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js').then(()=>{init3D();applyPrefs()}).catch(()=>{}))} // sky loads after the page is usable
 }
 window.addEventListener('DOMContentLoaded',()=>{P.has('overlay')?runOverlay():boot()});
 </script>
