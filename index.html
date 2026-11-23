@@ -119,6 +119,12 @@ html.nomotion *,html.nomotion *::before,html.nomotion *::after{animation:none!im
 #pall{max-height:50vh;overflow:auto}#pall div{padding:.65rem 1.2rem;cursor:pointer;display:flex;gap:.7rem;align-items:center}#pall div.sel,#pall div:hover{background:rgba(124,58,237,.3)}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1e1b4b;border:1px solid rgba(124,58,237,.6);color:#fff;padding:.6rem 1.2rem;border-radius:12px;z-index:5000;opacity:0;pointer-events:none;transition:opacity .2s}#toast.on{opacity:1}
 @media print{nav,footer,#weather-canvas,#flash,#aibtn,#aip,#setbtn,#setp,#pal,#toast,.tabs,.btn,#ctabs,#csecs,#wx-pick,#navt{display:none!important}body{background:#fff!important;color:#000!important}body::before,body::after{display:none}.card,.stat{background:#fff!important;color:#000!important;border:1px solid #999!important;box-shadow:none!important}.muted,.sl,.small{color:#333!important}.sv{-webkit-text-fill-color:#000!important;background:none!important}.page{display:none!important}.page.on{display:block!important}}
+#authbtn{width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-left:.5rem;padding-right:.5rem}
+.brand{order:1}.links{order:2}#authbtn{order:3}#navt{order:4}
+#authm{position:fixed;inset:0;z-index:4500;background:rgba(2,6,23,.8);display:none;align-items:center;justify-content:center;padding:1rem}#authm.on{display:flex}
+#authb{width:min(460px,100%);background:#0a0f23;border:1px solid rgba(124,58,237,.6);border-radius:18px;padding:1.5rem;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.linkb{background:none;border:0;color:var(--pl);cursor:pointer;text-decoration:underline;font-size:inherit;padding:0;font-family:inherit}
+@media(max-width:900px){.brand{flex:1;min-width:0;white-space:nowrap;font-size:1.05rem}.links{order:5}#authbtn{width:96px}nav .in{padding:0 .9rem}}
 @media(max-width:768px){.hero h1{font-size:2.6rem}#rmap{height:440px}.cn{font-size:2rem}.cb{min-width:76px}}
 </style>
 </head>
@@ -126,7 +132,7 @@ html.nomotion *,html.nomotion *::before,html.nomotion *::after{animation:none!im
 <a href="#main" class="skip">Skip to main content</a>
 <div id="weather-canvas"></div><div id="flash" aria-hidden="true"></div>
 <div class="content">
-<nav role="navigation" aria-label="Main navigation"><div class="in"><div class="brand" onclick="showPage('home')">🌪️ Midwest Weather</div><button id="navt" aria-label="Open menu" aria-expanded="false" aria-controls="navl" onclick="navToggle()">☰</button><div class="links" id="navl"></div></div></nav>
+<nav role="navigation" aria-label="Main navigation"><div class="in"><div class="brand" onclick="showPage('home')">🌪️ Midwest Weather</div><button id="authbtn" class="btn btn-primary sm" onclick="authBtn()" title="Sign in or create an account">Sign in</button><button id="navt" aria-label="Open menu" aria-expanded="false" aria-controls="navl" onclick="navToggle()">☰</button><div class="links" id="navl"></div></div></nav>
 <main id="main">
 
 <!-- HOME -->
@@ -173,7 +179,7 @@ html.nomotion *,html.nomotion *::before,html.nomotion *::after{animation:none!im
  <div class="card" style="padding:1rem 1.2rem"><div class="grid g4" style="margin:0;align-items:end">
   <div><label for="rreg">Region</label><select id="rreg" onchange="radarRegion()"></select></div>
   <div><label for="rlayer">Data layer</label><select id="rlayer" onchange="loadRadar()"><option value="radar">Radar reflectivity (rain)</option><option value="snow">Snow colors (Canada: ECCC snow layer)</option><option value="sat">Satellite infrared (RainViewer)</option></select></div>
-  <div><label for="rbase">Base map</label><select id="rbase" onchange="radarBase()"><option value="dark">Dark (labels)</option><option value="street">Street</option></select></div>
+  <div><label for="rbase">Base map</label><select id="rbase" onchange="radarBase()"><option value="voyager">Voyager (CARTO, clear labels)</option><option value="dark">Dark</option><option value="street">Street (OpenStreetMap)</option></select></div>
   <div id="rpick"></div></div>
   <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:.9rem"><button class="btn btn-primary sm" onclick="loadRadar()">Load Radar</button><button class="btn btn-secondary sm" onclick="radarLocate()">📍 My location</button>
    <details style="flex:1;min-width:240px"><summary class="muted" style="cursor:pointer">More options</summary><div class="grid g4" style="margin:.8rem 0 0">
@@ -212,7 +218,7 @@ html.nomotion *,html.nomotion *::before,html.nomotion *::after{animation:none!im
  <div class="card"><h2 style="margin-bottom:1rem">📢 Server Alerts Setup (Discord)</h2><p class="muted" style="margin-bottom:1rem">Server owners can configure weather alerts to be posted to specific channels</p><div class="grid g3" id="al-regions"></div>
   <div class="card"><h2 style="margin-bottom:.6rem;font-size:1.3rem">Alert Types</h2><div class="grid g2"><ul class="muted" style="line-height:2;margin-left:1.5rem"><li>⚠️ Tornado Warnings</li><li>🌊 Flood Warnings</li><li>❄️ Winter Storm Warnings</li></ul><ul class="muted" style="line-height:2;margin-left:1.5rem"><li>🌡️ Heat Advisories</li><li>⛈️ Severe Thunderstorm Warnings</li><li>🌪️ Hurricane Updates</li></ul></div></div></div>
  <div class="card"><h2 style="margin-bottom:.8rem">🌐 Website &amp; Personal Alerts</h2><p class="muted">Use <code>/alerts-subscribe</code> in Discord, or subscribe here with your account. Subscriptions are shared by the website and the bot.</p>
-  <div id="al-guest" class="notice">Sign in to manage alert subscriptions. <button class="btn btn-primary sm" onclick="showPage('account')">Sign in</button></div>
+  <div id="al-guest" class="notice">Sign in to manage alert subscriptions. <button class="btn btn-primary sm" onclick="openAuth()">Sign in</button></div>
   <div id="al-app" style="display:none"><div id="al-pick"></div>
    <div class="grid g3"><div><label>Categories</label><div id="al-cats"></div></div><div><label for="al-sev">Alert level</label><select id="al-sev"><option value="all">All Alerts</option><option value="severe">Severe Only</option><option value="extreme">Extreme Only</option></select></div>
    <div><label>Deliver to</label><label><input type="checkbox" class="ach" value="website" checked> Website notifications</label><label><input type="checkbox" class="ach" value="discord_dm"> Discord DM (link your Discord ID in Account)</label><label><input type="checkbox" class="ach" value="webhook"> My webhooks</label><label><input type="checkbox" class="ach" value="email"> Email (once the site owner enables the email provider)</label></div></div>
@@ -266,7 +272,7 @@ Authorization: Bearer mw_your_key</pre><button class="btn btn-secondary" onclick
 
 <footer><div class="in"><div class="grid g4">
  <div><h3>Midwest Weather</h3><p class="muted small" style="line-height:1.8">Weather intelligence for the USA, Canada, Australia, the UK and Germany. 100% free, forever.</p>
-  <a href="https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noopener">🤖 Add the Discord bot</a></div>
+  <a href="https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=2684406784&integration_type=0&scope=bot%20applications.commands" target="_blank" rel="noopener">🤖 Add the Discord bot</a></div>
  <div><h3>Quick Links</h3><a onclick="showPage('home')">Home</a><a onclick="showPage('weather')">Weather Center</a><a onclick="showPage('radar')">Live Radar</a><a onclick="showPage('bot')">Discord Bot</a><a onclick="showPage('status')">System Status</a></div>
  <div><h3>Resources</h3><a onclick="showPage('docs')">Documentation</a><a onclick="showPage('commands')">Bot Commands</a><a onclick="showPage('alerts')">Weather Alerts</a><a onclick="showPage('broadcast')">Broadcast Center</a><a onclick="showPage('developers')">Developers</a><a onclick="showPage('news')">Announcements</a></div>
  <div><h3>Legal</h3><a onclick="showPage('terms')">Terms of Service</a><a onclick="showPage('privacy')">Privacy Policy</a><a onclick="showPage('copyright')">Copyright Notice</a></div></div>
@@ -274,7 +280,20 @@ Authorization: Bearer mw_your_key</pre><button class="btn btn-secondary" onclick
 </div>
 
 <button id="setbtn" onclick="setToggle()" aria-label="Open site controls" aria-haspopup="dialog" title="Site controls (units, display, location, alerts)">⚙️</button>
-<aside id="setp" role="dialog" aria-modal="false" aria-label="Site controls"></aside>
+<div id="setp" role="dialog" aria-modal="false" aria-label="Site controls"></div>
+<div id="authm" role="dialog" aria-modal="true" aria-labelledby="authh" onclick="if(event.target===this)closeAuth()"><div id="authb">
+ <div class="row" style="border:0;padding:0"><h2 id="authh">Sign in</h2><button class="btn btn-secondary sm" onclick="closeAuth()" aria-label="Close sign in">✕</button></div>
+ <p id="authwhy" class="muted small" style="margin:.4rem 0 1rem"></p>
+ <div id="authdisc"><button type="button" class="btn" style="width:100%;background:#5865F2" onclick="authDiscord()">Continue with Discord</button>
+  <p class="small muted" style="margin:.5rem 0 .6rem">Recommended: links your Discord account, DM alerts and the servers you manage.</p>
+  <div style="display:flex;gap:.5rem"><button type="button" class="btn btn-secondary" style="flex:1" disabled aria-label="Continue with Google — coming soon">Google · soon</button><button type="button" class="btn btn-secondary" style="flex:1" disabled aria-label="Continue with X — coming soon">X · soon</button></div>
+  <p class="small muted" style="text-align:center;margin:.8rem 0">or use your email</p></div>
+ <form id="authf" onsubmit="return authSubmit(event)" novalidate>
+  <div id="authe"><label for="auth-em">Email</label><input id="auth-em" type="email" autocomplete="username"></div>
+  <div id="authp"><label for="auth-pw" style="margin-top:.8rem">Password (at least 8 characters)</label><input id="auth-pw" type="password" autocomplete="current-password"></div>
+  <button id="auth-go" class="btn btn-primary" style="width:100%;margin-top:1rem">Sign in</button></form>
+ <p id="authm-msg" role="status" class="small" style="min-height:1.3rem;margin-top:.6rem"></p>
+ <div class="small" id="authlinks" style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap"></div></div></div>
 <div id="pal" role="dialog" aria-modal="true" aria-label="Command palette" onclick="if(event.target===this)palClose()"><div id="palb"><input id="palq" aria-label="Type a command or a place" placeholder="Jump to a page, run an action, or search a place…  (Esc to close)" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="pall"><div id="pall" role="listbox"></div></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <button id="aibtn" onclick="aiToggle()" aria-label="Open Nimbus help chat" title="Need help finding something?">💬</button>
@@ -284,6 +303,7 @@ Authorization: Bearer mw_your_key</pre><button class="btn btn-secondary" onclick
 /* ====== CONFIG ====== (publishable key is public by design and protected by RLS. NEVER put the DB password or service_role key in this file.) */
 const CFG={SB_URL:'https://mobtedouyuuugugsgygn.supabase.co',SB_KEY:'sb_publishable_t1_uyLxKc1xy6f-UVTA4QA_U7Q9RIsX'};
 const FN=CFG.SB_URL+'/functions/v1';
+const CARTO_KEY='cb1_5e52_1_fd55236c9fb5744c988e838a'; // CARTO basemap key (restrict it to your domain in the CARTO dashboard)
 const NEXT_LAUNCH={cc:'IE',date:'2027-03-16T00:00:00',note:'Ireland coverage is on the way — weather, forecasts and alerts for Irish cities and towns.'}; // owner's plan: about 4 months from Nov 2026. An approved row in the database (Account → Admin) overrides this.
 const COMING={IE:{n:'Ireland',f:'🇮🇪'}};
 const cname=cc=>C[cc]?C[cc].f+' '+C[cc].n:COMING[cc]?COMING[cc].f+' '+COMING[cc].n:cc;
@@ -390,10 +410,12 @@ function skyFromWx(l,c){if(window.PREFS&&PREFS.sky!=='auto')return;const k=c.wea
 function initSb(){
  if(!window.supabase||CFG.SB_KEY.startsWith('PASTE'))return;
  sb=window.supabase.createClient(CFG.SB_URL,CFG.SB_KEY);
- sb.auth.onAuthStateChange((_e,s)=>{SESSION=s;user=s?.user??null;onAuth()});
+ let lastUid;
+ sb.auth.onAuthStateChange((ev,s)=>{const uid=s&&s.user?s.user.id:null,changed=uid!==lastUid;lastUid=uid;SESSION=s;user=s?.user??null;if(changed||ev==='USER_UPDATED')onAuth();else authUI(); // tab-focus / token refresh events must not rebuild pages and wipe forms
+ if(ev==='SIGNED_IN'&&s&&s.provider_token&&s.user&&s.user.app_metadata&&s.user.app_metadata.provider==='discord')setTimeout(()=>syncGuilds(s.provider_token),200);if(ev==='PASSWORD_RECOVERY')setTimeout(()=>openAuth('','newpw'),300);if(ev==='SIGNED_IN'&&sessionStorage.mw_after){const a=sessionStorage.mw_after;delete sessionStorage.mw_after;if($(a)&&$(a).classList.contains('page'))setTimeout(()=>showPage(a),100)}});
  sb.auth.getSession().then(({data})=>{SESSION=data.session;user=data.session?.user??null;onAuth()});
 }
-function onAuth(){acct();loadSubs();devUI();drawFavs();bcInit(true)}
+function onAuth(){authUI();acct();loadSubs();devUI();drawFavs();bcInit(true)}
 
 /* ====== LOCATION SEARCH & PICKER (registry first, geocoder fallback) ====== */
 async function searchLoc(q,cc){
@@ -539,7 +561,7 @@ async function stormTab(t,l){
   t.innerHTML=`<div class="card"><h3>🌪️ Active tropical systems (NHC)</h3>${s.length?s.map(x=>`<div class="row"><strong>${esc(x.name||x.id)}</strong><span class="muted small">${esc(x.classification||'')} • ${esc(x.intensity||'')} kt • ${esc(x.pressure||'')} mb • moving ${esc(x.movementDir??'')}° at ${esc(x.movementSpeed??'')} kt</span><span class="small muted">${esc(x.latitude||x.latitudeNumeric||'')}, ${esc(x.longitude||x.longitudeNumeric||'')}</span></div>`).join(''):'<p class="muted">No active tropical systems in the Atlantic or eastern Pacific right now.</p>'}<p class="small muted">Source: National Hurricane Center. For cone and track graphics visit nhc.noaa.gov.</p></div>`}
  catch(e){t.innerHTML='<div class="card"><p class="muted">The NHC feed could not be reached from your browser. Visit nhc.noaa.gov directly.</p></div>'}}
 function reportTab(t,l){
- t.innerHTML=`<div class="card"><h3>📝 Submit a weather report</h3><p class="muted small">Local reports (hail, wind damage, flooding, snow…) for ${esc(l.name)}. Reports are reviewed before being used anywhere and are not official warnings.</p>${user?`<div class="grid g2"><div><label for="rp-k">What are you seeing?</label><select id="rp-k"><option>Hail</option><option>Heavy rain</option><option>Flooding</option><option>Snow / ice</option><option>Wind damage</option><option>Tornado / funnel cloud</option><option>Lightning</option><option>Other</option></select></div><div><label for="rp-d">Details</label><input id="rp-d" maxlength="400" placeholder="Size, depth, time, what happened"></div></div><button class="btn btn-primary" onclick="sendReport()">Submit report</button> <span class="small muted" id="rp-m"></span>`:`<div class="notice">Sign in to submit reports. <button class="btn btn-primary sm" onclick="showPage('account')">Sign in</button></div>`}<div class="alertbox small"><strong>In an emergency call your local emergency number.</strong> Do not use this form to report life-threatening events.</div></div>`}
+ t.innerHTML=`<div class="card"><h3>📝 Submit a weather report</h3><p class="muted small">Local reports (hail, wind damage, flooding, snow…) for ${esc(l.name)}. Reports are reviewed before being used anywhere and are not official warnings.</p>${user?`<div class="grid g2"><div><label for="rp-k">What are you seeing?</label><select id="rp-k"><option>Hail</option><option>Heavy rain</option><option>Flooding</option><option>Snow / ice</option><option>Wind damage</option><option>Tornado / funnel cloud</option><option>Lightning</option><option>Other</option></select></div><div><label for="rp-d">Details</label><input id="rp-d" maxlength="400" placeholder="Size, depth, time, what happened"></div></div><button class="btn btn-primary" onclick="sendReport()">Submit report</button> <span class="small muted" id="rp-m"></span>`:`<div class="notice">Sign in to submit reports. <button class="btn btn-primary sm" onclick="openAuth()">Sign in</button></div>`}<div class="alertbox small"><strong>In an emergency call your local emergency number.</strong> Do not use this form to report life-threatening events.</div></div>`}
 async function sendReport(){const l=S.loc;const{error}=await sb.from('weather_reports').insert({country_code:l.cc,location_name:l.name,lat:l.lat,lon:l.lon,kind:$('rp-k').value,description:$('rp-d').value.slice(0,400)});$('rp-m').textContent=error?error.message:'Report submitted. Thank you.'}
 
 /* ====== NATIONAL WEATHER SERVICE DATA (US: NWS, Germany: DWD) layered over the model baseline ====== */
@@ -606,7 +628,8 @@ function radarInit(){
   const r0=CC2REG[(rec()[0]||{}).cc]||'US-n';$('rreg').value=r0;radarRegion();setInterval(()=>{if($('radar').classList.contains('on'))loadRadar()},300000)}).catch(e=>{R.ready=null;$('rstat').innerHTML=`<span style="color:#ef4444">The map could not load (${esc(e.message)}). Check your connection and reopen this page.</span>`});
  R.ready.then(()=>{if(R.map)setTimeout(()=>R.map.invalidateSize(),60)});
 }
-function radarBase(){if(!R.map)return;if(R.base)R.base.remove();const d=$('rbase').value==='dark';R.base=L.tileLayer(d?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:12,subdomains:'abcd',attribution:'© OpenStreetMap contributors © CARTO'}).addTo(R.map);R.base.setZIndex(1)}
+const BASES={voyager:`https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${CARTO_KEY}`,dark:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',street:'https://tile.openstreetmap.org/{z}/{x}/{y}.png'};
+function radarBase(){if(!R.map)return;if(R.base)R.base.remove();const k=$('rbase').value;R.base=L.tileLayer(BASES[k]||BASES.voyager,{maxZoom:12,subdomains:'abcd',attribution:'© OpenStreetMap contributors © CARTO'}).addTo(R.map);R.base.setZIndex(1)}
 function radarRegion(){const v=$('rreg').value;if(!v||!R.map)return;const[,[a,b,z]]=REG[v];R.map.setView([a,b],z);if(R.pk)R.pk.setCountry(v.slice(0,2));loadRadar()}
 async function radarTo(a,b,cc){showPage('radar');await R.ready;if(!R.map)return;if(cc&&CC2REG[cc]&&REG[$('rreg').value][2]!==REG[CC2REG[cc]][2]){$('rreg').value=CC2REG[cc]}R.map.setView([a,b],8);if(R.mk)R.mk.remove();R.mk=L.marker([a,b]).addTo(R.map);loadRadar()}
 function radarLocate(){if(!navigator.geolocation)return;navigator.geolocation.getCurrentPosition(p=>radarTo(p.coords.latitude,p.coords.longitude),()=>{$('rstat').textContent='Location permission denied or unavailable.'})}
@@ -662,7 +685,8 @@ const ol=a=>ul(a).replace(/^<ul/,'<ol').replace(/<\/ul>$/,'</ol>');
 const h3=t=>`<h3 style="color:var(--pl);margin:1.4rem 0 .6rem">${t}</h3>`;
 const pp=t=>`<p class="muted" style="line-height:1.8;margin-bottom:.6rem">${t}</p>`;
 const goC=k=>{showPage('weather');switchCountry(k)};
-const BOTURL='https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=8&integration_type=0&scope=bot';
+const BOT_PERMS='2684406784'; // View Channels, Send Messages, Embed Links, Attach Files, Manage Webhooks, Use Application Commands
+const BOTURL=`https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=${BOT_PERMS}&integration_type=0&scope=bot%20applications.commands`;
 
 /* ====== HOME ====== */
 function buildHome(){
@@ -807,31 +831,57 @@ async function loadSubs(){
 }
 
 /* ====== ACCOUNT ====== */
-const authCard=why=>`<div class="card authc" style="max-width:520px;margin:0 auto"><h2 style="margin-bottom:.5rem">Sign in or create an account</h2>${why?`<p class="muted" style="margin-bottom:1rem">${why}</p>`:''}<label>Email</label><input class="aem" type="email" autocomplete="email" aria-label="Email address"><label style="margin-top:.8rem">Password (min 8 characters)</label><input class="apw" type="password" autocomplete="current-password" aria-label="Password"><div class="btn-group" style="margin-top:1.2rem"><button class="btn btn-primary" onclick="auth('in',this)">Sign in</button><button class="btn btn-secondary" onclick="auth('up',this)">Create account</button><button class="btn btn-secondary" onclick="auth('reset',this)">Forgot password</button></div><p class="small muted authm" style="margin-top:.6rem"></p></div>`;
-async function auth(a,b){
- const c=b&&b.closest('.authc'),m=c&&c.querySelector('.authm'),say=(t,bad)=>{if(m){m.textContent=t;m.style.color=bad?'#ef4444':''}else msg(t,bad)};
- if(!sb)return say('Backend not connected.',1);
- const email=c?c.querySelector('.aem').value.trim():'',password=c?c.querySelector('.apw').value:'',base=location.origin+location.pathname;let r;
- if(a==='up'){if(password.length<8)return say('Password must be at least 8 characters.',1);r=await sb.auth.signUp({email,password,options:{emailRedirectTo:base}});say(r.error?r.error.message:'Check your email to verify your account.',!!r.error)}
- else if(a==='in'){r=await sb.auth.signInWithPassword({email,password});say(r.error?r.error.message:'',!!r.error)}
- else if(a==='reset'){if(!email)return say('Enter your email first.',1);r=await sb.auth.resetPasswordForEmail(email,{redirectTo:base});say(r.error?r.error.message:'Password reset email sent.',!!r.error)}
- else if(a==='pwchange'){const p=prompt('New password (min 8 characters):');if(!p||p.length<8)return;r=await sb.auth.updateUser({password:p});msg(r.error?r.error.message:'Password updated.',!!r.error)}
- else await sb.auth.signOut();
-}
+const authCard=why=>`<div class="card" style="max-width:560px;margin:0 auto;text-align:center"><h2 style="margin-bottom:.6rem">🔐 Sign in to continue</h2><p class="muted" style="margin-bottom:1rem">${esc(why||'One account for everything on Midwest Weather.')}</p><button class="btn btn-primary" data-why="${esc(why||'')}" onclick="openAuth(this.dataset.why)">Sign in or create an account</button><p class="small muted" style="margin-top:.8rem">One login for the Weather Center, alerts, API keys, webhooks and the Broadcast Center.</p></div>`;
+/* ---- single sign-in used by every page (nav button, Account, Developers, Alerts, Reports) ---- */
+let authM='in';
+const authBtn=()=>user?showPage('account'):openAuth();
+function authUI(){const b=$('authbtn');if(!b)return;const m=user&&user.user_metadata,n=user?((m&&(m.full_name||m.name))||(user.email||'').split('@')[0]):'';b.textContent=user?n:'Sign in';b.title=user?'Open your account':'Sign in or create an account'}
+function openAuth(why,mode){
+ if(!sb){toast('Sign-in is unavailable: the backend is not connected');return}
+ if(user&&mode!=='newpw'){showPage('account');return}
+ $('authwhy').textContent=why||'One account for the Weather Center, alerts, API keys, webhooks and the Broadcast Center.';authMode(mode||'in');$('authm').classList.add('on');
+ setTimeout(()=>{const f=$('authe').style.display==='none'?$('auth-pw'):$('auth-em');f.focus()},60)}
+function closeAuth(){$('authm').classList.remove('on')}
+function authMode(m){authM=m;const t={in:['Sign in','Sign in'],up:['Create your account','Create account'],reset:['Reset your password','Send reset link'],newpw:['Choose a new password','Update password']}[m],lk=(m2,l)=>`<button type="button" class="linkb" onclick="authMode('${m2}')">${l}</button>`;
+ $('authh').textContent=t[0];$('auth-go').textContent=t[1];$('authe').style.display=m==='newpw'?'none':'';$('authp').style.display=m==='reset'?'none':'';$('authdisc').style.display=(m==='in'||m==='up')?'':'none';$('auth-pw').autocomplete=m==='in'?'current-password':'new-password';
+ $('authlinks').innerHTML=m==='in'?lk('up','Create an account')+lk('reset','Forgot password?'):m==='up'?lk('in','I already have an account'):m==='reset'?lk('in','Back to sign in'):'';$('authm-msg').textContent=''}
+async function authSubmit(e){
+ e.preventDefault();const em=$('auth-em').value.trim(),pw=$('auth-pw').value,base=location.origin+location.pathname,say=(t,bad)=>{const m=$('authm-msg');m.textContent=t;m.style.color=bad?'#f87171':'#4ade80'};
+ if(authM!=='newpw'&&!/^\S+@\S+\.\S+$/.test(em))return say('Enter a valid email address.',1);
+ if(authM!=='reset'&&!pw)return say('Enter your password.',1);
+ if((authM==='up'||authM==='newpw')&&pw.length<8)return say('Password must be at least 8 characters.',1);
+ $('auth-go').disabled=true;
+ try{let r;
+  if(authM==='up'){r=await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:base}});say(r.error?r.error.message:'Check your email to verify your account, then sign in.',!!r.error)}
+  else if(authM==='in'){r=await sb.auth.signInWithPassword({email:em,password:pw});if(r.error)say(r.error.message,1);else{closeAuth();toast('Signed in')}}
+  else if(authM==='reset'){r=await sb.auth.resetPasswordForEmail(em,{redirectTo:base});say(r.error?r.error.message:'If that email has an account, a reset link is on its way.',!!r.error)}
+  else{r=await sb.auth.updateUser({password:pw});if(r.error)say(r.error.message,1);else{closeAuth();toast('Password updated')}}
+ }catch(err){say('Something went wrong: '+err.message,1)}
+ finally{$('auth-go').disabled=false;$('auth-pw').value=''}
+ return false}
+async function authDiscord(){
+ const pg=document.querySelector('.page.on');if(pg)sessionStorage.mw_after=pg.id;
+ const{error}=await sb.auth.signInWithOAuth({provider:'discord',options:{redirectTo:location.origin+location.pathname,scopes:'identify email guilds'}});
+ if(error){delete sessionStorage.mw_after;const m=$('authm-msg');m.style.color='#f87171';m.textContent=error.message+' — Discord sign-in must be enabled in Supabase (Authentication → Providers).'}}
+async function auth(a){if(!sb)return;if(a==='pwchange')return openAuth('','newpw');await sb.auth.signOut();toast('Signed out')}
+let acctSeq=0;
 async function acct(){
- const b=$('acct-body');if(!b)return;
+ const my=++acctSeq,b=$('acct-body');if(!b)return;
  if(!user){b.innerHTML=authCard('Create a free account to save locations, manage alerts, webhooks and API keys.');return}
  let pr={};if(sb){const{data}=await sb.from('profiles').select('display_name,role,discord_user_id,prefs').eq('id',user.id).single();pr=data||{}}
+ const di=(user.identities||[]).find(i=>i.provider==='discord');if(di&&!pr.discord_user_id){const id=di.identity_data&&(di.identity_data.provider_id||di.identity_data.sub);if(id&&/^\d{15,22}$/.test(String(id))){await sb.from('profiles').update({discord_user_id:String(id)}).eq('id',user.id);pr.discord_user_id=String(id)}}
+ if(my!==acctSeq)return; // a newer sign-in state superseded this render
  role=pr.role||'user';const pf=pr.prefs||{website:true,discord:false,email:false},adm=['admin','owner'].includes(role);
- b.innerHTML=`<div class="card row" style="border:0"><div><h2>${esc(pr.display_name||user.email)}</h2><p class="muted">${esc(user.email)} • role: ${esc(role)}</p></div><div><button class="btn btn-secondary" onclick="auth('pwchange')">Change password</button> <button class="btn btn-secondary" onclick="auth('out')">Sign out</button></div></div>
- <div class="grid g2"><div class="card"><h2 style="margin-bottom:.8rem">Profile &amp; integrations</h2><label for="pf-n">Display name</label><input id="pf-n" value="${esc(pr.display_name||'')}"><label for="pf-d" style="margin-top:.8rem">Discord user ID (for Discord DM alerts)</label><input id="pf-d" value="${esc(pr.discord_user_id||'')}" placeholder="e.g. 123456789012345678"><label style="margin-top:.8rem">Notification preferences</label><label><input type="checkbox" id="pf-w" ${pf.website?'checked':''}> Website notifications</label><label><input type="checkbox" id="pf-dm" ${pf.discord?'checked':''}> Discord DMs</label><label><input type="checkbox" id="pf-e" ${pf.email?'checked':''}> Email (if enabled)</label><button class="btn btn-primary" style="margin-top:.8rem" onclick="saveProfile()">Save profile</button></div>
+ b.innerHTML=`<div class="card row" style="border:0"><div><h2>${esc(pr.display_name||user.email)}</h2><p class="muted">${esc(user.email)} • role: ${esc(role)}</p></div><div><button class="btn btn-secondary" onclick="openAuth('','newpw')">Change password</button> <button class="btn btn-secondary" onclick="auth('out')">Sign out</button></div></div>
+ <div class="grid g2"><div class="card"><h2 style="margin-bottom:.8rem">Profile &amp; integrations</h2><label for="pf-n">Display name</label><input id="pf-n" value="${esc(pr.display_name||'')}"><label for="pf-d" style="margin-top:.8rem">Discord user ID (for Discord DM alerts)${di?' ✓ linked via Discord sign-in':''}</label><input id="pf-d" value="${esc(pr.discord_user_id||'')}" placeholder="e.g. 123456789012345678"><label style="margin-top:.8rem">Notification preferences</label><label><input type="checkbox" id="pf-w" ${pf.website?'checked':''}> Website notifications</label><label><input type="checkbox" id="pf-dm" ${pf.discord?'checked':''}> Discord DMs</label><label><input type="checkbox" id="pf-e" ${pf.email?'checked':''}> Email (if enabled)</label><button class="btn btn-primary" style="margin-top:.8rem" onclick="saveProfile()">Save profile</button></div>
  <div class="card"><h2 style="margin-bottom:.8rem">Shortcuts</h2><div class="btn-group" style="justify-content:flex-start"><button class="btn btn-secondary" onclick="showPage('alerts')">🔔 My alerts</button><button class="btn btn-secondary" onclick="showPage('developers')">🔌 API keys &amp; webhooks</button><button class="btn btn-secondary" onclick="showPage('broadcast')">🎙️ Broadcast lists</button></div><h3 style="margin:1.2rem 0 .5rem">Saved locations</h3><div id="ac-favs"></div><h3 style="margin:1.2rem 0 .4rem">Delete my account</h3><p class="small muted">Sends a deletion request to an administrator. Deleting your account removes your profile, saved locations, alert subscriptions, webhooks and API keys.</p><button class="btn btn-secondary sm" onclick="requestDelete()">Request account deletion</button></div></div>
+ <div class="card"><h2 style="margin-bottom:.5rem">🛡️ My Discord servers</h2><p class="small muted">Servers you own or manage, read from your Discord account when you use <em>Continue with Discord</em>. Only server names and IDs are kept — never your Discord password or token.</p><div id="gl"><p class="muted small">Loading…</p></div><button class="btn btn-secondary sm" onclick="authDiscord()">↻ Refresh from Discord</button></div>
  ${adm?`<div class="card"><h2 style="margin-bottom:.5rem">🛠️ Admin: country deployment &amp; launch timer</h2><p class="small muted">One row per country; editing one never touches another. Set an approved future launch date to drive the homepage countdown for the next country. Enforced by database policy and audit-logged.</p><div id="depadm"></div></div>
  <div class="card"><h2 style="margin-bottom:.5rem">👥 Users &amp; roles</h2><p class="small muted">Only an owner can grant admin or owner (enforced by the database). Every role change is audit-logged.</p><div id="usr"></div></div>
  <div class="card"><h2 style="margin-bottom:.8rem">📢 Post an announcement (News page)</h2><div class="grid g3"><div><label for="an-ty">Type</label><select id="an-ty"><option>general</option><option>update</option><option>alert</option><option>maintenance</option></select></div><div style="grid-column:span 2"><label for="an-t">Title</label><input id="an-t" maxlength="120"></div></div><label for="an-m">Message</label><textarea id="an-m" rows="3" maxlength="1500"></textarea><button class="btn btn-primary" style="margin-top:.6rem" onclick="postAnn()">Publish</button></div>
  <div class="grid g2"><div class="card"><h2 style="margin-bottom:.5rem">🧾 Audit log</h2><div id="aud" class="small"></div></div><div class="card"><h2 style="margin-bottom:.5rem">🗑️ Account deletion requests</h2><div id="delreq" class="small"></div></div></div>`:''}`;
  const f=await getFavs();$('ac-favs').innerHTML=f.map(l=>`<div class="row"><span>⭐ ${esc(l.name)} (${esc(l.cc)})</span>${l.id?`<button class="btn btn-secondary sm" onclick="delRow('favorites',${l.id})">Remove</button>`:''}</div>`).join('')||'<p class="muted small">None yet — tap ☆ Save on a location in the Weather Center.</p>';
- if(adm){loadDep();loadUsers();loadAudit();loadDelReq()}emo();
+ loadGuilds();if(adm)[loadDep,loadUsers,loadAudit,loadDelReq].forEach(f=>{try{const r=f();r&&r.catch&&r.catch(()=>{})}catch(e){}});emo();
 }
 async function saveProfile(){const d=$('pf-d').value.trim();if(d&&!/^\d{15,22}$/.test(d))return msg('Discord ID should be 15–22 digits.',1);
  const{error}=await sb.from('profiles').update({display_name:$('pf-n').value.trim()||null,discord_user_id:d||null,prefs:{website:$('pf-w').checked,discord:$('pf-dm').checked,email:$('pf-e').checked}}).eq('id',user.id);msg(error?error.message:'Profile saved.',!!error)}
@@ -850,6 +900,42 @@ async function setRole(id){const{error}=await sb.from('profiles').update({role:$
 async function postAnn(){const t=$('an-t').value.trim(),m=$('an-m').value.trim();if(!t||!m)return msg('Title and message are required.',1);const{error}=await sb.from('announcements').insert({type:$('an-ty').value,title:t,message:m});if(!error){await sb.from('audit_log').insert({action:'announcement_posted',target:t});$('an-t').value=$('an-m').value=''}msg(error?error.message:'Announcement published.',!!error)}
 async function loadAudit(){const{data}=await sb.from('audit_log').select('action,target,at').order('at',{ascending:false}).limit(25);$('aud').innerHTML=(data||[]).map(a=>`<div class="row" style="padding:.3rem 0"><span>${esc(a.action)} <span class="muted">${esc(a.target||'')}</span></span><span class="muted">${esc(new Date(a.at).toLocaleString())}</span></div>`).join('')||'<span class="muted">No entries.</span>'}
 async function loadDelReq(){const{data}=await sb.from('account_deletion_requests').select('user_id,email,requested_at').order('requested_at',{ascending:false});$('delreq').innerHTML=(data||[]).map(a=>`<div class="row" style="padding:.3rem 0"><span>${esc(a.email||a.user_id)}</span><span class="muted">${esc(new Date(a.requested_at).toLocaleDateString())}</span></div>`).join('')||'<span class="muted">None pending.</span>'}
+
+/* ====== DISCORD SERVER LINKING (owners & managers) ====== */
+const GUILD_ADMIN=0x8,GUILD_MANAGE=0x20;
+async function syncGuilds(token){
+ if(!sb||!user||!token)return;
+ try{const r=await fetch('https://discord.com/api/v10/users/@me/guilds',{headers:{authorization:'Bearer '+token}});if(!r.ok)throw new Error('Discord '+r.status);
+  const all=await r.json(),mine=all.filter(g=>g.owner||(Number(BigInt(g.permissions||0)&BigInt(GUILD_ADMIN))>0)||(Number(BigInt(g.permissions||0)&BigInt(GUILD_MANAGE))>0));
+  const rows=mine.map(g=>({user_id:user.id,guild_id:g.id,name:String(g.name).slice(0,100),icon:g.icon||null,is_owner:!!g.owner,updated_at:new Date().toISOString()}));
+  if(rows.length)await sb.from('user_guilds').upsert(rows,{onConflict:'user_id,guild_id'});
+  const keep=rows.map(x=>x.guild_id);const{data:old}=await sb.from('user_guilds').select('guild_id');
+  const gone=(old||[]).map(o=>o.guild_id).filter(id=>!keep.includes(id));if(gone.length)await sb.from('user_guilds').delete().in('guild_id',gone);
+  toast(`Linked ${rows.length} Discord server${rows.length===1?'':'s'}`);loadGuilds(true)}
+ catch(e){toast('Could not read your Discord servers: '+e.message)}}
+const gInvite=id=>`https://discord.com/oauth2/authorize?client_id=1337840899773829180&permissions=${BOT_PERMS}&integration_type=0&scope=bot%20applications.commands&guild_id=${encodeURIComponent(id)}&disable_guild_select=true`;
+async function loadGuilds(force){
+ const box=$('gl');if(!box||!sb||!user)return;if(!force&&[...box.querySelectorAll('[id^=gs-]')].some(e=>e.innerHTML))return; // don't wipe a settings form that is open
+ const[{data:gs},{data:bots},{data:cfg}]=await Promise.all([sb.from('user_guilds').select('guild_id,name,icon,is_owner').order('name'),sb.from('discord_servers').select('id').then(r=>r,()=>({data:[]})),sb.from('guild_alert_settings').select('*').then(r=>r,()=>({data:[]}))]);
+ window.GCFG=Object.fromEntries((cfg||[]).map(c=>[c.guild_id,c]));const has=new Set((bots||[]).map(b=>String(b.id)));
+ if(!(gs||[]).length){const linked=(user.identities||[]).some(i=>i.provider==='discord');box.innerHTML=`<p class="muted small">${linked?'No servers found yet. Press “Refresh from Discord” to read the servers you own or manage.':'Sign in with Discord to see the servers you own or manage and add the bot to them in one click.'}</p>`;return}
+ box.innerHTML=gs.map(g=>{const on=has.has(String(g.guild_id)),ic=g.icon?`<img alt="" width="32" height="32" style="border-radius:50%;vertical-align:middle;margin-right:.6rem" src="https://cdn.discordapp.com/icons/${encodeURIComponent(g.guild_id)}/${encodeURIComponent(g.icon)}.png?size=64">`:'<span aria-hidden="true" style="margin-right:.6rem">🛡️</span>';
+  return `<div class="row" style="align-items:flex-start"><div>${ic}<strong>${esc(g.name)}</strong> <span class="nb">${g.is_owner?'Owner':'Manager'}</span> ${on?'<span class="nb update">Bot installed</span>':''}<div id="gs-${esc(g.guild_id)}"></div></div><span>${on?`<button class="btn btn-secondary sm" onclick="guildForm('${esc(g.guild_id)}')">Alert settings</button>`:`<a class="btn btn-primary sm" target="_blank" rel="noopener" href="${gInvite(g.guild_id)}">Add bot</a>`}</span></div>`}).join('');
+}
+function guildForm(id){
+ const box=$('gs-'+id);if(box.innerHTML){box.innerHTML='';return}const c=(window.GCFG||{})[id]||{country:'US',region:'',min_severity:'all',categories:Object.keys(ACATS),webhook_url:'',enabled:true};
+ box.innerHTML=`<div class="card" style="margin:.8rem 0 0;padding:1rem"><div class="grid g3" style="margin:0"><div><label for="gc-${id}">Country</label><select id="gc-${id}" onchange="guildRegions('${id}')">${Object.entries(C).map(([k,v])=>`<option value="${k}" ${c.country===k?'selected':''}>${v.f} ${esc(v.n)}</option>`).join('')}</select></div><div><label for="gr-${id}">Region</label><select id="gr-${id}"></select></div><div><label for="gv-${id}">Alert level</label><select id="gv-${id}">${[['all','All alerts'],['severe','Severe only'],['extreme','Extreme only']].map(([v,l])=>`<option value="${v}" ${c.min_severity===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
+  <label style="margin-top:.8rem">Alert types</label><div class="grid g3" style="margin:.2rem 0">${Object.entries(ACATS).map(([k,v])=>`<label style="font-weight:400"><input type="checkbox" class="gk-${id}" value="${k}" ${(c.categories||[]).includes(k)?'checked':''}> ${esc(v[0])}</label>`).join('')}</div>
+  <label for="gw-${id}">Channel webhook URL <span class="muted small">(Discord: Channel settings → Integrations → Webhooks → Copy URL)</span></label><input id="gw-${id}" type="url" value="${esc(c.webhook_url||'')}" placeholder="https://discord.com/api/webhooks/…"><label style="margin-top:.6rem;font-weight:400"><input type="checkbox" id="ge-${id}" ${c.enabled!==false?'checked':''}> Alerts enabled for this server</label>
+  <div class="btn-group" style="justify-content:flex-start;margin-top:.6rem"><button class="btn btn-primary sm" onclick="guildSave('${id}')">Save</button></div><p class="small muted" id="gm-${id}">Saved settings are shared with the bot. Until the bot runs on this platform, keep using <code>/setup-alerts</code> in Discord for live delivery.</p></div>`;
+ guildRegions(id,c.region);
+}
+function guildRegions(id,sel){const cc=$('gc-'+id).value;$('gr-'+id).innerHTML=C[cc].reg.map(r=>`<option ${r===sel?'selected':''}>${esc(r)}</option>`).join('')}
+async function guildSave(id){
+ const url=$('gw-'+id).value.trim();if(url&&!/^https:\/\/(discord(app)?\.com)\/api\/webhooks\//i.test(url))return $('gm-'+id).textContent='That does not look like a Discord webhook URL.';
+ const o={guild_id:id,country:$('gc-'+id).value,region:$('gr-'+id).value,min_severity:$('gv-'+id).value,categories:[...document.querySelectorAll('.gk-'+id+':checked')].map(x=>x.value),webhook_url:url||null,enabled:$('ge-'+id).checked,updated_at:new Date().toISOString()};
+ const{error}=await sb.from('guild_alert_settings').upsert(o,{onConflict:'guild_id'});$('gm-'+id).textContent=error?error.message:'Saved.';if(!error){window.GCFG=window.GCFG||{};window.GCFG[id]=o}
+}
 
 /* ====== DEVELOPERS (login required for keys & webhooks) ====== */
 const W={edit:null,locs:[],hooks:[]};
@@ -958,7 +1044,7 @@ function docsHtml(){
 const UPD='Last Updated: November 15, 2026';
 function legalHtml(){
  $('privacy-body').innerHTML=`<p class="sub">${UPD}</p>`+sec('Our Privacy Commitment',pp('Midwest Weather is committed to protecting your privacy. This policy explains what data we collect and how we use it. It should be reviewed by qualified counsel before you rely on it.'))+
- sec('1. Information We Collect',`${h3('Website Accounts (optional)')}${pp('If you create an account we collect:')}${ul(['<strong>Email address and password</strong> (the password is hashed by our authentication provider)','<strong>Profile:</strong> display name, optional Discord user ID, notification preferences, role','<strong>Saved data:</strong> favorite locations, broadcast locations, alert subscriptions','<strong>Developer data:</strong> webhook names, URLs and secrets; API key hashes (never the keys) and request counts','<strong>Weather reports</strong> you choose to submit'])}${h3('Discord Bot Usage')}${pp('When you use Midwest Weather Bot, we collect:')}${ul(['<strong>Discord User ID:</strong> Used for command logging','<strong>Discord Username:</strong> Displayed in command logs','<strong>Server/Guild ID:</strong> Used to track server-specific usage','<strong>Command Usage:</strong> Which commands you use and when','<strong>City Selections:</strong> Which cities you query for weather'])}${h3('Website Usage Without an Account')}${ul(['No account is needed to check weather, radar or status','We do not use advertising or tracking cookies','Your recent locations, display and unit preferences are stored only on your device (browser storage)','Signed-in sessions use browser storage for your login token','Our hosting and database providers may keep standard technical logs (such as IP address) for security and reliability'])}`)+
+ sec('1. Information We Collect',`${h3('Website Accounts (optional)')}${pp('If you create an account we collect:')}${ul(['<strong>Email address and password</strong> (the password is hashed by our authentication provider)','<strong>Profile:</strong> display name, optional Discord user ID (filled automatically if you use Continue with Discord), notification preferences, role','<strong>Discord servers:</strong> if you use Continue with Discord, the names and IDs of servers you own or manage, and any server alert settings you save (your Discord token is used once and not stored)','<strong>Saved data:</strong> favorite locations, broadcast locations, alert subscriptions','<strong>Developer data:</strong> webhook names, URLs and secrets; API key hashes (never the keys) and request counts','<strong>Weather reports</strong> you choose to submit'])}${h3('Discord Bot Usage')}${pp('When you use Midwest Weather Bot, we collect:')}${ul(['<strong>Discord User ID:</strong> Used for command logging','<strong>Discord Username:</strong> Displayed in command logs','<strong>Server/Guild ID:</strong> Used to track server-specific usage','<strong>Command Usage:</strong> Which commands you use and when','<strong>City Selections:</strong> Which cities you query for weather'])}${h3('Website Usage Without an Account')}${ul(['No account is needed to check weather, radar or status','We do not use advertising or tracking cookies','Your recent locations, display and unit preferences are stored only on your device (browser storage)','Signed-in sessions use browser storage for your login token','Our hosting and database providers may keep standard technical logs (such as IP address) for security and reliability'])}`)+
  sec('2. How We Use Your Information',`${pp('We use collected information to:')}${ul(['Provide weather data for requested locations','Run your account, alerts, webhooks and API keys','Monitor bot and platform performance and uptime','Troubleshoot technical issues and prevent abuse (rate limiting, audit logging)','Generate anonymous usage statistics','Comply with Discord’s Terms of Service'])}`)+
  sec('3. Data Retention',pp('<strong>Command Logs:</strong> Stored for up to 90 days<br><strong>Weather lookups:</strong> Fetched live; not stored on our servers<br><strong>Account data:</strong> Kept until you delete your account<br><strong>API usage and delivery logs:</strong> Kept for a limited period for rate limiting and troubleshooting<br><strong>Device data:</strong> Stays in your browser until you clear it'))+
  sec('4. Data Sharing',pp('We <strong>DO NOT</strong> sell, trade, or share your personal information with third parties for their marketing. Weather data is sourced from public weather services and providers. Your searched coordinates are sent to those providers to fetch results.'))+
@@ -984,7 +1070,7 @@ const KB=[
 [['status','uptime','down','outage','working','online','offline'],'The Status page runs live checks from your browser (weather data, radar, database) and shows bot, alert and command reports plus each country’s deployment status.',[['status','Status']]],
 [['api','key','developer','webhook','integration','rate limit'],'On the Developers page you sign in, then create API keys and webhooks — both save to your account. It also has the endpoint documentation, rate limits and error codes.',[['developers','Developers']]],
 [['podcast','stream','twitch','obs','overlay','broadcast','briefing','radio'],'The Broadcast Center is for shows: saved broadcast locations, a live board, briefings and scripts, OBS/Twitch overlays, embeds and API feeds for your podcast tools.',[['broadcast','Broadcast Center']]],
-[['account','login','log in','sign','register','password','profile','discord id'],'Use the Account page to sign in or create an account, edit your profile, link your Discord ID, set notification preferences and manage saved locations.',[['account','Account']]],
+[['account','login','log in','sign','register','password','profile','discord id','server owner','my servers','link discord','google','twitter'],'Use the Sign in button at the top right — it is one login for the whole site (Weather Center, alerts, API keys, webhooks, Broadcast Center). Continue with Discord links your account and lists the servers you manage (Google and X sign-in are coming soon). Your Account page holds your profile, Discord link and notification preferences.',[['account','Account']]],
 [['news','announcement','update','changelog'],'Announcements are on the News page. You can filter by type and sort by date.',[['news','News']]],
 [['docs','documentation','guide','how to','help','faq'],'The Docs page covers using the website, the bot, radar, alerts, data sources, FAQ and troubleshooting.',[['docs','Docs']]],
 [['privacy','data','terms','legal','copyright','delete'],'Legal pages are in the footer: Terms of Service, Privacy Policy and Copyright Notice. To delete your account, contact us through the Discord server.',[['privacy','Privacy'],['terms','Terms']]],
@@ -1095,16 +1181,16 @@ function palActions(q){const ql=q.toLowerCase().trim(),imp=()=>U(S.loc?S.loc.cc:
  return all.filter(a=>!ql||a.t.toLowerCase().includes(ql)).slice(0,12)}
 let palPlaces=[];
 function palRender(places){if(places!==undefined)palPlaces=places;const q=$('palq').value;palList=[...palActions(q),...palPlaces.map(l=>({t:`Weather in ${l.name}${l.area?', '+l.area:''} (${l.cc})`,i:C[l.cc]?C[l.cc].f:'📍',f:()=>{showPage('weather');selectLoc(l)}}))];palSel=Math.min(palSel,Math.max(palList.length-1,0));
- $('pall').innerHTML=palList.map((a,i)=>`<div role="option" id="po${i}" aria-selected="${i===palSel}" class="${i===palSel?'sel':''}" onclick="palRun(${i})"><span aria-hidden="true">${a.i}</span><span>${esc(a.t)}</span></div>`).join('')||'<div class="muted">No matches</div>';emo();$('palq').setAttribute('aria-activedescendant','po'+palSel)}
+ $('pall').innerHTML=palList.map((a,i)=>`<div role="option" id="po${i}" aria-selected="${i===palSel}" class="${i===palSel?'sel':''}" onclick="palRun(${i})"><span aria-hidden="true">${a.i}</span><span>${esc(a.t)}</span></div>`).join('')||'<div role="option" aria-disabled="true" aria-selected="false" class="muted">No matches</div>';emo();if(palList.length)$('palq').setAttribute('aria-activedescendant','po'+palSel);else $('palq').removeAttribute('aria-activedescendant')}
 function palOpen(){$('pal').classList.add('on');$('palq').value='';palSel=0;palRender([]);setTimeout(()=>$('palq').focus(),30)}
 function palClose(){$('pal').classList.remove('on')}
 function palRun(i){const a=palList[i];palClose();a&&a.f&&a.f()}
-$('palq').addEventListener('input',()=>{palSel=0;palRender([]);clearTimeout(palT);const v=$('palq').value.trim();if(v.length<3)return;palT=setTimeout(async()=>{try{const r=await Promise.all(Object.keys(C).map(cc=>searchLoc(v,cc).then(x=>x.slice(0,2)).catch(()=>[])));if($('palq').value.trim()===v)palRender(r.flat())}catch(e){}},300)});
+$('palq').addEventListener('input',()=>{palSel=0;palRender([]);clearTimeout(palT);const v=$('palq').value.trim();if(v.length<3)return;palT=setTimeout(()=>{Object.keys(C).forEach(cc=>searchLoc(v,cc).then(x=>{if($('palq').value.trim()===v&&$('pal').classList.contains('on'))palRender([...palPlaces,...x.slice(0,2)])}).catch(()=>{}))},250)});
 $('palq').addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();palSel=(palSel+1)%Math.max(palList.length,1);palRender()}else if(e.key==='ArrowUp'){e.preventDefault();palSel=(palSel-1+palList.length)%Math.max(palList.length,1);palRender()}else if(e.key==='Enter'){e.preventDefault();palRun(palSel)}});
 document.addEventListener('keydown',e=>{const t=e.target,typing=t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable);
  if((e.key==='k'||e.key==='K')&&(e.ctrlKey||e.metaKey)){e.preventDefault();$('pal').classList.contains('on')?palClose():palOpen()}
  else if(e.key==='/'&&!typing&&!e.ctrlKey&&!e.metaKey){e.preventDefault();palOpen()}
- else if(e.key==='Escape'){if($('pal').classList.contains('on'))palClose();else if($('setp').classList.contains('on'))setToggle(false);else if($('aip').classList.contains('on'))aiToggle(false)}});
+ else if(e.key==='Escape'){if($('authm').classList.contains('on'))closeAuth();else if($('pal').classList.contains('on'))palClose();else if($('authm').classList.contains('on'))closeAuth();else if($('setp').classList.contains('on'))setToggle(false);else if($('aip').classList.contains('on'))aiToggle(false)}});
 function deepLinks(){const loc=P.get('loc');if(loc){const[a,b]=loc.split(',').map(Number);if(isFinite(a)&&isFinite(b)&&Math.abs(a)<=90&&Math.abs(b)<=180){const c=C[P.get('c')]?P.get('c'):(bboxCC(a,b)||'US');showPage('weather');selectLoc({name:(P.get('n')||'Shared location').slice(0,60),cc:c,lat:a,lon:b,src:'link'});return true}}return false}
 
 /* ====== BOOT ====== */
