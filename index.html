@@ -262,7 +262,7 @@ footer a img.emoji{vertical-align:-.18em}
   <div class="grid g4" id="home-countries"></div>
   
   <div class="stats-row grid g4" id="home-stats"></div>
-  <p class="small muted" style="margin:-.5rem 0 1.6rem">City counts are read live from the public location registry; “—” means the registry returned no readable count for your access level. State and territory totals are documented administrative facts, not server data.</p>
+  <p class="small muted" style="margin:-.5rem 0 1.6rem">City counts come from the bot’s location API or from the count the bot publishes to this site’s database, then the public registry, then a built-in snapshot of the bot’s own location files — the live API figure wins whenever it answers. State and territory totals are documented administrative facts, not server data.</p>
   <div class="card" style="text-align:center"><h2 style="margin-bottom:1rem">🔴 System Status</h2><div id="home-badge" class="badge unk"><span class="dot"></span><span>Checking…</span></div><p class="small muted" style="margin-top:.6rem">Live checks from your browser • <a style="color:var(--pl);cursor:pointer" onclick="showPage('status')">full status</a></p></div>
   <div class="countdown" id="germany-box"></div>
   <div class="grid g4" id="home-features"></div>
@@ -424,7 +424,10 @@ Authorization: Bearer mw_your_key</pre><button class="btn btn-secondary" onclick
 <script>
 'use strict';
 /* ====== CONFIG ====== (publishable key is public by design and protected by RLS. NEVER put the DB password or service_role key in this file.) */
-const CFG={SB_URL:'https://mobtedouyuuugugsgygn.supabase.co',SB_KEY:'sb_publishable_t1_uyLxKc1xy6f-UVTA4QA_U7Q9RIsX'};
+/* Bot API base. Empty = same origin: the site proxies /api to the bot, which
+   serves the location counts and status. Set a full URL for another host. */
+const CFG={SB_URL:'https://mobtedouyuuugugsgygn.supabase.co',SB_KEY:'sb_publishable_t1_uyLxKc1xy6f-UVTA4QA_U7Q9RIsX',BOT_API:''};
+const BOT_API=(CFG.BOT_API||'').replace(/\/$/,'');
 const FN=CFG.SB_URL+'/functions/v1';
 const CARTO_KEY='cb1_5e52_1_fd55236c9fb5744c988e838a'; // CARTO basemap key (restrict it to your domain in the CARTO dashboard)
 const NEXT_LAUNCH={cc:'IE',date:'2027-03-16T00:00:00',note:'Ireland coverage is on the way — weather, forecasts and alerts for Irish cities and towns.'}; // owner's plan: about 4 months from Nov 2026. An approved row in the database (Account → Admin) overrides this.
@@ -441,6 +444,10 @@ const C={
    country on by itself — nothing needs rebuilding or redeploying. */
 const PREPARED={IE:{n:'Ireland',f:'🇮🇪',s:'-ie',a:'Irish',o:'city',reg:['Leinster','Munster','Connacht','Ulster'],lvl:'County',city:'City',u:'Ireland'}};
 const STATIC_AREAS={US:50,CA:13,AU:8,GB:12,DE:16}; // documented administrative facts, used only when the registry has no count yet
+/* Snapshot of the location files the bot serves. Last resort only: the bot API,
+   the bot's published report and the public registry are all tried first, so a
+   live number always replaces these. */
+const SITE_COUNTS={'US':50,'CA':50,'AU':26,'GB':27,'DE':26,'IE':14};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const col=(v,d)=>/^[#a-z0-9(),.% ]{1,40}$/i.test(v||'')?v:d;
@@ -1073,22 +1080,48 @@ function buildHome(){
  const S1=[['US','U.S. Cities','US','U.S. States'],['CA','Canadian Municipalities','CA','Canadian Provinces/Territories'],['AU','Australian Cities','AU','Australian States/Territories'],['GB','United Kingdom Cities','GB','United Kingdom States/Territories'],['DE','German Cities & Municipalities','DE','German Federal States (Länder)']];
  $('home-stats').innerHTML=S1.map(([a,la,b,lb])=>`<div class="stat"><div class="sv" id="cnt-${a}">—</div><div class="sl">${la}</div></div><div class="stat"><div class="sv" id="ar-${b}">${STATIC_AREAS[b]}</div><div class="sl">${lb}</div></div>`).join('')+`<div class="stat"><div class="sv" id="home-servers-count">—</div><div class="sl">Discord Servers</div></div><div class="stat"><div class="sv" id="home-users-count">—</div><div class="sl">Total Users</div></div>`;
 }
+/* City counts are served by the bot's own location databases. The public
+   registry is a fallback, and a dash means neither returned a readable count. */
+async function botCountryCounts(){
+ try{const r=await fj(BOT_API+'/api/countries',8000);if(!Array.isArray(r))return null;const m={};for(const c of r){if(c&&c.code&&Number.isFinite(Number(c.cities)))m[String(c.code).toUpperCase()]=Number(c.cities)}return Object.keys(m).length?m:null}
+ catch(e){return null}
+}
+/* The bot also publishes its per-country counts to system_status, so the tiles
+   work even when the API is not reachable from the public site. */
+async function botPublishedCounts(){
+ if(!sb)return null;
+ try{
+  const{data,error}=await sb.from('system_status').select('details,last_checked_at').eq('service','locations').limit(1);
+  if(error||!data||!data.length||!data[0].details)return null;
+  const d=data[0].details,m={};
+  for(const k of Object.keys(C))if(Number.isFinite(Number(d[k])))m[k]=Number(d[k]);
+  if(!Object.keys(m).length)return null;
+  return{counts:m,at:data[0].last_checked_at||null}
+ }catch(e){return null}
+}
 async function loadStats(){
- if(!sb)return;
+ const api=await botCountryCounts(),pub=api?null:await botPublishedCounts();
  for(const k of Object.keys(C)){
   const el=$('cnt-'+k);if(!el)continue;
-  try{
-   const{count,error}=await sb.from('locations').select('id',{count:'exact',head:true}).eq('country_code',k);
-   if(error)throw error;
-   if(count==null)throw new Error('no count');
-   if(count===0){
-    const{data,error:e2}=await sb.from('locations').select('id').eq('country_code',k).limit(1);
-    if(e2||!data||!data.length){el.textContent='—';el.title='The public registry returned no readable rows for your access level — no number is invented here.'}
-    else el.textContent='0';
-   }else el.textContent=count.toLocaleString();
-  }catch(e){el.textContent='—';el.title='The location registry count could not be loaded'}
+  let shown=false;
+  if(api&&Number.isFinite(api[k])){el.textContent=api[k].toLocaleString();el.title='Live count from the bot API location database';shown=true}
+  else if(pub&&Number.isFinite(pub.counts[k])){el.textContent=pub.counts[k].toLocaleString();el.title='Count published by the bot'+(pub.at?' ('+new Date(pub.at).toLocaleString()+')':'');shown=true}
+  if(!shown&&sb){
+   try{
+    const{count,error}=await sb.from('locations').select('id',{count:'exact',head:true}).eq('country_code',k);
+    if(error)throw error;
+    if(count==null)throw new Error('no count');
+    if(count>0){el.textContent=count.toLocaleString();shown=true}
+    else{
+     const{data,error:e2}=await sb.from('locations').select('id').eq('country_code',k).limit(1);
+     if(!e2&&data&&data.length){el.textContent='0';shown=true}
+    }
+   }catch(e){}
+  }
+  if(!shown&&Number.isFinite(SITE_COUNTS[k])){el.textContent=SITE_COUNTS[k].toLocaleString();el.title='Built-in snapshot of the bot location files — the live API, the bot report and the registry did not answer.';shown=true}
+  if(!shown){el.textContent='—';el.title='No source returned a readable count — no number is invented here.'}
   const ar=$('ar-'+k);
-  if(ar)try{const{count,error}=await sb.from('admin_areas').select('id',{count:'exact',head:true}).eq('country_code',k).is('parent_id',null);if(!error&&count)ar.textContent=count}catch(e){}
+  if(ar&&sb)try{const{count,error}=await sb.from('admin_areas').select('id',{count:'exact',head:true}).eq('country_code',k).is('parent_id',null);if(!error&&count)ar.textContent=count}catch(e){}
  }
 }
 function botStats(){const s=(SYS.bot&&SYS.bot.details)||{};[['home-servers-count',s.servers],['home-users-count',s.users],['bot-page-servers',s.servers],['bot-page-users',s.users]].forEach(([i,v])=>{const e=$(i);if(e)e.textContent=v!=null?Number(v).toLocaleString():'—'})}
@@ -1104,7 +1137,7 @@ function activateCountry(k){
  if(C[k]||!PREPARED[k])return false;
  const pack=PREPARED[k];
  C[k]=pack;delete COMING[k];
- buildHome();buildCountries();
+ buildHome();buildCountries();loadStats();
  const cm=$('cmds');if(cm&&cm.innerHTML.trim())cm.innerHTML=cmdsHtml();
  if($('bot-body'))botHtml();
  if($('al-regions'))$('al-regions').innerHTML=alRegionCards();
